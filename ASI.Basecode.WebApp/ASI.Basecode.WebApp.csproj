@@ -7,6 +7,40 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\NewFolder1\**" />
+    <Compile Remove="Views\NewFolder\**" />
+    <Compile Remove="Views\Shared\NewFolder\**" />
+    <Content Remove="Views\NewFolder1\**" />
+    <Content Remove="Views\NewFolder\**" />
+    <Content Remove="Views\Shared\NewFolder\**" />
+    <EmbeddedResource Remove="Views\NewFolder1\**" />
+    <EmbeddedResource Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="Views\Shared\NewFolder\**" />
+    <EntityDeploy Remove="Views\NewFolder1\**" />
+    <EntityDeploy Remove="Views\NewFolder\**" />
+    <EntityDeploy Remove="Views\Shared\NewFolder\**" />
+    <None Remove="Views\NewFolder1\**" />
+    <None Remove="Views\NewFolder\**" />
+    <None Remove="Views\Shared\NewFolder\**" />
+    <TypeScriptCompile Remove="Views\NewFolder1\**" />
+    <TypeScriptCompile Remove="Views\NewFolder\**" />
+    <TypeScriptCompile Remove="Views\Shared\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\HomeController1.cs" />
+    <Compile Remove="Controllers\NotifProfileController.cs" />
+    <Compile Remove="Views\Shared\Index1.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\Calendar.cshtml" />
+    <Content Remove="Views\Shared\Component.razor" />
+    <Content Remove="Views\Shared\Index.cshtml" />
+    <Content Remove="Views\Shared\Index1.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.json.rej" />
   </ItemGroup>
 
@@ -38,5 +72,13 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Calendar.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\Calendar.cshtml" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Calendar";
+}
+<div class="outer-container">
+    <div class="main-content">
+        <h1>Calendar</h1>
+        <!--I add dri calendar code for later -->
+    </div>
+</div>
+
+@section Styles {
+    <style>
+
+         @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .outer-container {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 40px);
+            width: 105%;
+            margin: 0 auto;
+            max-width: 105%;
+            position: relative;
+            overflow: hidden;
+            top: 20px;
+        }
+
+        .main-content {
+            height: 85vh;
+            background-color: #185D62;
+            padding: 20px;
+            color: #fff;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            top: -5px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        <!--Add dri code sa imong css styles sa imong calendar nga code-->
+
+    </style>
+}
