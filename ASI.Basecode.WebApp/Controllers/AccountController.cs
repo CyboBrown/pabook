@@ -26,6 +26,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
+        private const string AdminUserId = "admin"; // Temporary admin user ID
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -77,7 +78,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="model">The model.</param>
         /// <param name="returnUrl">The return URL.</param>
         /// <returns> Created response view </returns>
-        [HttpPost]
+        /*[HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
@@ -92,7 +93,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return RedirectToAction("Index", "Home");
 
-            /*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
+            *//*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
             if (loginResult == LoginResult.Success)
             {
                 // 認証OK
@@ -106,7 +107,40 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = "Incorrect UserId or Password";
                 return View();
             }
-            return View();*/
+            return View();*//*
+        }*/
+
+        //the code above being commented is the original login logic of basecode. The code below this comment is the temporary solution for login para mapasok si admin
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            this._session.SetString("HasSession", "Exist");
+
+            // Temporary login logic
+            if (model.UserId == AdminUserId && model.Password == "adminpass")
+            {
+                // Admin login
+                User user = new() { Id = 1, UserId = AdminUserId, Name = "Admin User", Password = "adminpass" };
+                await this._signInManager.SignInAsync(user);
+                this._session.SetString("UserName", user.Name);
+                this._session.SetString("UserRole", "Admin");
+                return RedirectToAction("Index", "Admin");
+            }
+            else if (!string.IsNullOrEmpty(model.UserId) && !string.IsNullOrEmpty(model.Password))
+            {
+                // Regular user login
+                User user = new() { Id = 2, UserId = model.UserId, Name = model.UserId, Password = model.Password };
+                await this._signInManager.SignInAsync(user);
+                this._session.SetString("UserName", user.Name);
+                this._session.SetString("UserRole", "User");
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Invalid login
+            TempData["ErrorMessage"] = "Incorrect UserId or Password";
+            return View();
         }
 
         [HttpGet]
@@ -144,6 +178,18 @@ namespace ASI.Basecode.WebApp.Controllers
         public async Task<IActionResult> SignOutUser()
         {
             await this._signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
+
+        /// <summary>
+        /// Sign Out current admin and return login view.
+        /// </summary>
+        /// <returns>Created response view</returns>
+        [AllowAnonymous]
+        public async Task<IActionResult> SignOutAdmin()
+        {
+            await this._signInManager.SignOutAsync();
+            HttpContext.Session.Clear();
             return RedirectToAction("Login", "Account");
         }
     }

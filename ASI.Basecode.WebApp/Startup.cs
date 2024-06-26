@@ -119,6 +119,15 @@ namespace ASI.Basecode.WebApp
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
+
+            //gi add ni for session services
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         /// <summary>
@@ -152,6 +161,9 @@ namespace ASI.Basecode.WebApp
 
             this._app.UseAuthentication();
             this._app.UseAuthorization();
+
+            //for session use
+            this._app.UseSession();
         }
     }
 }
