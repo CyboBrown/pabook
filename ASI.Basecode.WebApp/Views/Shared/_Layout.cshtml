@@ -1,6 +1,4 @@
-﻿@using static ASI.Basecode.Resources.Views.Screen
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -15,16 +13,30 @@
 </head>
 <body>
     @Html.Partial("_Header")
-    <div class="container">
+    @{
+        var isAdmin = Context.Session.GetString("UserRole") == "Admin";
+        var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
+        (ViewContext.RouteData.Values["Action"].ToString() == "Login" ||
+        ViewContext.RouteData.Values["Action"].ToString() == "Register");
+    }
+
+    @if (!isLoginOrRegister)
+    {
+        if (isAdmin)
+        {
+            @Html.Partial("_AdminSidebar")
+        }
+        else
+        {
+            @Html.Partial("_UserSidebar")
+        }
+    }
+
+    <div class="container" style="@(isLoginOrRegister ? "margin-left: 0;" : "margin-left: 250px;")">
         <main role="main">
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            @Copyright
-        </div>
-    </footer>
 
     <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
