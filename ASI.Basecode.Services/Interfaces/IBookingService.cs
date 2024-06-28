@@ -1,0 +1,17 @@
+﻿using ASI.Basecode.Services.ServiceModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ASI.Basecode.Services.Interfaces
+{
+    public interface IBookingService
+    {
+        IEnumerable<BookingViewModel> GetAll(int? id = null, string title = null, string room = null);
+        void Add(BookingViewModel model);
+        void Update(BookingViewModel model);
+        void Delete(int id);
+    }
+}

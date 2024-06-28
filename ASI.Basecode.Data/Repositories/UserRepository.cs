@@ -18,19 +18,49 @@ namespace ASI.Basecode.Data.Repositories
 
         public IQueryable<User> GetUsers()
         {
+            Console.WriteLine(" > UserRepo: GetUsers");
             return this.GetDbSet<User>();
         }
 
-        public bool UserExists(string userId)
+        public bool UserExists(string username)
         {
-            return this.GetDbSet<User>().Any(x => x.UserId == userId);
+            Console.WriteLine(" > UserRepo: UserExists");
+            return this.GetDbSet<User>().Any(x => x.UserName == username);
         }
 
         public void AddUser(User user)
         {
+            Console.WriteLine(" > UserRepo: AddUser");
             this.GetDbSet<User>().Add(user);
             UnitOfWork.SaveChanges();
         }
 
+        public User GetUser(string username)
+        {
+            Console.WriteLine(" > UserRepo: GetUser");
+            return this.GetDbSet<User>().FirstOrDefault(x => x.UserName == username);
+        }
+
+        public void UpdateUser(User user)
+        {
+            Console.WriteLine(" > UserRepo: UpdateUser");
+            this.GetDbSet<User>().Update(user);
+            user.UpdatedDate = DateTime.Now;
+            user.UpdatedBy = "[Current User]";
+            UnitOfWork.SaveChanges();
+        }
+
+        public void DeleteUser(int id)
+        {
+            Console.WriteLine(" > UserRepo: DeleteUser");
+            var userToDelete = this.GetDbSet<User>().FirstOrDefault(x => x.Deleted != true && x.Id == id);
+            if (userToDelete != null)
+            {
+                userToDelete.Deleted = true;
+                userToDelete.UpdatedDate = DateTime.Now;
+                userToDelete.UpdatedBy = "[Current User]";
+            }
+            UnitOfWork.SaveChanges();
+        }
     }
 }

@@ -3,25 +3,29 @@ using System.Collections.Generic;
 
 namespace ASI.Basecode.Data.Models
 {
-    /// <summary>
-    /// The table contains the basic user information
-    /// </summary>
     public partial class User
     {
+        public User()
+        {
+            Bookings = new HashSet<Booking>();
+        }
+
         public int Id { get; set; }
-        public string UserId { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
-        /// <summary>
-        /// Role Id
-        /// </summary>
-        /// <value>
-        /// The identifier determined the user's role (0-Admin, 1-User, etc.).
-        /// </value>
-        public string RoleId { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string UpdatedBy { get; set; }
-        public DateTime UpdatedTime { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public bool Deleted { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string TemporaryPassword { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string Email { get; set; }
+        public int UserRole { get; set; }
+        public string Remarks { get; set; }
+
+        public virtual Role UserRoleNavigation { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; }
     }
 }

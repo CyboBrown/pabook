@@ -1,16 +1,15 @@
-﻿using System;
+﻿using ASI.Basecode.Data.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ASI.Basecode.Data.Models
+namespace ASI.Basecode.Services.ServiceModels
 {
-    public partial class Booking
+    public class BookingViewModel
     {
         public int Id { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string UpdatedBy { get; set; }
-        public DateTime UpdatedDate { get; set; }
-        public bool Deleted { get; set; }
         public bool Cancelled { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -20,9 +19,5 @@ namespace ASI.Basecode.Data.Models
         public bool Recurring { get; set; }
         public int UserId { get; set; }
         public int RoomId { get; set; }
-
-        public virtual Room Room { get; set; }
-        public virtual User User { get; set; }
-        public virtual Recurrence Recurrence { get; set; }
     }
 }

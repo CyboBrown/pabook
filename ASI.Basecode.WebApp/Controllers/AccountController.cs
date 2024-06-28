@@ -85,28 +85,28 @@ namespace ASI.Basecode.WebApp.Controllers
 
             //User user = null;
 
-            User user = new() { Id = 0, UserId = "0", Name = "Name", Password = "Password" };
+            User user = new() { Id = 0, Email = "itmonmaisog@asi-dev2.com", FirstName = "Itmon", LastName = "Maisog", Password = "Password" };
             
             await this._signInManager.SignInAsync(user);
-            this._session.SetString("UserName", model.UserId);
+            this._session.SetString("UserName", model.UserName);
 
             return RedirectToAction("Index", "Home");
 
-            /*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
+            var loginResult = _userService.Authenticate(model.UserName, model.Password, ref user);
             if (loginResult == LoginResult.Success)
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
+                this._session.SetString("UserName", user.UserName);
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 // 認証NG
-                TempData["ErrorMessage"] = "Incorrect UserId or Password";
+                TempData["ErrorMessage"] = "Incorrect Username or Password";
                 return View();
             }
-            return View();*/
+            return View();
         }
 
         [HttpGet]
@@ -122,7 +122,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                _userService.AddUser(model);
+                _userService.Add(model);
                 return RedirectToAction("Login", "Account");
             }
             catch(InvalidDataException ex)
