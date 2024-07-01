@@ -24,15 +24,25 @@ namespace ASI.Basecode.Services.Services
             _userRepository = repository;
         }
 
-        public LoginResult Authenticate(string email, string password, ref User user)
+        public LoginResult Authenticate(string username, string password, out User user)
         {
-            Console.WriteLine(" > UserService: Authenticate");
-            user = new User();
-            var passwordKey = PasswordManager.EncryptPassword(password);
-            user = _userRepository.GetUsers().Where(x => x.Email == email &&
-                                                     x.Password == passwordKey).FirstOrDefault();
+            user = _userRepository.GetUsers().FirstOrDefault(u => u.UserName == username && !u.Deleted);
 
-            return user != null ? LoginResult.Success : LoginResult.Failed;
+            if (user == null)
+            {
+                Console.WriteLine($"User not found: {username}");
+                return LoginResult.Failed;
+            }
+
+            // Use your PasswordManager to verify the password
+            if (!PasswordManager.VerifyPassword(password, user.Password))
+            {
+                Console.WriteLine($"Invalid password for user: {username}");
+                return LoginResult.Failed;
+            }
+
+            Console.WriteLine($"Authentication successful for user: {username}, Role: {user.UserRole}");
+            return LoginResult.Success;
         }
 
         public void Add(UserViewModel model)

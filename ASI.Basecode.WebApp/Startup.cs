@@ -4,6 +4,7 @@ using ASI.Basecode.Services.Manager;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Extensions.Configuration;
 using ASI.Basecode.WebApp.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -95,7 +96,7 @@ namespace ASI.Basecode.WebApp
 
             //Configuration
             services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
-            
+
             // Session
             services.AddSession(options =>
             {
@@ -116,17 +117,34 @@ namespace ASI.Basecode.WebApp
                 options.ValueLengthLimit = 1024 * 1024 * 100;
             });
 
+            services.AddScoped<SignInManager>();
+
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/SignOutUser";
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+            });
+
         }
 
-        /// <summary>
-        /// Configure application
-        /// </summary>
-        /// <param name="app"></param>
-        /// <param name="env"></param>
-        public void ConfigureApp(IApplicationBuilder app, IWebHostEnvironment env)
+
+            /// <summary>
+            /// Configure application
+            /// </summary>
+            /// <param name="app"></param>
+            /// <param name="env"></param>
+            public void ConfigureApp(IApplicationBuilder app, IWebHostEnvironment env)
         {
             this._app = app;
             this._environment = env;
@@ -149,6 +167,9 @@ namespace ASI.Basecode.WebApp
 
             this._app.UseSession();
             this._app.UseRouting();
+
+            this._app.UseAuthentication();
+            this._app.UseAuthorization();
 
             this._app.UseAuthentication();
             this._app.UseAuthorization();

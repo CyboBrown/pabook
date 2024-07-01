@@ -14,7 +14,8 @@
 <body>
     @Html.Partial("_Header")
     @{
-        var isAdmin = Context.Session.GetString("UserRole") == "Admin";
+        var userRole = Context.Session.GetString("UserRole");
+        var isAdmin = userRole == "0"; // Assuming 0 is the role ID for Admin
         var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
         (ViewContext.RouteData.Values["Action"].ToString() == "Login" ||
         ViewContext.RouteData.Values["Action"].ToString() == "Register");
