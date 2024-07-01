@@ -61,7 +61,7 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ©2023 Alliance Software Inc. All rights reserved..
+        ///   Looks up a localized string similar to ©2024 Alliance Software Inc. All rights reserved..
         /// </summary>
         public static string Copyright {
             get {
@@ -115,11 +115,11 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserId.
+        ///   Looks up a localized string similar to Username.
         /// </summary>
-        public static string UserId {
+        public static string UserName {
             get {
-                return ResourceManager.GetString("UserId", resourceCulture);
+                return ResourceManager.GetString("UserName", resourceCulture);
             }
         }
     }

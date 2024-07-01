@@ -86,60 +86,27 @@ namespace ASI.Basecode.WebApp.Controllers
 
             //User user = null;
 
-            User user = new() { Id = 0, UserId = "0", Name = "Name", Password = "Password" };
+            User user = new() { Id = 0, Email = "itmonmaisog@asi-dev2.com", FirstName = "Itmon", LastName = "Maisog", Password = "Password" };
             
             await this._signInManager.SignInAsync(user);
-            this._session.SetString("UserName", model.UserId);
+            this._session.SetString("UserName", model.UserName);
 
             return RedirectToAction("Index", "Home");
 
-            *//*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
+            var loginResult = _userService.Authenticate(model.UserName, model.Password, ref user);
             if (loginResult == LoginResult.Success)
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
+                this._session.SetString("UserName", user.UserName);
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 // 認証NG
-                TempData["ErrorMessage"] = "Incorrect UserId or Password";
+                TempData["ErrorMessage"] = "Incorrect Username or Password";
                 return View();
             }
-            return View();*//*
-        }*/
-
-        //the code above being commented is the original login logic of basecode. The code below this comment is the temporary solution for login para mapasok si admin
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
-        {
-            this._session.SetString("HasSession", "Exist");
-
-            // Temporary login logic
-            if (model.UserId == AdminUserId && model.Password == "adminpass")
-            {
-                // Admin login
-                User user = new() { Id = 1, UserId = AdminUserId, Name = "Admin User", Password = "adminpass" };
-                await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
-                this._session.SetString("UserRole", "Admin");
-                return RedirectToAction("Index", "Admin");
-            }
-            else if (!string.IsNullOrEmpty(model.UserId) && !string.IsNullOrEmpty(model.Password))
-            {
-                // Regular user login
-                User user = new() { Id = 2, UserId = model.UserId, Name = model.UserId, Password = model.Password };
-                await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
-                this._session.SetString("UserRole", "User");
-                return RedirectToAction("Index", "Home");
-            }
-
-            // Invalid login
-            TempData["ErrorMessage"] = "Incorrect UserId or Password";
             return View();
         }
 
@@ -156,7 +123,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                _userService.AddUser(model);
+                _userService.Add(model);
                 return RedirectToAction("Login", "Account");
             }
             catch(InvalidDataException ex)
