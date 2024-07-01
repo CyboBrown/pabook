@@ -90,7 +90,7 @@ namespace ASI.Basecode.WebApp.Controllers
             await this._signInManager.SignInAsync(user);
             this._session.SetString("UserName", model.UserName);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Users");
 
             var loginResult = _userService.Authenticate(model.UserName, model.Password, ref user);
             if (loginResult == LoginResult.Success)
@@ -98,7 +98,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
                 this._session.SetString("UserName", user.UserName);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Users");
             }
             else
             {

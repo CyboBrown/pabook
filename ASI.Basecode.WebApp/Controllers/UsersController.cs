@@ -10,7 +10,7 @@ namespace ASI.Basecode.WebApp.Controllers
     /// <summary>
     /// Home Controller
     /// </summary>
-    public class HomeController : ControllerBase<HomeController>
+    public class UsersController : ControllerBase<UsersController>
     {
         /// <summary>
         /// Constructor
@@ -20,7 +20,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="configuration"></param>
         /// <param name="localizer"></param>
         /// <param name="mapper"></param>
-        public HomeController(IHttpContextAccessor httpContextAccessor,
+        public UsersController(IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
@@ -31,8 +31,20 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <summary>
         /// Returns Home View.
         /// </summary>
-        /// <returns> Home View </returns>
+        /// <returns> Users View </returns>
         public IActionResult Index()
+        {
+            return View();
+        }
+        public IActionResult ViewBookings()
+        {
+            return View();
+        }
+        public IActionResult Calendar()
+        {
+            return View();
+        }
+        public IActionResult UserSettings()
         {
             return View();
         }

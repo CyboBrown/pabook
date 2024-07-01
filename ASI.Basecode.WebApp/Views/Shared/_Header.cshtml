@@ -1,10 +1,10 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@* @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 <header class="@((ViewBag.LoginView == true) ? "hide-navbar" : "")">
     <div class="logosec hover-pointer">
         <img src="~/img/asi-logo-invert.svg"
              style="width: 185px;" alt="logo"
-             onclick="window.location.href = '@Url.Action("Index", "Home")';">
+             onclick="window.location.href = '@Url.Action("Index", "Users")';">
     </div>
     <a asp-action="Index" asp-controller="Room">Rooms</a>
     <div class="logosec">
@@ -29,4 +29,4 @@
             </div>
         </div>
     </div>
-</header>
+</header> *@
