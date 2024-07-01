@@ -76,7 +76,7 @@ namespace ASI.Basecode.Data
             modelBuilder.Entity<Recurrence>(entity =>
             {
                 entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AED12F00437");
+                    .HasName("PK__Recurren__73951AED61560D89");
 
                 entity.ToTable("Recurrence");
 

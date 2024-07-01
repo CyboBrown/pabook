@@ -93,6 +93,19 @@ namespace ASI.Basecode.Services.Manager
                 }
             }
         }
+        public static bool VerifyPassword(string inputPassword, string storedPassword)
+        {
+            try
+            {
+                string decryptedPassword = DecryptPassword(storedPassword);
+                return inputPassword == decryptedPassword;
+            }
+            catch (FormatException)
+            {
+                // If decryption fails, compare the input directly with the stored password
+                return inputPassword == storedPassword;
+            }
+        }
 
     }
 }

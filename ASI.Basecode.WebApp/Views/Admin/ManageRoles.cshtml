@@ -14,8 +14,15 @@
          @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background-color: #000;
         }
 
         .outer-container {
@@ -23,17 +30,12 @@
             padding: 20px;
             border-radius: 20px;
             display: flex;
-            flex-direction: row;
-            height: 100vh;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+            width: calc(150vh - 10px);
+            box-sizing: border-box;
             justify-content: center;
             align-items: center;
-            height: calc(100vh - 40px);
-            width: 105%;
-            margin: 0 auto;
-            max-width: 105%;
-            position: relative;
-            overflow: hidden;
-            top: 20px;
         }
 
         .main-content {
@@ -43,10 +45,8 @@
             color: #fff;
             border-radius: 10px;
             width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            top: -5px;
+            box-sizing: border-box;
+            flex-grow: 1;
         }
 
         h1 {

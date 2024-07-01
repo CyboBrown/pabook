@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using static ASI.Basecode.Resources.Constants.Enums;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ASI.Basecode.WebApp.Authentication
 {
@@ -39,7 +40,6 @@ namespace ASI.Basecode.WebApp.Authentication
         /// Initializes a new instance of the SignInManager class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="accountService">The account service.</param>
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public SignInManager(IConfiguration configuration,
                              IHttpContextAccessor httpContextAccessor)
@@ -60,7 +60,7 @@ namespace ASI.Basecode.WebApp.Authentication
             ClaimsIdentity claimsIdentity = null;
             User userData = new User();
 
-            user.loginResult = LoginResult.Success;//TODO this._accountService.AuthenticateUser(username, password, ref userData);
+            user.loginResult = LoginResult.Success; //TODO this._accountService.AuthenticateUser(username, password, ref userData);
 
             if (user.loginResult == LoginResult.Failed)
             {
@@ -80,14 +80,12 @@ namespace ASI.Basecode.WebApp.Authentication
         public ClaimsIdentity CreateClaimsIdentity(User user)
         {
             var token = _configuration.GetTokenAuthentication();
-            //TODO
             var claims = new List<Claim>()
             {
-                //new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String, Const.Issuer),
                 new Claim(ClaimTypes.Email, user.Email, ClaimValueTypes.String, Const.Issuer),
-
-                //new Claim("UserCode", user.Id.ToString(), ClaimValueTypes.String, Const.Issuer),
-                new Claim("UserName", user.Email, ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.Name, user.UserName, ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.Role, user.UserRole == 0 ? "Admin" : "User", ClaimValueTypes.String, Const.Issuer)
             };
             return new ClaimsIdentity(claims, Const.AuthenticationScheme);
         }
@@ -99,8 +97,7 @@ namespace ASI.Basecode.WebApp.Authentication
         /// <returns>Created claims principal</returns>
         public IPrincipal CreateClaimsPrincipal(ClaimsIdentity identity)
         {
-            var identities = new List<ClaimsIdentity>();
-            identities.Add(identity);
+            var identities = new List<ClaimsIdentity> { identity };
             return this.CreateClaimsPrincipal(identities);
         }
 
@@ -120,13 +117,28 @@ namespace ASI.Basecode.WebApp.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="isPersistent">if set to <c>true</c> [is persistent].</param>
-        public async Task SignInAsync(User user, bool isPersistent = false)
+        public async Task SignInAsync(User user)
         {
-            var claimsIdentity = this.CreateClaimsIdentity(user);
-            var principal = this.CreateClaimsPrincipal(claimsIdentity);
-            await this.SignInAsync(principal, isPersistent);
-        }
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Role, user.UserRole == 0 ? "Admin" : "User")
+    };
 
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            };
+
+            await _httpContextAccessor.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
+
+            Console.WriteLine($"User signed in: {user.UserName}, Role: {user.UserRole}");
+        }
         /// <summary>
         /// Signs in user asynchronously
         /// </summary>
@@ -153,7 +165,6 @@ namespace ASI.Basecode.WebApp.Authentication
         /// </summary>
         public async Task SignOutAsync()
         {
-            var token = _configuration.GetTokenAuthentication();
             await _httpContextAccessor.HttpContext.SignOutAsync(Const.AuthenticationScheme);
         }
     }
