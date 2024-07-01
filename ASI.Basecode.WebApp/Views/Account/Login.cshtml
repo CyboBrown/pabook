@@ -2,6 +2,120 @@
 @using static ASI.Basecode.Resources.Views.Screen
 @section styles {
     <link rel="stylesheet" href="~/css/login.css" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background-image: url('/img/green-waves.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #144e52;
+        }
+
+        .container-fluid {
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .card {
+            background-color: transparent;
+            color: #144e52;
+            margin-bottom: 0;
+            border: none;
+            overflow: hidden;
+            border-radius: 30px;
+        }
+
+            .card .row {
+                overflow: hidden;
+                border-radius: 30px;
+            }
+
+            .card .col-lg-7 {
+                padding: 0;
+            }
+
+                .card .col-lg-7 img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-top-left-radius: 30px;
+                    border-bottom-left-radius: 30px;
+                }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .form-control {
+            background-color: rgba(20, 78, 82, 0.1);
+            color: #144e52;
+            border-color: rgba(20, 78, 82, 0.2);
+            border-radius: 8px;
+        }
+
+            .form-control::placeholder {
+                color: rgba(20, 78, 82, 0.7);
+            }
+
+        .login-form-column {
+            padding: 2rem;
+            background-color: white;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+        .btn-login {
+            background-color: #144e52;
+            color: white;
+            border: 2px solid #144e52;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+            .btn-login:hover {
+                background-color: #1bc7d2;
+                color: white;
+                border-color: #1bc7d2;
+            }
+
+        .pabook-message {
+            font-size: 6rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 54%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .login-header {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-header-main {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #144e52;
+            margin-bottom: 0.25rem;
+        }
+
+        .login-header-sub {
+            font-size: 1.2rem;
+            color: #144e52;
+        }
+    </style>
 }
 @{
     ViewBag.LoginView = true;
@@ -10,47 +124,47 @@
 <div>
     @Html.AntiForgeryToken()
 </div>
-<div class="container py-5" style="display:flex; align-content:center;height:calc(100vh - 64px)">
-    <div class="row d-flex justify-content-center align-items-center h-100">
+<div class="container-fluid py-5 d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="row justify-content-center align-items-center w-100">
         <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-                <div class="row g-0 w-1000px">
-                    <div class="col-lg-6">
-                        <div class="card-body p-md-5 mx-md-4">
-                            <div class="text-center">
-                                <img src="~/img/asi-logo-invert.svg"
-                                     style="width: 185px;" alt="logo">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-lg-7 d-flex align-items-center justify-content-center position-relative">
+                        <img style="max-width:100%; height:600px;" src="~/img/pabook na-bg-2.png" alt="Pabook Na" />
+                        <div class="pabook-message">
+                            Bla<br>Bla!
+                        </div>
+                    </div>
+                    <div class="col-lg-5 login-form-column">
+                        <div class="card-body p-3">
+                            <div class="text-center mb-4">
+                                <img src="~/img/pabook-bg.png"
+                                     style="width: 150px;" alt="logo">
+                            </div>
+                            <div class="login-header">
+                                <div class="login-header-main">Hi!</div>
+                                <div class="login-header-sub">Welcome to PaBook</div>
                             </div>
                             <form method="post" action="/Account/Login" id="loginForm">
-                                <div class="form-outline mb-4">
-                                    <label class="form-label" for="form2Example11">@UserName</label>
+                                <div class="form-outline mb-3">
+                                    <label class="form-label" for="form2Example11">Email</label>
                                     <input type="text" id="form2Example11" class="form-control"
-                                           asp-for="UserName" placeholder="Enter username" />
+                                           asp-for="UserName" placeholder="Enter email" />
                                     <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
-                                <div class="form-outline mb-4">
+                                <div class="form-outline mb-3">
                                     <label class="form-label" for="form2Example22">@Password</label>
                                     <input type="password" id="form2Example22" class="form-control"
                                            asp-for="Password" placeholder="Enter password" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
-                                <div class="text-center pt-1 mb-5 pb-1 d-flex flex-column align-items-center">
-                                    <button class="btn btn-primary btn-block login-btn gradient-custom-2 mb-3" type="submit">
+                                <div class="text-center pt-1 mb-4 d-flex flex-column align-items-center">
+                                    <button class="btn btn-login mb-2" type="submit">
                                         @Login
                                     </button>
-                                    <div>
-                                        <a class="text-muted" href="#!">@ForgotPass</a>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center pb-4">
-                                    <p class="mb-0 me-2 mr-1">@DontHaveAcc</p>
-                                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-danger">@CreateNew</a>
                                 </div>
                             </form>
                         </div>
-                    </div>
-                    <div class="col-lg-6 d-flex">
-                        <img style="width:400px"src="~/img/LiveIT.png" />
                     </div>
                 </div>
             </div>
