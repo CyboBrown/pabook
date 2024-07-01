@@ -1,4 +1,4 @@
-﻿@{
+﻿@*@{
     ViewData["Title"] = "Admin Home Page";
 }
 <div class="outer-container">
@@ -12,7 +12,7 @@
     <style>
 
         @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
-        body {
+        @*body {
             margin: 0;
             font-family: Arial, sans-serif;
         }
@@ -59,4 +59,17 @@
          <!--Add dri code sa imong css styles sa imong admin home nga code-->
 
     </style>
+}*@
+
+@{
+    ViewData["Title"] = "Admin Page";
 }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="outer-container">
+    <div class="main-content">
+        <div class="text-center">
+            <h1 class="display-4">Welcome</h1>
+            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core ADMIN</a>.</p>
+        </div>
+    </div>
+</div>

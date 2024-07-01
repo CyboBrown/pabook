@@ -1,0 +1,83 @@
+﻿@model ASI.Basecode.Services.ServiceModels.RoomManagementViewModel
+@{
+    
+}
+
+<div class="add-container">
+    <div class="modal-create">
+        <h1>Create Room</h1>
+        <form asp-action="PostCreate">
+            <div class="form-group">
+                <label asp-for="RoomName"></label>
+                <input asp-for="RoomName" class="form-control" />
+                <span asp-validation-for="RoomName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RoomCode"></label>
+                <input asp-for="RoomCode" class="form-control" />
+                <span asp-validation-for="RoomCode" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RoomType"></label>
+                <input asp-for="RoomType" class="form-control" />
+                <span asp-validation-for="RoomType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RoomLocation"></label>
+                <select asp-for="RoomLocation" class="form-control">
+                    <option value="10th Floor">10th Floor</option>
+                    <option value="11th Floor">11th Floor</option>
+                    <option value="14th Floor">14th Floor</option>
+                </select>
+                <span asp-validation-for="RoomLocation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RoomCapacity"></label>
+                <input asp-for="RoomCapacity" class="form-control" />
+                <span asp-validation-for="RoomCapacity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="HasEquipments"></label>
+                <select asp-for="HasEquipments" class="form-control">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <span asp-validation-for="HasEquipments" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Room</button>
+            <div>
+                <a asp-action="RoomManagement">Back to List</a>
+            </div>
+        </form>
+    </div>
+    
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        toastr.options = {
+            positionClass: "toast-top-center", // Set the notification position to center
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true
+        };
+
+        var duplicateErr = '@TempData["DuplicateErr"]';
+       
+        if (duplicateErr) {
+            toastr.error(duplicateErr);
+        }
+    </script>
+
+    }
+

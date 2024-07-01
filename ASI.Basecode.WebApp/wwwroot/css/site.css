@@ -17,7 +17,8 @@ html {
     min-height: 100%;
 }
 
-body {
+body .outer-container {
+    background-color: #fff;
     margin-bottom: 60px;
 }
 

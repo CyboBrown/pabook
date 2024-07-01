@@ -9,10 +9,20 @@
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Include adminsidebar.css only if user is admin -->
+    @if (Context.Session.GetString("UserRole") == "Admin")
+    {
+        <link rel="stylesheet" href="~/css/adminsidebar.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    }
+
     @RenderSection("Styles", required: false)
 </head>
 <body>
     @Html.Partial("_Header")
+
     @{
         var isAdmin = Context.Session.GetString("UserRole") == "Admin";
         var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
@@ -22,7 +32,7 @@
 
     @if (!isLoginOrRegister)
     {
-        if (isAdmin)
+        @if (isAdmin)
         {
             @Html.Partial("_AdminSidebar")
         }
@@ -38,6 +48,88 @@
         </main>
     </div>
 
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
+    <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    -->
+    <!-- Toastr Configuration -->
+    <script>
+        toastr.options = {
+            positionClass: "toast-top-center",
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true
+        };       
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+<!--Incase mao ni ang original-->
+@*<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/style.css" />  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    @Html.Partial("_Header")
+    @{
+        
+        var isAdmin = Context.Session.GetString("UserRole") == "Admin";
+        var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
+        (ViewContext.RouteData.Values["Action"].ToString() == "Login" ||
+        ViewContext.RouteData.Values["Action"].ToString() == "Register");
+    }
+
+    @if (!isLoginOrRegister)
+    {
+        if (isAdmin)
+        {
+            <head>
+               
+                <link rel="stylesheet" href="~/css/adminsidebar.css" />
+            </head>
+            @Html.Partial("_AdminSidebar")
+            <script src="~/js/adminsidebar.js"></script>
+        }
+        else
+        {
+            @Html.Partial("_UserSidebar")
+        }
+    }
+
+    <div class="container" style="@(isLoginOrRegister ? "margin-left: 0;" : "margin-left: 250px;")">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/js/adminsidebar.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -46,15 +138,32 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
     <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Toastr Configuration -->
     <script>
-        // Configure Toastr options
         toastr.options = {
-            positionClass: "toast-top-center", // Set the notification position to center
-            timeOut: 3000,
+            positionClass: "toast-top-center",
+            timeOut: 5000,
             closeButton: true,
             progressBar: true
         };
+
+        var successMessage = '@TempData["SuccessMessage"]';
+        var addedRoom = '@TempData["AddedRoom"]';
+        var successDeletion = '@TempData["SuccessDeletion"]';
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+        if (addedRoom) {
+            toastr.success(addedRoom);
+        }
+        if (successDeletion) {
+            toastr.success(successDeletion);
+        }
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+*@

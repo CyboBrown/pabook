@@ -1,0 +1,190 @@
+﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomManagementViewModel>
+@{
+    ViewData["Title"] = "Room Management";
+}
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="outer-container">
+    <div class="main-content">
+        <div class="head-title">
+            <div class="left">
+                <h1>Room Management</h1>
+            </div>
+        </div>
+
+        <div class="floor-buttons">
+            <button onclick="showRoomDetails('floor10')">
+                <i class='bx bxs-group'></i>
+                <span>10th Floor</span>
+            </button>
+            <button onclick="showRoomDetails('floor11')">
+                <i class='bx bxs-group'></i>
+                <span>11th Floor</span>
+            </button>
+            <button onclick="showRoomDetails('floor14')">
+                <i class='bx bxs-group'></i>
+                <span>14th Floor</span>
+            </button>
+        </div>
+
+        <div class="table-data">
+            <div class="order">
+                <div class="head">
+                    <h3>Room Details</h3>
+
+                    <div class="add-room">
+                        <a href="@Url.Action("CreateRoom", "Admin")" class="btn btn-success">
+                            <i class='bx bx-plus'></i> Add
+                        </a>
+                    </div>
+
+                    <div class="view-room">
+                        <button id="detailsButton" class="btn btn-info btn-sm">
+                            <i class='bx bx-info-circle'></i> Details
+                        </button>
+                    </div>
+                    <div class="edit-room">
+                        <button id="editButton" class="btn btn-warning btn-sm">
+                            <i class='bx bx-edit'></i> Edit
+                        </button>
+                    </div>
+
+                    <div class="delete-room">
+                        
+                            <button id="deleteButton" class="btn btn-danger btn-sm" onclick="showDeleteModal()">Delete</button>
+                           
+                    </div>
+
+                    <button class="btn btn-secondary btn-sm" onclick="refreshPage()">
+                        <i class='bx bx-refresh'></i> Refresh
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Equipments</th>
+                            <th>Location</th>
+                            <th>Capacity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="room-details-body">
+                        @foreach (var room in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="radio" name="selectedRoom" value="@room.RoomId" />
+                                </td>
+                                <td>@room.RoomId</td>
+                                <td>@room.RoomType</td>
+                                <td>@room.RoomCode</td>
+                                <td>@room.RoomName</td>
+                                <td>@room.HasEquipments</td>
+                                <td>@room.RoomLocation</td>
+                                <td>@room.RoomCapacity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Cancel Reservation?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel this one?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="deleteForm" asp-action="PostDelete" method="post" style="display:none;">
+    <input type="hidden" id="RoomIdToDelete" name="RoomId" value="" />
+</form>
+
+
+
+@section Scripts {
+   <script>
+        toastr.options = {
+            positionClass: "toast-top-center",
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true
+        };
+
+        var successMessage = '@TempData["SuccessMessage"]';
+        var addedRoom = '@TempData["AddedRoom"]';
+        var successDeletion = '@TempData["SuccessDeletion"]';
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+        if (addedRoom) {
+            toastr.success(addedRoom);
+        }
+        if (successDeletion) {
+            toastr.success(successDeletion);
+        }
+
+        document.getElementById('detailsButton').addEventListener('click', function () {
+            var selected = document.querySelector('input[name="selectedRoom"]:checked');
+            if (selected) {
+                var roomId = selected.value;
+                window.location.href = '@Url.Action("Details", "Admin")' + '?RoomId=' + roomId;
+            } else {
+                alert('Please select a room.');
+            }
+        });
+
+        document.getElementById('editButton').addEventListener('click', function () {
+            var selected = document.querySelector('input[name="selectedRoom"]:checked');
+            if (selected) {
+                var roomId = selected.value;
+                window.location.href = '@Url.Action("Edit", "Admin")' + '?RoomId=' + roomId;
+            } else {
+                alert('Please select a room.');
+            }
+        });
+
+        function showDeleteModal() {
+            var selected = document.querySelector('input[name="selectedRoom"]:checked');
+            if (selected) {
+                var roomId = selected.value;
+                document.getElementById('RoomIdToDelete').value = roomId;
+                $('#deleteModal').modal('show');
+            } else {
+                alert('Please select a room.');
+            }
+        }
+
+
+        function confirmDelete() {
+            document.getElementById('deleteForm').submit();
+        }
+
+
+        function refreshPage() {
+            location.reload();
+        }
+    </script>
+}
+
