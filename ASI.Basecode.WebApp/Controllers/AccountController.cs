@@ -152,7 +152,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Register(UserViewModel model)
+        public IActionResult Register(Services.ServiceModels.UserViewModel model)
         {
             try
             {

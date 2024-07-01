@@ -53,6 +53,10 @@ namespace ASI.Basecode.Data
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.RoleId)
+                    .IsRequired()
+                    .HasConversion<int>();
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -18,10 +18,18 @@ namespace ASI.Basecode.Data.Models
         /// <value>
         /// The identifier determined the user's role (0-Admin, 1-User, etc.).
         /// </value>
-        public string RoleId { get; set; }
+        public UserRole RoleId { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedTime { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime UpdatedTime { get; set; }
+    }
+
+    public enum UserRole
+    {
+        Admin = 0,
+        Manager = 1,
+        User = 2,
+
     }
 }
