@@ -35,7 +35,7 @@ namespace ASI.Basecode.Services.Services
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 
-        public void Add(UserViewModel model)
+        public void AddUser(UserViewModel model)
         {
             Console.WriteLine(" > UserService: Add");
             var user = new User();
@@ -56,7 +56,7 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public IEnumerable<UserViewModel> GetAll(int? id = null, string username = null, string firstname = null, string lastname = null)
+        public IEnumerable<UserViewModel> GetAllUser(int? id = null, string username = null, string firstname = null, string lastname = null)
         {
             Console.WriteLine(" > UserService: GetAll");
             var data = _userRepository.GetUsers()
@@ -77,7 +77,7 @@ namespace ASI.Basecode.Services.Services
             return data;
         }
 
-        public void Update(UserViewModel model)
+        public void UpdateUser(UserViewModel model)
         {
             Console.WriteLine(" > UserService: Update");
             var existingData = _userRepository.GetUsers().Where(s => s.UserName == model.UserName).FirstOrDefault();
@@ -87,7 +87,7 @@ namespace ASI.Basecode.Services.Services
             _userRepository.UpdateUser(existingData);
         }
 
-        public void Delete(int id)
+        public void DeleteUser(int id)
         {
             Console.WriteLine(" > UserService: Delete");
             _userRepository.DeleteUser(id);

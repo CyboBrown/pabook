@@ -71,6 +71,8 @@ namespace ASI.Basecode.WebApp.Controllers
             this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
             return this.View();
         }
+    }
+}
 
         /// <summary>
         /// Authenticate user and signs the user in when successful.
@@ -161,3 +163,4 @@ namespace ASI.Basecode.WebApp.Controllers
         }
     }
 }
+        */

@@ -38,7 +38,6 @@
     <Content Remove="Views\Shared\Component.razor" />
     <Content Remove="Views\Shared\Index.cshtml" />
     <Content Remove="Views\Shared\Index1.cshtml" />
-    <Content Remove="Views\Users\EditView.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -83,14 +82,5 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Shared\Calendar.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Users\EditView.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Users\EditView.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Views\Users\EditView.cshtml" />
   </ItemGroup>
 </Project>

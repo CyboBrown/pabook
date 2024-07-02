@@ -11,16 +11,6 @@ namespace ASI.Basecode.Data.Models
         }
 
         public int Id { get; set; }
-        public string UserId { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
-        /// <summary>
-        /// Role Id
-        /// </summary>
-        /// <value>
-        /// The identifier determined the user's role (0-Admin, 1-User, etc.).
-        /// </value>
-        public string RoleId { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public string UpdatedBy { get; set; }
@@ -37,13 +27,5 @@ namespace ASI.Basecode.Data.Models
 
         public virtual Role UserRoleNavigation { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
-    }
-
-    public enum UserRole
-    {
-        Admin = 0,
-        Manager = 1,
-        User = 2,
-
     }
 }

@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model UserViewModel
+﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.UserViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,13 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(Model => Model.UserId)
+                @Html.DisplayNameFor(Model => Model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(Model => Model.Name)
+                @Html.DisplayNameFor(Model => Model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(Model => Model.RoleId)
+                @Html.DisplayNameFor(Model => Model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(Model => Model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(Model => Model.Password)
             </th>
             <th></th>
         </tr>
@@ -32,18 +35,24 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
+                    @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RoleId)
+                    @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asproute-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asproute-idd="@item.Id">Delete</a>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Password)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { UserName = item.UserName }) |
+                    @Html.ActionLink("Details", "Details", new { UserName = item.UserName }) |
+                    @Html.ActionLink("Delete", "Delete", new { UserName = item.UserName })
                 </td>
             </tr>
         }

@@ -18,6 +18,25 @@ namespace ASI.Basecode.Data.Models
         public bool Deleted { get; set; }
         public string Name { get; set; }
 
+        public static readonly Dictionary<int, string> RoleMappings = new Dictionary<int, string>
+        {
+            { 0, "Admin" },
+            { 1, "Manager" },
+            { 2, "User" },
+        };
+
+        public string UserRole
+        {
+            get
+            {
+                if (RoleMappings.TryGetValue(Id, out string roleName))
+                {
+                    return roleName;
+                }
+                return "Unknown";
+            }
+        }
+
         public virtual ICollection<User> Users { get; set; }
     }
 }
