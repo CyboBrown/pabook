@@ -71,16 +71,4 @@
     <ProjectReference Include="..\ASI.Basecode.Resources\ASI.Basecode.Resources.csproj" />
     <ProjectReference Include="..\ASI.Basecode.Services\ASI.Basecode.Services.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Shared\Calendar.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Shared\Calendar.cshtml" />
-  </ItemGroup>
 </Project>
