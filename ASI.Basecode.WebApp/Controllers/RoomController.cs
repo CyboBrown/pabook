@@ -1,4 +1,5 @@
-﻿using ASI.Basecode.Services.Interfaces;
+﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
@@ -83,7 +84,16 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult PostCreate(RoomViewModel model)
         {
             Console.WriteLine("Passed Controller Post Create");
+            bool isDuplicate = _roomService.GetAll().Any(data => data.Location == model.Location && data.Name == model.Name);
+            if (isDuplicate)
+            {
+                TempData["DuplicateErr"] = "Room Already Exists";
+                return RedirectToAction("Create", model);
+            }
+
+
             _roomService.Add(model);
+            TempData["SuccessMessage"] = "Added Successfuly!"; _roomService.Add(model);
             return RedirectToAction("Index");
         }
 
@@ -97,7 +107,16 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {
-            _roomService.Delete(Id);
+           
+            try
+            {
+                _roomService.Delete(Id);
+                TempData["SuccessMessage"] = "Room Deleted Successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting room: {ex.Message}";
+            }
             return RedirectToAction("Index");
         }
         #endregion

@@ -37,6 +37,7 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+
         /// <summary>
         /// Returns Admin Analytics View.
         /// </summary>

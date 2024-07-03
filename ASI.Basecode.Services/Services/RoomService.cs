@@ -40,6 +40,8 @@ namespace ASI.Basecode.Services.Services
                 Type = s.Type,
                 Location = s.Location,
                 Facilities = s.Facilities,
+               /*RoomCode = s.RoomCode,
+                HasEquipments = s.HasEquipments,*/
             });
             return data;
         }

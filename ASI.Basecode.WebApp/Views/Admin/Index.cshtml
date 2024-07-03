@@ -1,18 +1,61 @@
-﻿@{
+﻿@model ASI.Basecode.Services.ServiceModels.RoomViewModel
+@{
     ViewData["Title"] = "Admin Home Page";
 }
+
 <div class="outer-container">
     <div class="main-content">
-        <h1>Admin Home</h1>
-        <!--I add dri admin home code for later -->
+        <div class="mytabs">
+            <input type="radio" id="tabfree" name="mytabs" checked="checked">
+            <label for="tabfree">Bookings</label>
+            <div class="tab">
+              <h2>Bookings</h2>
+              <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>
+                
+              
+            </div>
+
+            <input type="radio" id="tabsilver" name="mytabs">
+            <label for="tabsilver">User</label>
+            <div class="tab">
+              <h2>User</h2>
+              <p>DRI INYONG INPUT</p>
+            </div>
+
+            <input type="radio" id="tabgold" name="mytabs">
+            <label for="tabgold">Room</label>
+            <div class="tab">
+              <h2>Room</h2>
+              <div class="floor-buttons">
+                <button onclick="showRoomDetails('floor10')">
+                    <i class='bx bxs-group'></i>
+                    <span>10th Floor</span>
+                </button>
+                <button onclick="showRoomDetails('floor11')">
+                    <i class='bx bxs-group'></i>
+                    <span>11th Floor</span>
+                </button>
+                <button onclick="showRoomDetails('floor14')">
+                    <i class='bx bxs-group'></i>
+                    <span>14th Floor</span>
+                </button>
+
+              </div>
+
+            </div>
+
+        </div>
     </div>
 </div>
+
+
+
 
 @section Styles {
     <style>
 
-        @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
-         body {
+         @*css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
+        body {
         margin: 0;
         font-family: Arial, sans-serif;
         width: 100%;
@@ -25,16 +68,27 @@
         }
 
         .outer-container {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 40px);
-            width: calc(150vh - 10px);
+            
             box-sizing: border-box;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+            flex-direction: column;
+            width: calc(100% - 215px);
+            height: calc(100%-40px);
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            margin-left: 100px;
+            margin-right: 20px;
+            position: fixed;
+            z-index: 0;
+        }
+
+        .outer-container.expand{           
+            width: calc(100% - 60px);
         }
 
         .main-content {
@@ -47,15 +101,58 @@
             box-sizing: border-box;
             flex-grow: 1;
         }
-
-        h1 {
-            font-size: 36px;
-            font-weight: 500;
-            margin-top: 0;
-            margin-bottom: 30px;
-            letter-spacing: 0.5px;
+        .main-content nav{
+            position: relative;
+            height: 100px;
+            width: calc(100%-300px);
+            padding-left: 20px;
+            padding-right: 20px;
+        }       
+        
+       
+        .mytabs {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 25px;
+            background-color: #185D62;
+            display: flex;
+            justify-content: left;
+            margin-bottom: 20px;
+            
+            margin-left: 0px;
+            padding: 0px;
         }
-         <!--Add dri code sa imong css styles sa imong admin home nga code-->
+        .mytabs input[type="radio"] {
+            display: none;
+        }
+        .mytabs label {
+            padding: 15px;
+            background: #185D62;
+            font-weight: bold;
+            border-bottom: 2px solid #1BC7D2;
+            width: 100px;
+            text-align: center;
+        }
 
-    </style>
+        .mytabs .tab {
+            width: 100%;
+            padding: 20px;
+            background: #185D62;
+            order: 1;
+            display: none;
+        }
+        .mytabs .tab h2 {
+            font-size: 3em;
+        }
+
+        .mytabs input[type='radio']:checked + label + .tab {
+            display: block;
+        }
+
+        .mytabs input[type="radio"]:checked + label {
+            background: #1BC7D2;
+        }
+        
+        
+    </style>  
 }

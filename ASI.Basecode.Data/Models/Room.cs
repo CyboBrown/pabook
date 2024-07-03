@@ -21,6 +21,14 @@ namespace ASI.Basecode.Data.Models
         public int Type { get; set; }
         public string Location { get; set; }
         public string Facilities { get; set; }
+        /*
+        public int RoomId { get; set; }
+
+        public string RoomCode { get; set; }
+
+        public string RoomName { get; set; }
+
+        public string HasEquipments { get; set; }*/
 
         public virtual ICollection<Booking> Bookings { get; set; }
     }
