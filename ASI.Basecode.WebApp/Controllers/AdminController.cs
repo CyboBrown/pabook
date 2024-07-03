@@ -1,10 +1,15 @@
-﻿using ASI.Basecode.WebApp.Mvc;
+﻿using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -14,6 +19,7 @@ namespace ASI.Basecode.WebApp.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase<AdminController>
     {
+        private readonly IRoomService _roomService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -21,11 +27,12 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="loggerFactory"></param>
         /// <param name="configuration"></param>
         /// <param name="mapper"></param>
-        public AdminController(IHttpContextAccessor httpContextAccessor,
+        public AdminController(IRoomService roomService, IHttpContextAccessor httpContextAccessor,
                                ILoggerFactory loggerFactory,
                                IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
+            _roomService = roomService;
         }
 
         /// <summary>
@@ -34,7 +41,9 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Admin Home View </returns>
         public IActionResult Index()
         {
-            return View();
+            Console.WriteLine("Passed Controller Index");
+            var data = _roomService.GetAll();
+            return View(data);
         }
 
 
