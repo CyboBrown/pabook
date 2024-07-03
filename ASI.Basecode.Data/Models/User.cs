@@ -8,6 +8,7 @@ namespace ASI.Basecode.Data.Models
         public User()
         {
             Bookings = new HashSet<Booking>();
+            Notifications = new HashSet<Notification>();
         }
 
         public int Id { get; set; }
@@ -26,6 +27,8 @@ namespace ASI.Basecode.Data.Models
         public string Remarks { get; set; }
 
         public virtual Role UserRoleNavigation { get; set; }
+        public virtual Preference Preference { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }
