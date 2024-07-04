@@ -6,9 +6,7 @@
 
 <h1>Rooms</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -55,11 +53,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Facilities)
                 </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { Id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { Id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { Id = item.Id })
-                </td>
+                
             </tr>
         }
     </tbody>

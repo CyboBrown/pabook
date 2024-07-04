@@ -101,7 +101,7 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult PostUpdate(RoomViewModel model)
         {
             _roomService.Update(model);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin");
         }
 
         [HttpPost]

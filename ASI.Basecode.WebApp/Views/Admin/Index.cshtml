@@ -82,8 +82,8 @@
                                         <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Location)</td>
                                         <td> @Html.DisplayFor(modelItem => item.Facilities)</td>
-                                        <td>@Html.ActionLink("Edit", "Edit", new { Id = item.Id }) |
-                                            @Html.ActionLink("Details", "Details", new { Id = item.Id }) |                              
+                                        <td>@Html.ActionLink("Edit", "Edit", "Room", new { Id = item.Id }, new { @class = "btn btn-primary btn-sm" }) |
+                                            @Html.ActionLink("Details", "Details", "Room", new { Id = item.Id }, new { @class= "btn btn-privacy btn-sm" }) |                              
                                             <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@item.Id)">Delete</button>
                                         </td>
                                     </tr>

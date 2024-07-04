@@ -8,7 +8,7 @@
         <h1>Create</h1>
         <hr />
         <div class="row">
-            <div class="col-md-4">
+            <div class="inside">
                 <form asp-action="PostCreate">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
@@ -36,7 +36,7 @@
                         <input asp-for="Facilities" class="form-control" />
                         <span asp-validation-for="Facilities" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="buttons">
                         <input type="submit" value="Create" class="btn btn-primary" />
                         <button type="button" id="resetButton">Reset</button>
                     </div>
@@ -52,6 +52,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+
 
     <style>
 
@@ -85,6 +87,7 @@
             margin-left: 100px;
             position: fixed;
             z-index: 0;
+            text-align: center;
         }
 
         .main-content {
@@ -102,12 +105,25 @@
             font-size: 36px;
             font-weight: 500;
             margin-top: 0;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             letter-spacing: 0.5px;
         }
-
-        <!--Add dri code sa imong css styles sa imong report and analytics nga code-->
-
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left; /* Adjust alignment of labels and inputs */
+        }
+        .inside{
+            font-size: 10px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            margin-left: 500px;
+        }
+        
+        
     </style>
 }
+
+
 
