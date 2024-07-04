@@ -18,6 +18,8 @@ namespace ASI.Basecode.Data
         }
 
         public virtual DbSet<Booking> Bookings { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<Preference> Preferences { get; set; }
         public virtual DbSet<Recurrence> Recurrences { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
@@ -73,10 +75,51 @@ namespace ASI.Basecode.Data
                     .HasConstraintName("FK__Booking__UserId__3F466844");
             });
 
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.ToTable("Notification");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(512);
+
+                entity.Property(e => e.NotifyDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(256);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Notificat__UserI__45F365D3");
+            });
+
+            modelBuilder.Entity<Preference>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK__Preferen__1788CC4C94180343");
+
+                entity.Property(e => e.UserId).ValueGeneratedNever();
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.Preference)
+                    .HasForeignKey<Preference>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Preferenc__UserI__48CFD27E");
+            });
+
             modelBuilder.Entity<Recurrence>(entity =>
             {
                 entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AED61560D89");
+                    .HasName("PK__Recurren__73951AED7A7F1A73");
 
                 entity.ToTable("Recurrence");
 

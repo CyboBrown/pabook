@@ -1,18 +1,238 @@
-﻿@{
+﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomViewModel>
+
+@{
     ViewData["Title"] = "Admin Home Page";
 }
+
 <div class="outer-container">
     <div class="main-content">
-        <h1>Admin Home</h1>
-        <!--I add dri admin home code for later -->
+        <div class="mytabs">
+            <input type="radio" id="tabfree" name="mytabs" checked="checked">
+            <label for="tabfree">Bookings</label>
+            <div class="tab">
+              <h2>Bookings</h2>
+              <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>
+                
+              
+            </div>
+
+            <input type="radio" id="tabsilver" name="mytabs">
+            <label for="tabsilver">User</label>
+            <div class="tab">
+              <h2>User</h2>
+              <p>DRI INYONG INPUT</p>
+            </div>
+
+            <input type="radio" id="tabgold" name="mytabs">
+            <label for="tabgold">Room</label>
+            <div class="tab">
+              <h2>Room</h2>
+              <div class="floor-buttons">
+                <button onclick="showRoomDetails('floor10')">
+                    <i class='bx bxs-group'></i>
+                    <span>10th Floor</span>
+                </button>
+                <button onclick="showRoomDetails('floor11')">
+                    <i class='bx bxs-group'></i>
+                    <span>11th Floor</span>
+                </button>
+                <button onclick="showRoomDetails('floor14')">
+                    <i class='bx bxs-group'></i>
+                    <span>14th Floor</span>
+                </button>
+
+              </div>
+              <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Room Details</h3>
+
+                        <div class="add-room">
+                                <a href="@Url.Action("CreateRoom", "Admin")" class="btn btn-success">
+                                    <i class='bx bx-plus'></i> 
+                                </a>
+                        </div>
+                        <div class="refresh">
+                            <button class="btn btn-secondary btn-sm" onclick="refreshPage()">
+                                <i class='bx bx-refresh'></i> 
+                            </button>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="scroll-div">
+                        <table class="table-scroll">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Id)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Type)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Capacity)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Location)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Facilities)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="room-details-body">
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                                        <td> @Html.DisplayFor(modelItem => item.Facilities)</td>
+                                        <td>@Html.ActionLink("Edit", "Edit", "Room", new { Id = item.Id }, new { @class = "btn btn-primary btn-sm" }) |
+                                            @Html.ActionLink("Details", "Details", "Room", new { Id = item.Id }, new { @class= "btn btn-privacy btn-sm" }) |                              
+                                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@item.Id)">Delete</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>                            
+                        </table>    
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 </div>
 
-@section Styles {
-    <style>
+<!-- _DeleteModal.cshtml -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this room?</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="RoomIdToDelete" />
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
-         body {
+
+
+@section Styles {
+    <script>
+        toastr.options = {
+            positionClass: "toast-top-center",
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true
+        };
+
+        var successMessage = '@TempData["SuccessMessage"]';
+        var addedRoom = '@TempData["AddedRoom"]';
+        var successDeletion = '@TempData["SuccessDeletion"]';
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+        if (addedRoom) {
+            toastr.success(addedRoom);
+        }
+        if (successDeletion) {
+            toastr.success(successDeletion);
+        }
+
+        document.getElementById('detailsButton').addEventListener('click', function () {
+            var selected = document.querySelector('input[name="selectedRoom"]:checked');
+            if (selected) {
+                var roomId = selected.value;
+                window.location.href = '@Url.Action("Details", "Room")' + '?RoomId=' + roomId;
+            } else {
+                alert('Please select a room.');
+            }
+        });
+
+        document.getElementById('editButton').addEventListener('click', function () {
+            var selected = document.querySelector('input[name="selectedRoom"]:checked');
+            if (selected) {
+                var roomId = selected.value;
+                window.location.href = '@Url.Action("Edit", "Room")' + '?RoomId=' + roomId;
+            } else {
+                alert('Please select a room.');
+            }
+        });
+
+        function showDeleteModal(roomId) {
+            document.getElementById('RoomIdToDelete').value = roomId;
+            $('#deleteModal').modal('show');
+        }
+
+        // Function to handle deletion after confirmation
+        function confirmDelete() {
+            var roomId = document.getElementById('RoomIdToDelete').value;
+
+            $.ajax({
+                url: '@Url.Action("PostDelete", "Room")',
+                type: 'POST',
+                data: { id: roomId },
+                success: function () {
+                    toastr.success('Room deleted successfully.');
+                    $('#deleteModal').modal('hide');
+                    refreshRoomDetails(); // Optional: Refresh room details after deletion
+                },
+                error: function () {
+                    toastr.error('Failed to delete room.');
+                }
+            });
+        }
+
+
+        function refreshRoomDetails() {
+            // Implement a function to refresh room details
+            $.ajax({
+                url: '@Url.Action("GetRoomDetails", "Room")', // Example URL to fetch updated data
+                type: 'GET',
+                success: function (data) {
+                    $('#room-details-body').html(data); // Replace table body with updated data
+                },
+                
+            });
+        }
+
+        // Function to save the selected tab to localStorage
+        function saveActiveTab(tabId) {
+            localStorage.setItem('activeTab', tabId);
+        }
+
+        // Function to load the active tab from localStorage
+        function loadActiveTab() {
+            const activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                document.getElementById(activeTab).checked = true;
+            } else {
+                document.getElementById('tabfree').checked = true; // Default tab
+            }
+        }
+
+        // Event listeners to save the active tab when changed
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActiveTab();
+            const tabs = document.querySelectorAll('.mytabs input[type="radio"]');
+            tabs.forEach(tab => {
+                tab.addEventListener('change', () => saveActiveTab(tab.id));
+            });
+        });
+
+   </script> 
+}
+
+ <style>
+
+    @*css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
+    body {
         margin: 0;
         font-family: Arial, sans-serif;
         width: 100%;
@@ -22,40 +242,201 @@
         align-items: center;
         overflow: hidden;
         background-color: #000;
-        }
+    }
 
-        .outer-container {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 40px);
-            width: calc(150vh - 10px);
-            box-sizing: border-box;
-            justify-content: center;
-            align-items: center;
-        }
+    .outer-container {
+            
+        box-sizing: border-box;
+        background-color: var(--light);
+        padding: 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column-reverse;
+        flex-direction: column;
+        width: calc(100% - 215px);
+        height: calc(100%-40px);
+        top: 20px;
+        right: 20px;
+        bottom: 20px;
+        margin-left: 100px;
+        position: fixed;
+        z-index: 0;
+    }
 
-        .main-content {
-            height: 85vh;
-            background-color: #185D62;
-            padding: 20px;
-            color: #fff;
-            border-radius: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            flex-grow: 1;
-        }
+    .outer-container.expand{           
+        width: calc(100% - 60px);
+    }
 
-        h1 {
-            font-size: 36px;
-            font-weight: 500;
-            margin-top: 0;
-            margin-bottom: 30px;
-            letter-spacing: 0.5px;
-        }
-         <!--Add dri code sa imong css styles sa imong admin home nga code-->
+    .main-content {
+        height: 85vh;
+        background-color: #185D62;;
+        padding: 20px;
+        color: #fff;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+    }
+    .main-content nav{
+        position: relative;
+        height: 100px;
+        width: calc(100%-300px);
+        padding-left: 20px;
+        padding-right: 20px;
+    }       
 
-    </style>
-}
+    /*ROOM nga styles*/
+    .mytabs {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 25px;
+        background-color: transparent;
+        display: flex;
+        justify-content: left;
+        margin-bottom: 20px;         
+        padding: 0px;
+    }
+    .mytabs input[type="radio"] {
+        display: none;
+    }
+    .mytabs label {
+        padding: 15px;
+        background: #185D62;
+        font-weight: bold;
+        border-bottom: 2px solid #1BC7D2;
+        width: 100px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .mytabs .tab {
+        width: 100%;
+        padding: 20px;
+        background: #185D62;
+        order: 1;
+        display: none;
+    }
+    .mytabs .tab h2 {
+        font-size: 3em;
+    }
+
+    .mytabs input[type='radio']:checked + label + .tab {
+        display: block;
+    }
+
+    .mytabs input[type="radio"]:checked + label {
+        background: #1BC7D2;
+    }
+    
+
+    .table-data {
+        display: flex;
+        flex-wrap: wrap;
+        grid-gap: 24px;
+        margin-top: 24px;
+        width: 100%;
+        color: var(--dark);
+    }
+
+    .table-data > div {
+        border-radius: 20px;
+        background: var(--light);
+        padding: 10px;
+        overflow-x: auto;
+        
+    }
+
+    .table-data .head {
+        display: flex;
+        align-items: center;
+        grid-gap: 0px;
+        background-color: transparent;
+        margin-bottom: 20px;
+    }
+
+    .add-room .refresh i {
+        
+        background-color: transparent;
+        siz
+    }
+    
+    .table-data .head h3 {
+        margin-right: auto;
+        font-size: 24px;
+        font-weight: 600;
+        padding: 10px;
+    }
+    .refresh {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 10px;
+    }
+
+    .add-room {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 10px;
+    }
+    .add-room .btn-success {
+        background-color: transparent;
+        border: none;
+        color: inherit; /* To maintain the original font color */
+    }
+
+    .refresh .btn-secondary {
+        background-color: transparent;
+        border: none;
+        color: inherit; /* To maintain the original font color */
+    }
+
+    .table-data .order {
+        flex-grow: 1;
+        flex-basis: 500px;
+        
+    }
+
+    .table-data .order table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: light;
+        height: 300px;
+        overflow: hidden;
+        overflow-y: scroll;
+    }
+
+    
+    .table-data .order table th,
+    .table-data .order table td {
+        padding: 12px 15px; /* Adjust padding as needed */
+    }
+
+    .table-data .order table th {
+        font-size: 13px;
+        text-align: left;
+        border-bottom: 1px solid var(--grey);
+    }
+
+    .table-data .order table tr {
+        line-height:1.0; /* Adjust line-height for better row spacing */
+          
+        padding: 12px 15px;
+    }
+
+    .table-data .order table tr:hover {
+        background: var(--grey);
+    }
+
+    .table-scroll {
+      overflow-y: auto;
+      height: 300px; /* Adjust the height as needed */
+    }
+    /*
+    .scroll-div{
+        width: 400px;
+        background: rgb(11,11,114);
+        height: 300px;
+        overflow: hidden;
+        overflow-y: scroll;
+    }
+    */
+</style>  
