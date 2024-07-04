@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ namespace ASI.Basecode.WebApp.Controllers
     /// <summary>
     /// Admin Controller
     /// </summary>
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase<AdminController>
     {
         /// <summary>
@@ -18,14 +20,12 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="httpContextAccessor"></param>
         /// <param name="loggerFactory"></param>
         /// <param name="configuration"></param>
-        /// <param name="localizer"></param>
         /// <param name="mapper"></param>
         public AdminController(IHttpContextAccessor httpContextAccessor,
                                ILoggerFactory loggerFactory,
                                IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
-
         }
 
         /// <summary>
@@ -34,10 +34,6 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Admin Home View </returns>
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Admin")
-            {
-                return RedirectToAction("Login", "Account");
-            }
             return View();
         }
 
@@ -47,10 +43,6 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Admin Analytics View </returns>
         public IActionResult Analytics()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Admin")
-            {
-                return RedirectToAction("Login", "Account");
-            }
             return View();
         }
 
@@ -60,10 +52,6 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Manage Roles View </returns>
         public IActionResult ManageRoles()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Admin")
-            {
-                return RedirectToAction("Login", "Account");
-            }
             return View();
         }
 
@@ -73,10 +61,6 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Admin Settings View </returns>
         public IActionResult AdminSettings()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Admin")
-            {
-                return RedirectToAction("Login", "Account");
-            }
             return View();
         }
     }
