@@ -48,7 +48,7 @@
                         <h3>Room Details</h3>
 
                         <div class="add-room">
-                                <a href="@Url.Action("Create", "Room")" class="btn btn-success">
+                                <a href="@Url.Action("CreateRoom", "Admin")" class="btn btn-success">
                                     <i class='bx bx-plus'></i> 
                                 </a>
                         </div>
@@ -198,9 +198,7 @@
                 success: function (data) {
                     $('#room-details-body').html(data); // Replace table body with updated data
                 },
-                error: function () {
-                    toastr.error('Failed to fetch room details.');
-                }
+                
             });
         }
 
@@ -261,7 +259,6 @@
         right: 20px;
         bottom: 20px;
         margin-left: 100px;
-        margin-right: 20px;
         position: fixed;
         z-index: 0;
     }

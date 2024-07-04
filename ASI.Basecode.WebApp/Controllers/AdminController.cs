@@ -83,7 +83,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         #region GET METHODS
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult CreateRoom()
         {
             Console.WriteLine("Passed Controller Get Create");
             return View();
