@@ -3,12 +3,10 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -16,33 +14,31 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
-        
-        public RoomService(IRoomRepository roomRepository, IMapper mapper)
+        private readonly IMemoryCache _cache;
+
+        public RoomService(IRoomRepository roomRepository, IMapper mapper, IMemoryCache cache)
         {
-            _mapper = mapper;
             _roomRepository = roomRepository;
+            _mapper = mapper;
+            _cache = cache;
         }
 
         public IEnumerable<RoomViewModel> GetAll(int? id = null, string name = null)
         {
             Console.WriteLine(" > RoomService: GetAll");
             var data = _roomRepository.GetRooms()
-            .Where(
-                x => x.Deleted == false
-                && (!id.HasValue || x.Id == id)
-                && (string.IsNullOrEmpty(name) || x.Name.Contains(name))
-            )
-            .Select(s => new RoomViewModel
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Capacity = s.Capacity,
-                Type = s.Type,
-                Location = s.Location,
-                Facilities = s.Facilities,
-               /*RoomCode = s.RoomCode,
-                HasEquipments = s.HasEquipments,*/
-            });
+                .Where(x => x.Deleted == false
+                    && (!id.HasValue || x.Id == id)
+                    && (string.IsNullOrEmpty(name) || x.Name.Contains(name)))
+                .Select(s => new RoomViewModel
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Capacity = s.Capacity,
+                    Type = s.Type,
+                    Location = s.Location,
+                    Facilities = s.Facilities,
+                });
             return data;
         }
 
@@ -73,6 +69,19 @@ namespace ASI.Basecode.Services.Services
             existingData.UpdatedBy = "Kent";
             existingData.UpdatedDate = DateTime.Now;
             _roomRepository.UpdateRoom(existingData);
+        }
+
+        public bool RequestAlreadyProcessed(string requestId)
+        {
+            return _cache.TryGetValue(requestId, out _);
+        }
+
+        public void MarkRequestAsProcessed(string requestId)
+        {
+            _cache.Set(requestId, true, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            });
         }
     }
 }

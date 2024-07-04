@@ -13,5 +13,7 @@ namespace ASI.Basecode.Services.Interfaces
         void Add(RoomViewModel model);
         void Update(RoomViewModel model);
         void Delete(int id);
+        bool RequestAlreadyProcessed(string requestId);
+        void MarkRequestAsProcessed(string requestId);
     }
 }
