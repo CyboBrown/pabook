@@ -45,8 +45,6 @@ namespace ASI.Basecode.Data.Repositories
         {
             Console.WriteLine(" > UserRepo: UpdateUser");
             this.GetDbSet<User>().Update(user);
-            user.UpdatedDate = DateTime.Now;
-            user.UpdatedBy = "[Current User]";
             UnitOfWork.SaveChanges();
         }
 
@@ -58,7 +56,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 userToDelete.Deleted = true;
                 userToDelete.UpdatedDate = DateTime.Now;
-                userToDelete.UpdatedBy = "[Current User]";
+                userToDelete.UpdatedBy = "[Deleted]";
             }
             UnitOfWork.SaveChanges();
         }
