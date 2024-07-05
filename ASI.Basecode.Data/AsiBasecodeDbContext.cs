@@ -103,7 +103,7 @@ namespace ASI.Basecode.Data
             modelBuilder.Entity<Preference>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Preferen__1788CC4C1947BBAB");
+                    .HasName("PK__Preferen__1788CC4C94180343");
 
                 entity.Property(e => e.UserId).ValueGeneratedNever();
 
@@ -119,7 +119,7 @@ namespace ASI.Basecode.Data
             modelBuilder.Entity<Recurrence>(entity =>
             {
                 entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AED0B284334");
+                    .HasName("PK__Recurren__73951AED7A7F1A73");
 
                 entity.ToTable("Recurrence");
 

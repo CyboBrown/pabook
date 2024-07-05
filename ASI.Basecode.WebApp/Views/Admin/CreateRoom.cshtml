@@ -9,7 +9,8 @@
         <hr />
         <div class="row">
             <div class="inside">
-                <form asp-action="PostCreate">
+                <form asp-action="PostCreate" id="createForm">
+                 <input type="hidden" id="requestId" name="requestId" value="@Guid.NewGuid().ToString()" />
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>

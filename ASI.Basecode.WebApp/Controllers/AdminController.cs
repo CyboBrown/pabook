@@ -113,9 +113,16 @@ namespace ASI.Basecode.WebApp.Controllers
 
         #region POST METHODS
         [HttpPost]
-        public IActionResult PostCreate(RoomViewModel model)
+        public IActionResult PostCreate(RoomViewModel model, string requestId)
         {
             Console.WriteLine("Passed Controller Post Create");
+
+            if (_roomService.RequestAlreadyProcessed(requestId))
+            {
+                TempData["DuplicateErr"] = "This request has already been processed";
+                return RedirectToAction("CreateRoom", model);
+            }
+
             bool isDuplicate = _roomService.GetAll().Any(data => data.Location == model.Location && data.Name == model.Name);
             if (isDuplicate)
             {
@@ -123,9 +130,10 @@ namespace ASI.Basecode.WebApp.Controllers
                 return RedirectToAction("CreateRoom", model);
             }
 
-
             _roomService.Add(model);
-            TempData["SuccessMessage"] = "Added Successfuly!"; _roomService.Add(model);
+            _roomService.MarkRequestAsProcessed(requestId);
+
+            TempData["SuccessMessage"] = "Added Successfully!";
             return RedirectToAction("Index");
         }
 
