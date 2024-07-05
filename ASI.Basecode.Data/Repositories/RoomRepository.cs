@@ -18,9 +18,9 @@ namespace ASI.Basecode.Data.Repositories
 
         public IQueryable<Room> GetRooms()
         {
-            Console.WriteLine(" > RoomRepo: GetRooms");
-            return this.GetDbSet<Room>();
+            return this.GetDbSet<Room>().Where(r => !r.Deleted);
         }
+
 
         public Room GetRoom(int id)
         {
