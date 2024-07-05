@@ -42,13 +42,13 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Indexes this instance.
         /// </summary>
         /// <returns></returns>
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             Console.WriteLine("Passed Controller Index");
             var data = _roomService.GetAll();
             return View(data);
         }
-
+        */
         #region GET METHODS
         /*
         [HttpGet]
@@ -81,8 +81,9 @@ namespace ASI.Basecode.WebApp.Controllers
 
         
         #endregion
-
+        
         #region POST METHODS
+        /*
         [HttpPost]
         public IActionResult PostCreate(RoomViewModel model)
         {
@@ -99,7 +100,7 @@ namespace ASI.Basecode.WebApp.Controllers
             TempData["SuccessMessage"] = "Added Successfuly!"; _roomService.Add(model);
             return RedirectToAction("Index");
         }
-
+        */
         [HttpPost]
         public IActionResult PostUpdate(RoomViewModel model)
         {

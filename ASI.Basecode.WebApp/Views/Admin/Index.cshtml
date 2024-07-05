@@ -74,6 +74,7 @@
                                 </tr>
                             </thead>
                             <tbody id="room-details-body">
+                                @*<partial name="_RoomDetailsTablePartial" model="@Model" />*@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
@@ -171,19 +172,6 @@
             });
         }
 
-
-        function refreshRoomDetails() {
-            // Implement a function to refresh room details
-            $.ajax({
-                url: '@Url.Action("GetRoomDetails", "Room")', // Example URL to fetch updated data
-                type: 'GET',
-                success: function (data) {
-                    $('#room-details-body').html(data); // Replace table body with updated data
-                },
-                
-            });
-        }
-
         function loadTabContent(tab) {
             let contentUrl = '';
             switch(tab) {
@@ -209,6 +197,22 @@
             }
         }
 
+
+
+
+        function refreshRoomDetails() {
+            $.ajax({
+                url: '@Url.Action("GetRoomDetails", "Admin")',
+                type: 'GET',
+                success: function (data) {
+                    $('#room-details-body').html(data); // Replace table body with updated data
+                    toastr.success('Room details refreshed.');
+                },
+                error: function () {
+                    toastr.error('Failed to refresh room details.');
+                }
+            });
+        }
 
    </script> 
 }
@@ -382,7 +386,7 @@
     .table-data .order table {
         width: 100%;
         border-collapse: collapse;
-        background-color: light;
+        background-color: white;
         height: 300px;
         overflow: hidden;
         overflow-y: scroll;

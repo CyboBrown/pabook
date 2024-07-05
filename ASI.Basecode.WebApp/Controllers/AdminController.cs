@@ -41,26 +41,26 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Returns Admin Home View.
         /// </summary>
         /// <returns> Admin Home View </returns>
-        
-        public IActionResult Index(string tab = "Bookings")
+
+        public IActionResult Index(string tab = "Room")
         {
             ViewData["ActiveTab"] = tab;
-
+            
             switch (tab)
             {
-                case "Room":
-                    var roomViewModel = GetRoomViewModel();
-                    return View("Index", roomViewModel); // Pass a single RoomViewModel
-                case "User":
-                    var userViewModel = GetUserViewModel();
-                    return View("Index", userViewModel); // Pass a single UserViewModel
+                /*
                 case "Bookings":
                     var bookingsViewModel = GetBookingsViewModel();
-                    return View("Index", bookingsViewModel); // Pass a single BookingViewModel
+                    return View("Index", bookingsViewModel);*/
+                case "Room":
+                    var rooms = _roomService.GetAll();// Replace with your actual method to fetch rooms
+                    return View("Index", rooms); // Pass a single RoomViewModel
+                /*case "User":
+                    var userViewModel = GetUserViewModel();
+                    return View("Index", userViewModel); // Pass a single UserViewModel*/
                 default:
-                    return NotFound();
+                    return View("Index");
             }
-            return View("Index");
         }
 
         public IActionResult GetRoomContent()
@@ -68,7 +68,7 @@ namespace ASI.Basecode.WebApp.Controllers
             var roomViewModel = GetRoomViewModel();
             return PartialView("_RoomContentPartial", roomViewModel);
         }
-
+/*
         public IActionResult GetUserContent()
         {
             var userViewModel = GetUserViewModel();
@@ -80,10 +80,10 @@ namespace ASI.Basecode.WebApp.Controllers
             var bookingsViewModel = GetBookingsViewModel();
             return PartialView("_BookingsContentPartial", bookingsViewModel);
         }
-
+*/
         private List<RoomViewModel> GetRoomViewModel()
         {
-            var rooms = _roomService.GetAll(); 
+            var rooms = _roomService.GetAll();
 
             var roomViewModels = rooms.Select(room => new RoomViewModel
             {
@@ -97,27 +97,27 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return roomViewModels;
         }
-
+/*
         private UserViewModel GetUserViewModel()
         {
-            
+
             var userViewModel = new UserViewModel
             {
-                
+
             };
             return userViewModel;
         }
 
         private BookingViewModel GetBookingsViewModel()
         {
-            
+
             var bookingViewModel = new BookingViewModel
             {
-                
+
             };
             return bookingViewModel;
         }
-
+*/
 
 
         /// <summary>
