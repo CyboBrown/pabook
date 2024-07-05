@@ -9,8 +9,12 @@
         <hr />
         <div class="row">
             <div class="inside">
+                
                 <form asp-action="PostCreate" id="createForm">
                  <input type="hidden" id="requestId" name="requestId" value="@Guid.NewGuid().ToString()" />
+                    <div>
+                        <a href="@Url.Action("Index", "Admin", new { tab = "Room" })" onclick="selectRoomTab()">Back to List</a>
+                    </div>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
@@ -44,8 +48,6 @@
                 </form>
             </div>
         </div>
-
-
     </div>
 </div>
 
@@ -55,6 +57,19 @@
     }
 
 <script>
+    document.getElementById('resetButton').addEventListener('click', function() {
+        document.getElementById('createForm').reset();
+    });
+    
+    function selectRoomTab() {
+        // Select the Room tab
+        document.getElementById('tabRoom').checked = true;
+            
+        // Load content for the Room tab
+        loadTabContent('Room');
+    }
+
+
     toastr.options = {
             positionClass: "toast-top-center",
             timeOut: 5000,
@@ -130,13 +145,6 @@
         .form-group {
             margin-bottom: 20px;
             text-align: left; /* Adjust alignment of labels and inputs */
-        }
-        .inside{
-            font-size: 10px;
-            margin-top: 0;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-            margin-left: 500px;
         }
         
         

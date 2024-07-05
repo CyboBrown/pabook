@@ -7,25 +7,26 @@
 <div class="outer-container">
     <div class="main-content">
         <div class="mytabs">
-            <input type="radio" id="tabfree" name="mytabs" checked="checked">
-            <label for="tabfree">Bookings</label>
-            <div class="tab">
+            <input type="radio" id="tabBookings" name="mytabs" onchange="loadTabContent('Bookings')" @((ViewData["ActiveTab"] as string == "Bookings") ? "checked" : "")>
+            <label for="tabBookings">Bookings</label>
+            <div class="tab" id="tabBookingsContent">
               <h2>Bookings</h2>
               <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>
                 
               
             </div>
 
-            <input type="radio" id="tabsilver" name="mytabs">
-            <label for="tabsilver">User</label>
-            <div class="tab">
+            <input type="radio" id="tabUser" name="mytabs" onchange="loadTabContent('User')" @((ViewData["ActiveTab"] as string == "User") ? "checked" : "")>
+            <label for="tabUser">User</label>
+            <div class="tab" id="tabUserContent">
               <h2>User</h2>
               <p>DRI INYONG INPUT</p>
             </div>
 
-            <input type="radio" id="tabgold" name="mytabs">
-            <label for="tabgold">Room</label>
-            <div class="tab">
+            <input type="radio" id="tabRoom" name="mytabs" onchange="loadTabContent('Room')" @((ViewData["ActiveTab"] as string == "Room") ? "checked" : "")>
+            <label for="tabRoom">Room</label>
+
+            <div class="tab" id="tabRoomContent">
               <h2>Room</h2>
               <div class="floor-buttons">
                 <button onclick="showRoomDetails('floor10')">
@@ -94,6 +95,7 @@
                 </div>
               </div>
             </div>
+            
         </div>
     </div>
 </div>
@@ -144,27 +146,7 @@
         if (successDeletion) {
             toastr.success(successDeletion);
         }
-
-        document.getElementById('detailsButton').addEventListener('click', function () {
-            var selected = document.querySelector('input[name="selectedRoom"]:checked');
-            if (selected) {
-                var roomId = selected.value;
-                window.location.href = '@Url.Action("Details", "Room")' + '?RoomId=' + roomId;
-            } else {
-                alert('Please select a room.');
-            }
-        });
-
-        document.getElementById('editButton').addEventListener('click', function () {
-            var selected = document.querySelector('input[name="selectedRoom"]:checked');
-            if (selected) {
-                var roomId = selected.value;
-                window.location.href = '@Url.Action("Edit", "Room")' + '?RoomId=' + roomId;
-            } else {
-                alert('Please select a room.');
-            }
-        });
-
+        
         function showDeleteModal(roomId) {
             document.getElementById('RoomIdToDelete').value = roomId;
             $('#deleteModal').modal('show');
@@ -175,13 +157,13 @@
             var roomId = document.getElementById('RoomIdToDelete').value;
 
             $.ajax({
-                url: '@Url.Action("PostDelete", "Room")',
+                url: '@Url.Action("PostDelete", "Admin")',
                 type: 'POST',
                 data: { id: roomId },
                 success: function () {
                     toastr.success('Room deleted successfully.');
                     $('#deleteModal').modal('hide');
-                    refreshRoomDetails(); // Optional: Refresh room details after deletion
+                    refreshRoomDetails(); 
                 },
                 error: function () {
                     toastr.error('Failed to delete room.');
@@ -202,29 +184,31 @@
             });
         }
 
-        // Function to save the selected tab to localStorage
-        function saveActiveTab(tabId) {
-            localStorage.setItem('activeTab', tabId);
-        }
+        function loadTabContent(tab) {
+            let contentUrl = '';
+            switch(tab) {
+                case 'Room':
+                    contentUrl = '@Url.Action("GetRoomContent", "Admin")';
+                    break;
+                case 'User':
+                    contentUrl = '@Url.Action("GetUserContent", "Admin")';
+                    break;
+                case 'Bookings':
+                    contentUrl = '@Url.Action("GetBookingsContent", "Admin")';
+                    break;
+            }
 
-        // Function to load the active tab from localStorage
-        function loadActiveTab() {
-            const activeTab = localStorage.getItem('activeTab');
-            if (activeTab) {
-                document.getElementById(activeTab).checked = true;
-            } else {
-                document.getElementById('tabfree').checked = true; // Default tab
+            if (contentUrl) {
+                $.ajax({
+                    url: contentUrl,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#tabContent').html(data); // Update tab content
+                    }
+                });
             }
         }
 
-        // Event listeners to save the active tab when changed
-        document.addEventListener('DOMContentLoaded', () => {
-            loadActiveTab();
-            const tabs = document.querySelectorAll('.mytabs input[type="radio"]');
-            tabs.forEach(tab => {
-                tab.addEventListener('change', () => saveActiveTab(tab.id));
-            });
-        });
 
    </script> 
 }
