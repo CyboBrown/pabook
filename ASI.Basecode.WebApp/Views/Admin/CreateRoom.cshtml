@@ -37,7 +37,7 @@
                         <span asp-validation-for="Facilities" class="text-danger"></span>
                     </div>
                     <div class="buttons">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Add" class="btn btn-primary" />
                         <button type="button" id="resetButton">Reset</button>
                     </div>
                 </form>
@@ -53,7 +53,24 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
+<script>
+    toastr.options = {
+            positionClass: "toast-top-center",
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true
+    };
 
+    var successMessage = '@TempData["SuccessMessage"]';
+    var duplicateError = '@TempData["DuplicateErr"]';
+
+    if (successMessage) {
+        toastr.success(successMessage);
+    }
+    if (duplicateError) {
+        toastr.error(duplicateError);
+    }
+</script>
 
     <style>
 

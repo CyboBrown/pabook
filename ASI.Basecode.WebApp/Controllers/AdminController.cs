@@ -120,7 +120,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (isDuplicate)
             {
                 TempData["DuplicateErr"] = "Room Already Exists";
-                return RedirectToAction("Create", model);
+                return RedirectToAction("CreateRoom", model);
             }
 
 

@@ -50,12 +50,20 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         #region GET METHODS
+        /*
         [HttpGet]
+
         public IActionResult Create()
         {
             Console.WriteLine("Passed Controller Get Create");
             return View();
         }
+        [HttpGet]
+        public IActionResult Delete(int Id)
+        {
+            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
+            return View(data);
+        }*/
 
         [HttpGet]
         public IActionResult Details(int Id)
@@ -71,12 +79,7 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(data);
         }
 
-        [HttpGet]
-        public IActionResult Delete(int Id)
-        {
-            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
-            return View(data);
-        }
+        
         #endregion
 
         #region POST METHODS
@@ -88,7 +91,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (isDuplicate)
             {
                 TempData["DuplicateErr"] = "Room Already Exists";
-                return RedirectToAction("Create", model);
+                return RedirectToAction("CreateRoom", model);
             }
 
 
@@ -103,7 +106,7 @@ namespace ASI.Basecode.WebApp.Controllers
             _roomService.Update(model);
             return RedirectToAction("Index", "Admin");
         }
-
+        /*
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {
@@ -118,7 +121,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = $"Error deleting room: {ex.Message}";
             }
             return RedirectToAction("Index");
-        }
+        }*/
         #endregion
     }
 }
