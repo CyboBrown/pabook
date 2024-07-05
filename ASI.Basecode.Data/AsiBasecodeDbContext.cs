@@ -21,6 +21,7 @@ namespace ASI.Basecode.Data
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Preference> Preferences { get; set; }
         public virtual DbSet<Recurrence> Recurrences { get; set; }
+        public virtual DbSet<RecurrenceType> RecurrenceTypes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -40,8 +41,6 @@ namespace ASI.Basecode.Data
             {
                 entity.ToTable("Booking");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.CreatedBy)
                     .HasMaxLength(256)
                     .IsUnicode(false);
@@ -51,6 +50,8 @@ namespace ASI.Basecode.Data
                 entity.Property(e => e.Date).HasColumnType("date");
 
                 entity.Property(e => e.Description).HasMaxLength(512);
+
+                entity.Property(e => e.RecurrenceEndDate).HasColumnType("date");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
@@ -62,17 +63,22 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
+                entity.HasOne(d => d.RecurrenceType)
+                    .WithMany(p => p.Bookings)
+                    .HasForeignKey(d => d.RecurrenceTypeId)
+                    .HasConstraintName("FK__Booking__Recurre__4316F928");
+
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Booking__RoomId__403A8C7D");
+                    .HasConstraintName("FK__Booking__RoomId__4222D4EF");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Booking__UserId__3F466844");
+                    .HasConstraintName("FK__Booking__UserId__412EB0B6");
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -97,13 +103,13 @@ namespace ASI.Basecode.Data
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__UserI__45F365D3");
+                    .HasConstraintName("FK__Notificat__UserI__48CFD27E");
             });
 
             modelBuilder.Entity<Preference>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Preferen__1788CC4C94180343");
+                    .HasName("PK__Preferen__1788CC4CE5D42896");
 
                 entity.Property(e => e.UserId).ValueGeneratedNever();
 
@@ -113,13 +119,13 @@ namespace ASI.Basecode.Data
                     .WithOne(p => p.Preference)
                     .HasForeignKey<Preference>(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Preferenc__UserI__48CFD27E");
+                    .HasConstraintName("FK__Preferenc__UserI__4BAC3F29");
             });
 
             modelBuilder.Entity<Recurrence>(entity =>
             {
                 entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AED7A7F1A73");
+                    .HasName("PK__Recurren__73951AED0CC347E2");
 
                 entity.ToTable("Recurrence");
 
@@ -143,7 +149,16 @@ namespace ASI.Basecode.Data
                     .WithOne(p => p.Recurrence)
                     .HasForeignKey<Recurrence>(d => d.BookingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Recurrenc__Booki__4316F928");
+                    .HasConstraintName("FK__Recurrenc__Booki__45F365D3");
+            });
+
+            modelBuilder.Entity<RecurrenceType>(entity =>
+            {
+                entity.ToTable("RecurrenceType");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Role>(entity =>
