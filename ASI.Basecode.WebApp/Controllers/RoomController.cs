@@ -42,20 +42,28 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Indexes this instance.
         /// </summary>
         /// <returns></returns>
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             Console.WriteLine("Passed Controller Index");
             var data = _roomService.GetAll();
             return View(data);
         }
-
+        */
         #region GET METHODS
+        /*
         [HttpGet]
+
         public IActionResult Create()
         {
             Console.WriteLine("Passed Controller Get Create");
             return View();
         }
+        [HttpGet]
+        public IActionResult Delete(int Id)
+        {
+            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
+            return View(data);
+        }*/
 
         [HttpGet]
         public IActionResult Details(int Id)
@@ -71,15 +79,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(data);
         }
 
-        [HttpGet]
-        public IActionResult Delete(int Id)
-        {
-            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
-            return View(data);
-        }
+        
         #endregion
-
+        
         #region POST METHODS
+        /*
         [HttpPost]
         public IActionResult PostCreate(RoomViewModel model)
         {
@@ -88,7 +92,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (isDuplicate)
             {
                 TempData["DuplicateErr"] = "Room Already Exists";
-                return RedirectToAction("Create", model);
+                return RedirectToAction("CreateRoom", model);
             }
 
 
@@ -96,14 +100,14 @@ namespace ASI.Basecode.WebApp.Controllers
             TempData["SuccessMessage"] = "Added Successfuly!"; _roomService.Add(model);
             return RedirectToAction("Index");
         }
-
+        */
         [HttpPost]
         public IActionResult PostUpdate(RoomViewModel model)
         {
             _roomService.Update(model);
             return RedirectToAction("Index", "Admin");
         }
-
+        /*
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {
@@ -118,7 +122,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = $"Error deleting room: {ex.Message}";
             }
             return RedirectToAction("Index");
-        }
+        }*/
         #endregion
     }
 }

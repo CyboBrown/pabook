@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -40,12 +41,83 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Returns Admin Home View.
         /// </summary>
         /// <returns> Admin Home View </returns>
-        public IActionResult Index()
+
+        public IActionResult Index(string tab = "Room")
         {
-            Console.WriteLine("Passed Controller Index");
-            var data = _roomService.GetAll();
-            return View(data);
+            ViewData["ActiveTab"] = tab;
+            
+            switch (tab)
+            {
+                /*
+                case "Bookings":
+                    var bookingsViewModel = GetBookingsViewModel();
+                    return View("Index", bookingsViewModel);*/
+                case "Room":
+                    var rooms = _roomService.GetAll();// Replace with your actual method to fetch rooms
+                    return View("Index", rooms); // Pass a single RoomViewModel
+                /*case "User":
+                    var userViewModel = GetUserViewModel();
+                    return View("Index", userViewModel); // Pass a single UserViewModel*/
+                default:
+                    return View("Index");
+            }
         }
+
+        public IActionResult GetRoomContent()
+        {
+            var roomViewModel = GetRoomViewModel();
+            return PartialView("_RoomContentPartial", roomViewModel);
+        }
+/*
+        public IActionResult GetUserContent()
+        {
+            var userViewModel = GetUserViewModel();
+            return PartialView("_UserContentPartial", userViewModel);
+        }
+
+        public IActionResult GetBookingsContent()
+        {
+            var bookingsViewModel = GetBookingsViewModel();
+            return PartialView("_BookingsContentPartial", bookingsViewModel);
+        }
+*/
+        private List<RoomViewModel> GetRoomViewModel()
+        {
+            var rooms = _roomService.GetAll();
+
+            var roomViewModels = rooms.Select(room => new RoomViewModel
+            {
+                Id = room.Id,
+                Name = room.Name,
+                Capacity = room.Capacity,
+                Type = room.Type,
+                Location = room.Location,
+                Facilities = room.Facilities
+            }).ToList();
+
+            return roomViewModels;
+        }
+/*
+        private UserViewModel GetUserViewModel()
+        {
+
+            var userViewModel = new UserViewModel
+            {
+
+            };
+            return userViewModel;
+        }
+
+        private BookingViewModel GetBookingsViewModel()
+        {
+
+            var bookingViewModel = new BookingViewModel
+            {
+
+            };
+            return bookingViewModel;
+        }
+*/
 
 
         /// <summary>

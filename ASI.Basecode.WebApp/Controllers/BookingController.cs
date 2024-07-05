@@ -38,13 +38,14 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         #region GET METHODS
+        
         [HttpGet]
         public IActionResult Create()
         {
             Console.WriteLine("Passed Controller Get Create");
             return View();
-        }
-
+        }        
+        
         [HttpGet]
         public IActionResult Details(int Id)
         {
@@ -58,7 +59,6 @@ namespace ASI.Basecode.WebApp.Controllers
             var data = _bookingService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
             return View(data);
         }
-
         [HttpGet]
         public IActionResult Delete(int Id)
         {
@@ -68,6 +68,7 @@ namespace ASI.Basecode.WebApp.Controllers
         #endregion
 
         #region POST METHODS
+        
         [HttpPost]
         public IActionResult PostCreate(BookingViewModel model)
         {
@@ -75,20 +76,20 @@ namespace ASI.Basecode.WebApp.Controllers
             _bookingService.Add(model);
             return RedirectToAction("Index");
         }
-
+       
         [HttpPost]
         public IActionResult PostUpdate(BookingViewModel model)
         {
             _bookingService.Update(model);
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {
             _bookingService.Delete(Id);
             return RedirectToAction("Index");
         }
+        
         #endregion
     }
 }
