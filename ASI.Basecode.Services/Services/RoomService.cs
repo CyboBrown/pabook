@@ -41,7 +41,24 @@ namespace ASI.Basecode.Services.Services
                 });
             return data;
         }
-
+        /*
+        public IEnumerable<RoomViewModel> GetRoomsByFloor(string floor)
+        {
+            Console.WriteLine(" > RoomService: GetRoomsByFloor");
+            var data = _roomRepository.GetRooms()
+                .Where(x => x.Deleted == false && x.Location.Contains(floor))
+                .Select(s => new RoomViewModel
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Capacity = s.Capacity,
+                    Type = s.Type,
+                    Location = s.Location,
+                    Facilities = s.Facilities,
+                });
+            return data;
+        }
+        */
         public void Add(RoomViewModel model)
         {
             Console.WriteLine(" > RoomService: Add");

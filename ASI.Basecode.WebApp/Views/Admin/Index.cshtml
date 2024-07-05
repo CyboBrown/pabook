@@ -29,19 +29,18 @@
             <div class="tab" id="tabRoomContent">
               <h2>Room</h2>
               <div class="floor-buttons">
-                <button onclick="showRoomDetails('floor10')">
+                <button onclick="showRoomDetails('10th Floor')">
                     <i class='bx bxs-group'></i>
                     <span>10th Floor</span>
                 </button>
-                <button onclick="showRoomDetails('floor11')">
+                <button onclick="showRoomDetails('11th Floor')">
                     <i class='bx bxs-group'></i>
                     <span>11th Floor</span>
                 </button>
-                <button onclick="showRoomDetails('floor14')">
+                <button onclick="showRoomDetails('14th Floor')">
                     <i class='bx bxs-group'></i>
                     <span>14th Floor</span>
                 </button>
-
               </div>
               <div class="table-data">
                 <div class="order">
@@ -54,7 +53,7 @@
                                 </a>
                         </div>
                         <div class="refresh">
-                            <button class="btn btn-secondary btn-sm" onclick="refreshPage()">
+                            <button class="btn btn-secondary btn-sm" onclick="refreshRoomDetails()">
                                 <i class='bx bx-refresh'></i> 
                             </button>
                         </div>
@@ -74,23 +73,9 @@
                                 </tr>
                             </thead>
                             <tbody id="room-details-body">
-                                @*<partial name="_RoomDetailsTablePartial" model="@Model" />*@
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Type)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Location)</td>
-                                        <td> @Html.DisplayFor(modelItem => item.Facilities)</td>
-                                        <td>@Html.ActionLink("Edit", "Edit", "Room", new { Id = item.Id }, new { @class = "btn btn-primary btn-sm" }) |
-                                            @Html.ActionLink("Details", "Details", "Room", new { Id = item.Id }, new { @class= "btn btn-privacy btn-sm" }) |                              
-                                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@item.Id)">Delete</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>                            
+                                <partial name="_RoomDetailsTableBody" model="@Model" />
+                                @*naa sa shared folder and data*@
+                             </tbody>                            
                         </table>    
                     </div>
                 </div>
@@ -172,6 +157,9 @@
             });
         }
 
+
+
+        /*
         function loadTabContent(tab) {
             let contentUrl = '';
             switch(tab) {
@@ -195,9 +183,37 @@
                     }
                 });
             }
+        }*/
+        /*
+        function loadTabContent(tab) {
+            $.ajax({
+                url: '@Url.Action("Index", "Admin")',
+                type: 'GET',
+                data: { tab: tab },
+                success: function (result) {
+                    $('.tab').hide();
+                    $('#tab' + tab + 'Content').html($(result).find('#tab' + tab + 'Content').html());
+                    $('#tab' + tab + 'Content').show();
+                },
+                error: function () {
+                    alert('Failed to load tab content.');
+                }
+            });
         }
-
-
+        */
+        function showRoomDetails(floor) {
+            $.ajax({
+                url: '@Url.Action("GetRoomDetailsByFloor", "Admin")',
+                type: 'GET',
+                data: { floor: floor },
+                success: function (result) {
+                    $('#room-details-body').html(result);
+                },
+                error: function () {
+                    alert('Failed to load room details.');
+                }
+            });
+        }
 
 
         function refreshRoomDetails() {
@@ -257,7 +273,7 @@
 
     .main-content {
         height: 85vh;
-        background-color: #185D62;;
+        background-color: #185D62;
         padding: 20px;
         color: #fff;
         border-radius: 10px;
@@ -272,6 +288,7 @@
         padding-left: 20px;
         padding-right: 20px;
     }       
+
 
     /*ROOM nga styles*/
     .mytabs {
@@ -345,7 +362,7 @@
     .add-room .refresh i {
         
         background-color: transparent;
-        siz
+        
     }
     
     .table-data .head h3 {
