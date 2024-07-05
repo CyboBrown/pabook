@@ -20,5 +20,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public bool Recurring { get; set; }
         public int UserId { get; set; }
         public int RoomId { get; set; }
+        public int? RecurrenceTypeId { get; set; }
+        public DateTime? RecurrenceEndDate { get; set; }
     }
 }
