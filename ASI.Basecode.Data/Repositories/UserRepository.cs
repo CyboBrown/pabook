@@ -62,5 +62,11 @@ namespace ASI.Basecode.Data.Repositories
             }
             UnitOfWork.SaveChanges();
         }
+
+        public User GetUserById(int id)
+        {
+            Console.WriteLine(" > UserRepo: GetUserById");
+            return this.GetDbSet<User>().FirstOrDefault(x => x.Id == id);
+        }
     }
 }
