@@ -23,17 +23,22 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Type" class="control-label"></label>
-                        <input asp-for="Type" class="form-control" />
+                        <input asp-for="Type" class="form-control" type="number" min="0" />
                         <span asp-validation-for="Type" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Capacity" class="control-label"></label>
-                        <input asp-for="Capacity" class="form-control" />
+                        <input asp-for="Capacity" class="form-control" type="number" min="0" />
                         <span asp-validation-for="Capacity" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Location" class="control-label"></label>
-                        <input asp-for="Location" class="form-control" />
+                        <select asp-for="Location" class="form-control">
+                            <option value="">-- Select Floor --</option>
+                            <option value="10th Floor">10th Floor</option>
+                            <option value="11th Floor">11th Floor</option>
+                            <option value="14th Floor">14th Floor</option>
+                        </select>
                         <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -62,10 +67,8 @@
     });
     
     function selectRoomTab() {
-        // Select the Room tab
         document.getElementById('tabRoom').checked = true;
             
-        // Load content for the Room tab
         loadTabContent('Room');
     }
 
@@ -77,7 +80,6 @@
             progressBar: true
     };
 
-    var successMessage = '@TempData["SuccessMessage"]';
     var duplicateError = '@TempData["DuplicateErr"]';
 
     if (successMessage) {
@@ -86,6 +88,22 @@
     if (duplicateError) {
         toastr.error(duplicateError);
     }
+
+
+    document.getElementById('createForm').addEventListener('submit', function(event) {
+        var typeField = document.querySelector('input[name="Type"]');
+        var capacityField = document.querySelector('input[name="Capacity"]');
+            
+        if (typeField.value < 0) {
+            event.preventDefault();
+            alert("Type cannot be a negative number.");
+        }
+            
+        if (capacityField.value < 0) {
+            event.preventDefault();
+            alert("Capacity cannot be a negative number.");
+        }
+    });
 </script>
 
     <style>
