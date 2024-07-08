@@ -142,6 +142,8 @@ namespace ASI.Basecode.WebApp
 
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IRecurrenceTypeRepository, RecurrenceTypeRepository>();
             services.AddScoped<IRecurrenceTypeService, RecurrenceTypeService>();
 

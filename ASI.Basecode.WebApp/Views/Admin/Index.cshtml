@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomViewModel>
+﻿@model ASI.Basecode.Services.ServiceModels.AdminHomeViewModel
 
 @{
     ViewData["Title"] = "Admin Home Page";
@@ -18,10 +18,57 @@
 
             <input type="radio" id="tabUser" name="mytabs" onchange="loadTabContent('User')" @((ViewData["ActiveTab"] as string == "User") ? "checked" : "")>
             <label for="tabUser">User</label>
-            <div class="tab" id="tabUserContent">
-              <h2>User</h2>
-              <p>DRI INYONG INPUT</p>
+
+            <div class="tab" id="tabRoomContent">
+              <h2>User Management</h2>
+              <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>User Details</h3>
+
+                        <div class="add-user">
+                                <a href="@Url.Action("CreateUser", "Admin")" class="btn btn-success">
+                                    <i class='bx bx-plus'></i> 
+                                </a>
+                        </div>
+                        <div class="refresh">
+                            <button class="btn btn-secondary btn-sm" onclick="refreshRoomDetails()">
+                                <i class='bx bx-refresh'></i> 
+                            </button>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="scroll-div">
+                        <table class="table-scroll">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Users.First().Id)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Users.First().LastName)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Users.First().FirstName)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Users.First().Email)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Users.First().UserRole)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-details-body">
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr>
+                                        <td>@user.Id</td>
+                                        <td>@user.LastName</td>
+                                        <td>@user.FirstName</td>
+                                        <td>@user.Email</td>
+                                        <td>@user.UserRole</td>
+                                    </tr>
+                                }
+                                @*naa sa shared folder and data*@
+                             </tbody>                            
+                        </table>    
+                    </div>
+                </div>
+              </div>
             </div>
+
 
             <input type="radio" id="tabRoom" name="mytabs" onchange="loadTabContent('Room')" @((ViewData["ActiveTab"] as string == "Room") ? "checked" : "")>
             <label for="tabRoom">Room</label>
@@ -64,16 +111,26 @@
                         <table class="table-scroll">
                             <thead>
                                 <tr>
-                                    <th>@Html.DisplayNameFor(model => model.Id)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Type)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Capacity)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Location)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Facilities)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Id)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Name)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Type)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Capacity)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Location)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Facilities)</th>
                                 </tr>
                             </thead>
                             <tbody id="room-details-body">
-                                <partial name="_RoomDetailsTableBody" model="@Model" />
+                                @foreach (var room in Model.Rooms)
+                                {
+                                    <tr>
+                                        <td>@room.Id</td>
+                                        <td>@room.Name</td>
+                                        <td>@room.Type</td>
+                                        <td>@room.Capacity</td>
+                                        <td>@room.Location</td>
+                                        <td>@room.Facilities</td>
+                                    </tr>
+                                }
                                 @*naa sa shared folder and data*@
                              </tbody>                            
                         </table>    
@@ -183,7 +240,8 @@
                     }
                 });
             }
-        }*/
+        }
+
         /*
         function loadTabContent(tab) {
             $.ajax({
@@ -211,6 +269,20 @@
                 },
                 error: function () {
                     alert('Failed to load room details.');
+                }
+            });
+        }
+
+        function showUserDetails() {
+            $.ajax({
+                url: '@Url.Action("GetAll", "Admin")',
+                type: 'GET',
+                data: { floor: floor },
+                success: function (result) {
+                    $('#room-details-body').html(result);
+                },
+                error: function () {
+                    alert('Failed to load user details.');
                 }
             });
         }
