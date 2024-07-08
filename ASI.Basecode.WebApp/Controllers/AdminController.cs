@@ -58,7 +58,12 @@ namespace ASI.Basecode.WebApp.Controllers
             switch (tab)
             {
                 case "Bookings":
-                    model.Bookings = _bookingService.GetAll();
+                    /*model.Bookings = _bookingService.GetAll();
+                    model.Bookings = _bookingService.GetAll().Select(b => new BookingsViewModel
+                    {
+                        Id = b.Id,
+                        
+                    }).ToList();*/
                     break;
                 case "User":
                     model.Users = _userManagementService.GetAll().Select(u => new UserManagementViewModel
