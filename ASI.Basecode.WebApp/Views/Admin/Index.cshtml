@@ -131,9 +131,13 @@
                                         <td>@room.Capacity</td>
                                         <td>@room.Location</td>
                                         <td>@room.Facilities</td>
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", "Room", new { Id = room.Id }, new { @class = "btn btn-primary btn-sm" })
+                                            @Html.ActionLink("Details", "Details", "Room", new { Id = room.Id }, new { @class = "btn btn-info btn-sm" })
+                                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@room.Id)">Delete</button>
+                                        </td>
                                     </tr>
                                 }
-                                @*naa sa shared folder and data*@
                              </tbody>                            
                         </table>    
                     </div>
