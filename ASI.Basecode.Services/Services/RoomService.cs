@@ -42,6 +42,30 @@ namespace ASI.Basecode.Services.Services
             return data;
         }
 
+        public IEnumerable<RoomViewModel> GetAllRooms()
+        {
+            Console.WriteLine(" > RoomService: GetAllRooms");
+            var data = _roomRepository.GetRooms()
+                .Where(x => x.Deleted == false)
+                .Select(s => new RoomViewModel
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Capacity = s.Capacity,
+                    Type = s.Type,
+                    Location = s.Location,
+                    Facilities = s.Facilities,
+                });
+
+            if (!data.Any())
+            {
+                Console.WriteLine("No rooms found in the database");
+            }
+
+            return data;
+        }
+
+
         public void Add(RoomViewModel model)
         {
             Console.WriteLine(" > RoomService: Add");

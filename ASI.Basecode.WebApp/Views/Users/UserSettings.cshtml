@@ -1,10 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "User Settings";
+    ViewData["Title"] = "Admin Settings";
 }
 <div class="outer-container">
     <div class="main-content">
-        <h1>User Settings</h1>
-        <!--I add dri user settings code for later -->
+        <h1>Settings and Preferences</h1>
+        <div class="profile-section">
+            <div class="profile-pic"></div>
+            <div class="profile-info">
+                <span class="profile-name">ADMIN USER</span>
+                <span class="profile-status">Active</span>
+            </div>
+        </div>
+        <div class="settings-section">
+            <div class="setting">
+                <span>Switch to darkmode</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting">
+                <span>Notification</span>
+                <span class="status">On</span>
+            </div>
+            <div class="setting">
+                <span>Default Time</span>
+                <select class="time-select">
+                    <option>24 - hour</option>
+                    <option>12 - hour</option>
+                </select>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button class="save-button">Save Changes</button>
+            <button class="cancel-button">Cancel</button>
+        </div>
     </div>
 </div>
 
@@ -56,8 +86,135 @@
             margin-bottom: 30px;
             letter-spacing: 0.5px;
         }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-         <!--Add dri code sa imong css styles sa imong user settings nga code-->
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            background-color: #ccc;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-status {
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .settings-section {
+            margin-top: 20px;
+        }
+
+        .setting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .setting span {
+            font-size: 18px;
+        }
+
+        .status {
+            font-size: 18px;
+            color: #ccc;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .time-select {
+            font-size: 18px;
+            background-color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .save-button,
+        .cancel-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background-color: #28a745;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .cancel-button {
+            background-color: #6c757d;
+            color: white;
+        }
 
     </style>
 }
+

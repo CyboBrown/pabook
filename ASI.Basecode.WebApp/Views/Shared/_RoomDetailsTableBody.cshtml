@@ -1,0 +1,18 @@
+﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomViewModel>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+        <td>@Html.DisplayFor(modelItem => item.Type)</td>
+        <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+        <td>@Html.DisplayFor(modelItem => item.Location)</td>
+        <td>@Html.DisplayFor(modelItem => item.Facilities)</td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", "Room", new { Id = item.Id }, new { @class = "btn btn-primary btn-sm" })
+            @Html.ActionLink("Details", "Details", "Room", new { Id = item.Id }, new { @class = "btn btn-info btn-sm" })
+            <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@item.Id)">Delete</button>
+        </td>
+    </tr>
+}

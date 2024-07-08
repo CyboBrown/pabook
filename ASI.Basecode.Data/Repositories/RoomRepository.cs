@@ -33,8 +33,6 @@ namespace ASI.Basecode.Data.Repositories
             Console.WriteLine(" > RoomRepo: AddRoom");
             var maxId = GetDbSet<Room>().Count() == 0 ? 1 : GetDbSet<Room>().Max(x => x.Id) + 1;
             room.Id = maxId;
-            room.UpdatedDate = DateTime.Now;
-            room.UpdatedBy = "[Current User]";
             this.GetDbSet<Room>().Add(room);
             UnitOfWork.SaveChanges();
         }
@@ -43,8 +41,6 @@ namespace ASI.Basecode.Data.Repositories
         {
             Console.WriteLine(" > RoomRepo: UpdateRoom");
             this.GetDbSet<Room>().Update(room);
-            room.UpdatedDate = DateTime.Now;
-            room.UpdatedBy = "[Current User]";
             UnitOfWork.SaveChanges();
         }
 
@@ -57,7 +53,7 @@ namespace ASI.Basecode.Data.Repositories
                 //this.GetDbSet<Room>().Remove(roomToDelete);
                 roomToDelete.Deleted = true;
                 roomToDelete.UpdatedDate = DateTime.Now;
-                roomToDelete.UpdatedBy = "[Current User]";
+                roomToDelete.UpdatedBy = "[Deleted]";
             }
             UnitOfWork.SaveChanges();
         }

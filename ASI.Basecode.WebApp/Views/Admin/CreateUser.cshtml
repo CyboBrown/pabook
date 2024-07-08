@@ -1,7 +1,7 @@
-﻿@model ASI.Basecode.Services.ServiceModels.RoomViewModel
+﻿@model ASI.Basecode.Services.ServiceModels.UserManagementViewModel
 
 @{
-    ViewData["Title"] = "Create Room";
+    ViewData["Title"] = "Create User";
 }
 <div class="outer-container">
     <div class="main-content">
@@ -13,38 +13,33 @@
                 <form asp-action="PostCreate" id="createForm">
                  <input type="hidden" id="requestId" name="requestId" value="@Guid.NewGuid().ToString()" />
                     <div>
-                        <a href="@Url.Action("Index", "Admin", new { tab = "Room" })" onclick="selectRoomTab()">Back to List</a>
+                        <a href="@Url.Action("Index", "Admin", new { tab = "User" })" onclick="selectUserTab()">Back to List</a>
                     </div>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="Name" class="control-label"></label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Type" class="control-label"></label>
-                        <input asp-for="Type" class="form-control" type="number" min="0" />
-                        <span asp-validation-for="Type" class="text-danger"></span>
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Capacity" class="control-label"></label>
-                        <input asp-for="Capacity" class="form-control" type="number" min="0" />
-                        <span asp-validation-for="Capacity" class="text-danger"></span>
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Location" class="control-label"></label>
-                        <select asp-for="Location" class="form-control">
-                            <option value="">-- Select Floor --</option>
-                            <option value="10th Floor">10th Floor</option>
-                            <option value="11th Floor">11th Floor</option>
-                            <option value="14th Floor">14th Floor</option>
+                        <label asp-for="UserRole" class="control-label"></label>
+                        <select asp-for="UserRole" class="form-control">
+                            <option value="">-- Select Role --</option>
+                            <option value="0">Admin</option>
+                            <option value="1">Manager</option>
+                            <option value="2">User</option>
                         </select>
-                        <span asp-validation-for="Location" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Facilities" class="control-label"></label>
-                        <input asp-for="Facilities" class="form-control" />
-                        <span asp-validation-for="Facilities" class="text-danger"></span>
+                        <span asp-validation-for="UserRole" class="text-danger"></span>
                     </div>
                     <div class="buttons">
                         <input type="submit" value="Add" class="btn btn-primary" />

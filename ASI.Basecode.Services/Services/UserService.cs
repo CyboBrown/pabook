@@ -102,5 +102,11 @@ namespace ASI.Basecode.Services.Services
             Console.WriteLine(" > UserService: Delete");
             _userRepository.DeleteUser(id);
         }
+
+        public User GetUserById(int id)
+        {
+            Console.WriteLine(" > UserService: GetUserById");
+            return _userRepository.GetUserById(id);
+        }
     }
 }

@@ -18,10 +18,7 @@ namespace ASI.Basecode.Data.Repositories
         public void AddBooking(Booking booking)
         {
             Console.WriteLine(" > BookingRepo: AddBooking");
-            var maxId = GetDbSet<Booking>().Count() == 0 ? 1 : GetDbSet<Booking>().Max(x => x.Id) + 1;
-            booking.Id = maxId;
-            booking.UpdatedDate = DateTime.Now;
-            booking.UpdatedBy = "[Current User]";
+            // Ayaw i set manually and ID kay mag error
             this.GetDbSet<Booking>().Add(booking);
             UnitOfWork.SaveChanges();
         }
@@ -40,7 +37,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 bookingToCancel.Cancelled = true;
                 bookingToCancel.UpdatedDate = DateTime.Now;
-                bookingToCancel.UpdatedBy = "[Current User]";
+                bookingToCancel.UpdatedBy = "[Cancelled]";
             }
             UnitOfWork.SaveChanges();
         }
@@ -53,7 +50,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 bookingToDelete.Deleted = true;
                 bookingToDelete.UpdatedDate = DateTime.Now;
-                bookingToDelete.UpdatedBy = "[Current User]";
+                bookingToDelete.UpdatedBy = "[Deleted]";
             }
             UnitOfWork.SaveChanges();
         }
@@ -74,8 +71,6 @@ namespace ASI.Basecode.Data.Repositories
         {
             Console.WriteLine(" > BookingRepo: UpdateBooking");
             this.GetDbSet<Booking>().Update(booking);
-            booking.UpdatedDate = DateTime.Now;
-            booking.UpdatedBy = "[Current User]";
             UnitOfWork.SaveChanges();
         }
     }

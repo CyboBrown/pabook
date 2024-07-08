@@ -16,5 +16,6 @@ namespace ASI.Basecode.Data.Interfaces
         void UpdateBooking(Booking booking);
         void CancelBooking(int id);
         void DeleteBooking(int id);
+
     }
 }

@@ -22,5 +22,8 @@ namespace ASI.Basecode.Services.ServiceModels
         public int RoomId { get; set; }
         public int? RecurrenceTypeId { get; set; }
         public DateTime? RecurrenceEndDate { get; set; }
+        public List<RoomViewModel> Rooms { get; set; }
+        public string RecurrenceType { get; set; }
+        public string RoomName { get; set; }
     }
 }
