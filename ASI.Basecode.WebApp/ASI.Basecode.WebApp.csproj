@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Booking\**" />
+    <Content Remove="Views\Booking\**" />
+    <EmbeddedResource Remove="Views\Booking\**" />
+    <EntityDeploy Remove="Views\Booking\**" />
+    <None Remove="Views\Booking\**" />
+    <TypeScriptCompile Remove="Views\Booking\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.json.rej" />
   </ItemGroup>
 
