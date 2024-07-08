@@ -12,5 +12,6 @@ namespace ASI.Basecode.Services.Interfaces
         IEnumerable<UserViewModel> GetAll(int? id = null, string username = null, string firstname = null, string lastname = null);
         void Update(UserViewModel model);
         void Delete(int id);
+        User GetUserById(int id);
     }
 }

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Interfaces
 {
-    public interface IUserRepository
+    public interface IAdminRepository
     {
+        // User methods
         IQueryable<User> GetUsers();
         bool UserExists(string username);
         User GetUser(string username);
@@ -16,5 +17,16 @@ namespace ASI.Basecode.Data.Interfaces
         void UpdateUser(User user);
         void DeleteUser(int id);
         User GetUserById(int id);
+
+
+
+
+        // Room methods
+        IQueryable<Room> GetRooms();
+        bool RoomExists(int id);
+        Room GetRoom(int id);
+        void AddRoom(Room room);
+        void UpdateRoom(Room room);
+        void DeleteRoom(int id);
     }
 }

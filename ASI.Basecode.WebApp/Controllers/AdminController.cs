@@ -22,6 +22,8 @@ namespace ASI.Basecode.WebApp.Controllers
     public class AdminController : ControllerBase<AdminController>
     {
         private readonly IRoomService _roomService;
+        private readonly IUserManagementService _userManagementService;
+        private readonly IBookingService _bookingService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -29,12 +31,13 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="loggerFactory"></param>
         /// <param name="configuration"></param>
         /// <param name="mapper"></param>
-        public AdminController(IRoomService roomService, IHttpContextAccessor httpContextAccessor,
+        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService _bookingService, IHttpContextAccessor httpContextAccessor,
                                ILoggerFactory loggerFactory,
                                IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _roomService = roomService;
+            _userManagementService = userManagementService;
         }
 
         /// <summary>
@@ -45,22 +48,59 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult Index(string tab = "Room")
         {
             ViewData["ActiveTab"] = tab;
-            
+            var model = new AdminHomeViewModel
+            {
+                Rooms = new List<RoomViewModel>(),
+                Users = new List<UserManagementViewModel>(),
+                Bookings = new List<BookingViewModel>()
+            };
+
             switch (tab)
+            {
+                case "Bookings":
+                    model.Bookings = _bookingService.GetAll();
+                    break;
+                case "User":
+                    model.Users = _userManagementService.GetAll().Select(u => new UserManagementViewModel
+                    {
+                        Id = u.Id,
+                        LastName = u.LastName,
+                        FirstName = u.FirstName,
+                        Email = u.Email,
+                        UserRole = u.UserRole,
+                    }).ToList();
+                    break;
+                case "Room":
+                    model.Rooms = _roomService.GetAll().Select(r => new RoomViewModel
+                    {
+                        Id = r.Id,
+                        Name = r.Name,
+                        Capacity = r.Capacity,
+                        Type = r.Type,
+                        Location = r.Location,
+                        Facilities = r.Facilities
+                    }).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            return View(model);
+            /* switch (tab)
             {
                 
                 case "Bookings":
                     var bookingsViewModel = GetBookingsViewModel();
                     return View("Index", "Bookings");
                 case "User":
-                    var userViewModel = GetUserViewModel();
-                    return View("Index", userViewModel); // Pass a single UserViewModel
+                    var userManagement = _userService.GetAll();
+                    return View("Index", userManagement); // Pass a single UserViewModel
                 case "Room":
                     var rooms = _roomService.GetAll();// Replace with your actual method to fetch rooms
                     return View("Index", rooms); // Pass a single RoomViewModel
                 default:
                     return View("Index");
-            }
+            }*/
         }
         public IActionResult GetRoomContent()
         {
@@ -86,7 +126,13 @@ namespace ASI.Basecode.WebApp.Controllers
             var bookingsViewModel = GetBookingsViewModel();
             return PartialView("_BookingsContentPartial", bookingsViewModel);
         }
-        
+
+        public IActionResult GetUserManagementContent()
+        {
+            var userManagementViewModel = GetUserManagementViewModel();
+            return PartialView("_UserManagementContentPartial", userManagementViewModel);
+        }
+
         private List<RoomViewModel> GetRoomViewModel()
         {
             var rooms = _roomService.GetAll();
@@ -114,16 +160,34 @@ namespace ASI.Basecode.WebApp.Controllers
             return userViewModel;
         }
 
-        private BookingViewModel GetBookingsViewModel()
+        private List<BookingViewModel> GetBookingsViewModel()
         {
+            var bookings = _bookingService.GetAll();
 
-            var bookingViewModel = new BookingViewModel
+            var bookingViewModel = bookings.Select(bookings => new BookingViewModel
             {
+                Id = bookings.Id
+            }).ToList();
 
-            };
             return bookingViewModel;
         }
+
+        private List<UserManagementViewModel> GetUserManagementViewModel()
+        {
+            var users = _userManagementService.GetAll();
+            return users.Select(user => new UserManagementViewModel
+            {
+                Id = user.Id,
+                LastName = user.LastName,
+                FirstName = user.FirstName,
+                Email = user.Email,
+                UserRole = user.UserRole,
+            }).ToList();
+        }
+
         
+
+
 
 
         /// <summary>
