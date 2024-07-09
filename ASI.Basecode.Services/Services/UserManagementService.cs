@@ -42,5 +42,27 @@ namespace ASI.Basecode.Services.Services
 
             return data;
         }
+        public UserManagementViewModel GetUserById(string userId)
+        {
+            // Assuming userId is a string representation of an integer
+            if (int.TryParse(userId, out int id))
+            {
+                var user = _userRepository.GetUsers().FirstOrDefault(x => x.Id == id && !x.Deleted);
+
+                if (user != null)
+                {
+                    return new UserManagementViewModel
+                    {
+                        Id = user.Id,
+                        LastName = user.LastName,
+                        FirstName = user.FirstName,
+                        Email = user.Email
+                        // Map other properties as needed
+                    };
+                }
+            }
+
+            return null; // Handle if user not found or userId is not valid
+        }
     }
 }
