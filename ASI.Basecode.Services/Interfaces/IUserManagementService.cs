@@ -10,5 +10,6 @@ namespace ASI.Basecode.Services.Interfaces
     public interface IUserManagementService
     {
         IEnumerable<UserManagementViewModel> GetAll(int? id = null, string name = null);
+        UserManagementViewModel GetUserById(string userId);
     }
 }

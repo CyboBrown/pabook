@@ -31,12 +31,14 @@
             </li>
         </ul>
 
-
+    <div class="user-details">
+        <span class="user-name">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+        <span class="user-email">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+    </div>
         <div class="notification-section">
             <a href="#" id="notificationToggle">
                 <i class="fas fa-bell"></i>
                 <span class="notification-text">Notification</span>
-                @*<span class="notification-badge">3</span>*@
             </a>
         </div>
         <div class="signout">
@@ -105,10 +107,30 @@
         margin-right: 10px;
 
     }
+
+    .user-details {
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #444;
+        margin-top: auto;
+    }
+
+    .user-name {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+
+    .user-email {
+        font-size: 0.9em;
+        color: #bbb;
+    }
   
     .notification-section {
         width: 100%;
-        margin-top: auto;
+        
         padding: 0px 0px;
     }
 
