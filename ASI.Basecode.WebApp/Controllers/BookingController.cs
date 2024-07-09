@@ -17,10 +17,12 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly IRoomService _roomService;
+        private readonly IRecurrenceTypeService _recurrenceTypeService;
 
         public BookingController(
             IBookingService bookingService,
             IRoomService roomService,
+            IRecurrenceTypeService recurrenceTypeService,
             IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
             IConfiguration configuration,
@@ -29,6 +31,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             _bookingService = bookingService;
             _roomService = roomService;
+            _recurrenceTypeService = recurrenceTypeService;
         }
 
         [HttpGet("rooms")]
@@ -36,6 +39,15 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             var rooms = _roomService.GetAllRooms().ToList();
             return Ok(rooms);
+        }
+
+        [HttpGet("recurrenceTypes")]
+        public IActionResult GetRecurrenceTypes()
+        {
+            var recurrenceTypes = _recurrenceTypeService.GetAllRecurrenceTypes()
+                .Select(rt => new { id = rt.Id, name = rt.Name })
+                .ToList();
+            return Ok(recurrenceTypes);
         }
 
         [HttpPost("create")]
