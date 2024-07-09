@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -24,6 +26,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IRoomService _roomService;
         private readonly IUserManagementService _userManagementService;
         private readonly IBookingService _bookingService;
+        private readonly IUserService _userService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -31,13 +34,14 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="loggerFactory"></param>
         /// <param name="configuration"></param>
         /// <param name="mapper"></param>
-        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService _bookingService, IHttpContextAccessor httpContextAccessor,
+        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService _bookingService, IUserService userService, IHttpContextAccessor httpContextAccessor,
                                ILoggerFactory loggerFactory,
                                IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _roomService = roomService;
             _userManagementService = userManagementService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -292,6 +296,31 @@ namespace ASI.Basecode.WebApp.Controllers
 
             TempData["AddedRoom"] = "Added Successfully!";
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateUser(UserViewModel model)
+        {
+            bool isDuplicate = _userService.GetAll().Any(user => user.UserName == model.UserName || user.Email == model.Email);
+            if (isDuplicate)
+            {
+                TempData["DuplicateErr"] = "User Already Exists";
+                return RedirectToAction("CreateUser", model);
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _userService.Add(model);
+                    TempData["SuccessMessage"] = "User created successfully.";
+                    return RedirectToAction("Index");
+                } catch (InvalidDataException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+            }
+            return View(model);
         }
 
         [HttpPost]
