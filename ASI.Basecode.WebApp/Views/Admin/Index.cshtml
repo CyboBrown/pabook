@@ -17,7 +17,7 @@
             </div>
 
             <input type="radio" id="tabUser" name="mytabs" onchange="loadTabContent('User')" @((ViewData["ActiveTab"] as string == "User") ? "checked" : "")>
-            <label for="tabUser">User</label>
+            <label for="tabUser">Users</label>
 
             <div class="tab" id="tabUserContent">
               <h2>User Management</h2>
@@ -39,8 +39,8 @@
                         
                     </div>
                     
-                    <div class="scroll-div">
-                        <table class="table-scroll">
+                    <div class="user-table"><!--"scroll-div"-->
+                        <table class="user-scroll"><!--"table-scroll"-->
                             <thead>
                                 <tr>
                                     <th>@Html.DisplayNameFor(model => model.Users.First().Id)</th>
@@ -59,10 +59,10 @@
                                         <td>@user.FirstName</td>
                                         <td>@user.Email</td>
                                         <td>@user.UserRole</td>
-                                        <td>
+                                        @*<td>
                                             @Html.ActionLink("Edit", "Edit", "UserManagement", new { Id = user.Id }, new { @class = "btn btn-primary btn-sm" })
                                             @Html.ActionLink("Details", "Details", "UserManagement", new { Id = user.Id }, new { @class = "btn btn-info btn-sm" })
-                                        </td>                                       
+                                        </td>   *@                                    
                                     </tr>
                                 }
                                 
