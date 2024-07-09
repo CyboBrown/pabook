@@ -233,6 +233,13 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        public IActionResult CreateUser()
+        {
+            Console.WriteLine("Passed Controller Get Create");
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Details(int Id)
         {
             var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
