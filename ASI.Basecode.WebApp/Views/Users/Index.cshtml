@@ -22,9 +22,8 @@
                 <div class="background-image">
                     <div class="overlay">
                         <div class="date-time">
-                            <span class="time-now">
-                                11:11</br>
-                                <span class="date-now">Tuesday, June 18</span>
+                            <span id="time-now" class="time-now"></span><br>
+                            <span id="date-now" class="date-now"></span>
                         </div>
                         <div class="book-now">
                             <button>Book now</button>
@@ -34,23 +33,30 @@
             </div>
             <div class="right-pane">
                 <div class="booking-info">
-                    <h1 style="font-size: 4.5vh;">Today's Booking</h1>
-                    <div class="booking-item">
-                        <span class="time">09:00</span>
-                        <span class="title">Project Management Mock Defense</span>
-                        <span class="location">Training Room</span>
+                    <h1 class="text-3xl font-bold mb-4">Today's Booking</h1>
+                    <div class="overflow-x-auto">
+                        <div class="max-h-96 overflow-y-auto">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingItems" class="divide-y divide-gray-200">
+                                      <!-- ari ang mga bookings ma display -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="booking-item">
-                        <span class="time">11:00</span>
-                        <span class="title">C# Mock Defense</span>
-                        <span class="location">Training Room</span>
-                    </div>
+
                 </div>
             </div>
         </div>
         <div id="myBookingsContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800">My Bookings</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">My Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
                     <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
@@ -71,7 +77,7 @@
                                 </tr>
                             </thead>
                             <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Rows will be inserted here -->
+                                <!-- ari ang mga bookings ma display -->
                             </tbody>
                         </table>
                     </div>
@@ -151,6 +157,68 @@
 </div>
 
 <script>
+    //fetching karon nga bookings
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchTodaysBookings();
+
+        // Refreshes kada 5 minutes
+        setInterval(fetchTodaysBookings, 300000);
+    });
+
+    function fetchTodaysBookings() {
+        fetch('/api/Booking/todaysBookings')
+            .then(response => response.json())
+            .then(data => {
+                // Sort bookings by start time
+                data.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+                const bookingItemsContainer = document.getElementById('bookingItems');
+                bookingItemsContainer.innerHTML = ''; // Clear existing items
+
+                data.forEach(booking => {
+                    const bookingItem = document.createElement('tr');
+                    bookingItem.classList.add('booking-item');
+                    bookingItem.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatTime(booking.startTime)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                    `;
+                    bookingItemsContainer.appendChild(bookingItem);
+                });
+            })
+            .catch(error => console.error('Error fetching bookings:', error));
+    }
+
+
+    function formatTime(timeString) {
+        const [hours, minutes] = timeString.split(':');
+        let hoursInt = parseInt(hours);
+        const ampm = hoursInt >= 12 ? 'PM' : 'AM';
+        hoursInt = hoursInt % 12 || 12; // Convert to 12-hour format
+        return `${hoursInt}:${minutes} ${ampm}`;
+    }
+
+    function updateDateTime() {
+        const now = new Date();
+
+        // pag update sa time
+        const timeElement = document.getElementById('time-now');
+        const currentTime = now.toTimeString().slice(0, 5); // HH:MM
+        timeElement.textContent = formatTime(currentTime);
+
+        // pag update sa day
+        const dateElement = document.getElementById('date-now');
+        dateElement.textContent = now.toLocaleString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    //real time update sa time and date 
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
@@ -259,6 +327,12 @@
                     modal.style.display = "none";
                     loadBookings();
                     bookingForm.reset();
+
+                    // Checker if ang booking kay for today
+                    const today = new Date().toISOString().split('T')[0];
+                    if (data.date === today) {
+                        fetchTodaysBookings(); // if yes, kay mu refresh sa table
+                    }
                 })
                 .catch(error => {
                     console.error('Error creating booking:', error);
@@ -509,12 +583,11 @@
         }
 
         .date-time {
-            margin-bottom: 20px;
+            margin-bottom: 100px;
         }
 
             .date-time .time-now,
             .date-time .date-now {
-                display: block;
                 font-size: 40px;
                 line-height: 1.2;
                 margin-bottom: 10px;
@@ -543,16 +616,6 @@
             width: 100%;
         }
 
-        .booking-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-        }
-
-            .booking-item:not(:last-child) {
-                border-bottom: 1px solid #ccc;
-            }
 
         .time {
             font-weight: bold;

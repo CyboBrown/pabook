@@ -67,5 +67,20 @@ namespace ASI.Basecode.WebApp.Controllers
             var bookings = _bookingService.GetAllBookings().ToList();
             return Ok(bookings);
         }
+
+        [HttpGet("todaysBookings")]
+        public IActionResult GetTodaysBookings()
+        {
+            var today = DateTime.Today;
+            var bookings = _bookingService.GetAllBookings()
+                                          .Where(b => b.Date.Date == today)
+                                          .Select(b => new {
+                                              b.StartTime,
+                                              b.Title,
+                                              b.RoomName
+                                          })
+                                          .ToList();
+            return Ok(bookings);
+        }
     }
 }
