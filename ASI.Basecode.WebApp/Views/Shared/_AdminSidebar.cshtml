@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 
     <div class="sidebar">
         <div class="logo">
@@ -32,22 +30,20 @@
                 </a>
             </li>
         </ul>
-        <div class="user-info">
-            <div class="notification-button">
-                <a href="#" id="notificationToggle">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </a>
-            </div>
-            <div class="user-details">
-                <span class="user-name">Admin Kent John</span>
-                <span class="user-email">kennyadmin@gmail.com</span>
-            </div>
-            <div class="logout">
-                <a asp-action="SignOutAdmin" asp-controller="Account">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-            </div>
+
+
+        <div class="notification-section">
+            <a href="#" id="notificationToggle">
+                <i class="fas fa-bell"></i>
+                <span class="notification-text">Notification</span>
+                @*<span class="notification-badge">3</span>*@
+            </a>
+        </div>
+        <div class="signout">
+            <a asp-action="SignOutAdmin" asp-controller="Account">
+                <i class="fas fa-sign-out-alt"></i>
+            <span>Logout/@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            </a>
         </div>
     </div>
 
@@ -75,7 +71,7 @@
 
     .sidebar-menu {
         list-style: none;
-        padding: 0;
+        padding: 0px;
         margin: 20px 0;
         width: 100%;
     }
@@ -109,76 +105,55 @@
         margin-right: 10px;
 
     }
-
-    .user-info {
-        margin-top: auto;
+  
+    .notification-section {
         width: 100%;
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 12px;
+        margin-top: auto;
+        padding: 0px 0px;
     }
 
-    .notification-button {
-        position: relative;
-    }
-
-    .notification-button a {
+    .notification-section a {
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        background-color: #333;
-        border-radius: 50%;
         color: #fff;
         text-decoration: none;
+        width: 100%;
+        padding: 10px 20px;
         transition: background-color 0.3s ease;
     }
 
-        .notification-button a:hover {
-            background-color: #555;
-        }
-
-    .notification-badge {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background-color: #ff4444;
-        color: #fff;
-        font-size: 12px;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 50%;
+    .notification-section a:hover {
+        color: blue;
     }
 
-    .user-details {
+    .notification-section i {
+        margin-right: 10px;
+    }
+
+    .notification-text {
         flex-grow: 1;
-        margin-left: 15px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
     }
 
-    .user-name {
-        font-weight: bold;
-        margin-bottom: 5px;
+    .signout {
+        width: 100%;
+        margin-bottom: 20px;
     }
 
-    .user-email {
-        font-size: 0.7em;
-        color: #bbb;
-    }
-
-    .logout a {
+    .signout a {
         display: flex;
         align-items: center;
         color: #fff;
         text-decoration: none;
+        width: 100%;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease;
     }
 
-        .logout a i {
-            font-size: 1.4em;
-        }
+    .signout a:hover {
+        color: red;
+    }
+
+    .signout i {
+        margin-right: 10px;
+    }
 </style>
