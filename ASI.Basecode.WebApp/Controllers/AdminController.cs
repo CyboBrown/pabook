@@ -232,6 +232,15 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            Console.WriteLine("Passed Controller Get Create");
+            return View();
+        }
+
         [HttpGet]
         public IActionResult Details(int Id)
         {

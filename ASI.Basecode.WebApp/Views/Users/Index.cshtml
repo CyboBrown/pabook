@@ -49,7 +49,7 @@
             </div>
         </div>
         <div id="myBookingsContent" class="content hidden">
-            <div class="container mx-auto p-4 bg-gray-100" style="height: 75vh;">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">My Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
@@ -59,20 +59,22 @@
                     </button>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recurring</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
-                            <!-- ari musud ang next rows. naa ang script sa ubos -->
-                        </tbody>
-                    </table>
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recurring</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,7 +86,7 @@
 <div id="addMeetingModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1>Booking Form</h1>
+        <h1 style="font-size: 2.5rem;">Booking Form</h1>
         <form id="bookingForm">
             <div class="form-group full-width">
                 <label for="title">Title:</label>
@@ -129,10 +131,8 @@
             <div id="recurrenceOptions" class="full-width" style="display: none;">
                 <div class="form-group-half">
                     <label for="recurrenceType">Recurrence Type:</label>
-                    <select id="recurrenceType" name="recurrenceType">
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
+                    <select id="RecurrenceTypeId" name="RecurrenceTypeId" class="form-control">
+                        <option value="">Select Recurrence Type</option>
                     </select>
                 </div>
 
@@ -166,8 +166,29 @@
             })
             .catch(error => console.error('Error fetching rooms:', error));
 
-        const bookingForm = document.getElementById('bookingForm');
-        const submitButton = bookingForm.querySelector('button[type="submit"]');
+        //For fetching recurr types
+        function populateRecurrenceTypes() {
+            $.ajax({
+                url: '/api/Booking/recurrenceTypes',
+                type: 'GET',
+                success: function (data) {
+                    var dropdown = $('#RecurrenceTypeId');
+                    dropdown.empty();
+                    dropdown.append($('<option></option>').val('').text('Select Recurrence Type'));
+                    $.each(data, function (i, item) {
+                        dropdown.append($('<option></option>').val(item.id).text(item.name));
+                    });
+                },
+                error: function (error) {
+                    console.log('Error fetching recurrence types:', error);
+                }
+            });
+        }
+
+        // Call this function when the page loads
+        $(document).ready(function () {
+            populateRecurrenceTypes();
+        });
 
 
         // Add form validation
@@ -191,6 +212,9 @@
             return `${hours.padStart(2, '0')}:${minutes}:00`;
         }
 
+        const bookingForm = document.getElementById('bookingForm');
+        const submitButton = bookingForm.querySelector('button[type="submit"]');
+
         // form submission
         bookingForm.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -209,7 +233,7 @@
                 startTime: formatTimeToTimeSpan(formData.get('startTime')),
                 endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
-                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('recurrenceType')) : null,
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
                 userId: getCurrentUserId() // pagkuha sa current user ID
             };
@@ -677,6 +701,12 @@
 
         .form-group:last-child {
             margin-bottom: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(76vh - 10rem); 
         }
 
     </style>
