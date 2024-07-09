@@ -41,12 +41,12 @@ namespace ASI.Basecode.Services.Services
                 });
             return data;
         }
-        /*
-        public IEnumerable<RoomViewModel> GetRoomsByFloor(string floor)
+
+        public IEnumerable<RoomViewModel> GetAllRooms()
         {
-            Console.WriteLine(" > RoomService: GetRoomsByFloor");
+            Console.WriteLine(" > RoomService: GetAllRooms");
             var data = _roomRepository.GetRooms()
-                .Where(x => x.Deleted == false && x.Location.Contains(floor))
+                .Where(x => x.Deleted == false)
                 .Select(s => new RoomViewModel
                 {
                     Id = s.Id,
@@ -56,9 +56,16 @@ namespace ASI.Basecode.Services.Services
                     Location = s.Location,
                     Facilities = s.Facilities,
                 });
+
+            if (!data.Any())
+            {
+                Console.WriteLine("No rooms found in the database");
+            }
+
             return data;
         }
-        */
+
+
         public void Add(RoomViewModel model)
         {
             Console.WriteLine(" > RoomService: Add");

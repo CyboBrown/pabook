@@ -11,10 +11,14 @@ namespace ASI.Basecode.Services.Interfaces
     {
         IEnumerable<RoomViewModel> GetAll(int? id = null, string name = null);
         /*IEnumerable<RoomViewModel> GetRoomsByFloor(string floor);*/
+
+        IEnumerable<RoomViewModel> GetAllRooms(); 
+
         void Add(RoomViewModel model);
         void Update(RoomViewModel model);
         void Delete(int id);
         bool RequestAlreadyProcessed(string requestId);
         void MarkRequestAsProcessed(string requestId);
+
     }
 }

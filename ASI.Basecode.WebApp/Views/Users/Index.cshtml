@@ -1,4 +1,5 @@
-﻿<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+﻿@model ASI.Basecode.Services.ServiceModels.BookingViewModel
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 
 @{
@@ -68,45 +69,17 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Project Management Mock Defense</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Tue 18 Jun, 2024 9:00 AM - 11:00 AM</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Training Room</td>
-                                <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Yes
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
-                                    <button class="text-green-600 hover:text-green-900 mr-2">Details</button>
-                                    <button class="text-red-600 hover:text-red-900">Cancel</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">C# Mock Defense</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Tue 18 Jun, 2024 11:00 AM - 1:00 PM</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Training Room</td>
-                                <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                        No
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
-                                    <button class="text-green-600 hover:text-green-900 mr-2">Details</button>
-                                    <button class="text-red-600 hover:text-red-900">Cancel</button>
-                                </td>
-                            </tr>
-                            <!-- for test for more rows -->
+                        <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- ari musud ang next rows. naa ang script sa ubos -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
+
 
 <div id="addMeetingModal" class="modal">
     <div class="modal-content">
@@ -132,9 +105,6 @@
                 <label for="room">Room:</label>
                 <select id="room" name="room" required>
                     <option value="">Select a room</option>
-                    <option value="1">Room 1</option>
-                    <option value="2">Room 2</option>
-                    <option value="3">Room 3</option>
                 </select>
             </div>
 
@@ -176,10 +146,184 @@
                 <button type="submit">Create Booking</button>
                 <button type="reset" class="reset-button">Reset</button>
             </div>
-
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Fetch rooms and populate the select element
+        fetch('/api/Booking/rooms')
+            .then(response => response.json())
+            .then(data => {
+                const roomSelect = document.getElementById('room');
+                data.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room.id;
+                    option.text = room.name;
+                    roomSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching rooms:', error));
+
+        const bookingForm = document.getElementById('bookingForm');
+        const submitButton = bookingForm.querySelector('button[type="submit"]');
+
+
+        // Add form validation
+        function validateForm() {
+            const requiredFields = bookingForm.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('invalid');
+                } else {
+                    field.classList.remove('invalid');
+                }
+            });
+            return isValid;
+        }
+
+        // format time to TimeSpan string
+        function formatTimeToTimeSpan(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            return `${hours.padStart(2, '0')}:${minutes}:00`;
+        }
+
+        // form submission
+        bookingForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const data = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                date: formData.get('date'),
+                roomId: parseInt(formData.get('room')),
+                startTime: formatTimeToTimeSpan(formData.get('startTime')),
+                endTime: formatTimeToTimeSpan(formData.get('endTime')),
+                recurring: formData.get('recurring') === 'true',
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('recurrenceType')) : null,
+                recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
+                userId: getCurrentUserId() // pagkuha sa current user ID
+            };
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            fetch('/api/Booking/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    console.log('Booking created:', result);
+                    modal.style.display = "none";
+                    loadBookings();
+                    bookingForm.reset();
+                })
+                .catch(error => {
+                    console.error('Error creating booking:', error);
+                    let errorMessage = 'An error occurred while creating the booking. Please try again.';
+                    if (error.errors) {
+                        errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                    }
+                    alert(errorMessage);
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Create Booking';
+                });
+        });
+
+
+        function loadBookings() {
+            fetch('/api/Booking/bookings')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('bookingsTableBody');
+                    tableBody.innerHTML = ''; 
+                    data.forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${booking.recurring ? 'Yes' : 'No'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                                <button class="text-green-600 hover:text-green-900 mr-2">Details</button>
+                                <button class="text-red-600 hover:text-red-900">Cancel</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching bookings:', error));
+        }
+
+        // i laod ang bookings
+        loadBookings();
+
+        // pag open/close sa modal
+        var modal = document.getElementById("addMeetingModal");
+        var btn = document.querySelector(".book-now button");
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function () {
+            modal.style.display = "block";
+            bookingForm.reset(); // reset button
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // recurring nga choice
+        document.getElementById('recurring').addEventListener('change', function () {
+            document.getElementById('recurrenceOptions').style.display =
+                this.value === 'true' ? 'flex' : 'none';
+        });
+
+        // reset function
+        document.querySelector('.reset-button').addEventListener('click', function () {
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        });
+
+        // get current user ID (to be implemented)
+        function getCurrentUserId() {
+            // should return the ID of the currently logged-in user
+            // pwede from global var, local stor, or API call
+            return 1; // Placeholder value for now
+        }
+    });
+</script>
+
+
 
 <script>
     function switchTab(tabName) {
@@ -195,56 +339,6 @@
         document.getElementById(tabName + 'Content').style.display = 'flex';
         document.getElementById(tabName + 'Tab').classList.add('active');
     }
-</script>
-
-<script>
-    // pagkuha sa modal
-    var modal = document.getElementById("addMeetingModal");
-
-    // pag open sa modal
-    var btn = document.querySelector(".book-now button");
-
-    // pag close sa modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // mga buttons ubos sa modal form
-    var form = document.getElementById("addMeetingForm");
-    var addMeetingButton = document.getElementById("addMeetingButton");
-    var resetButton = document.getElementById("resetButton");
-
-    btn.onclick = function () {
-        modal.style.display = "block";
-    }
-
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    // Kung i-click sa user bisan asa gawas sa modal, ma close sya
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    // Handle recurring option
-    document.getElementById('recurring').addEventListener('change', function () {
-        document.getElementById('recurrenceOptions').style.display =
-            this.value === 'true' ? 'flex' : 'none';
-    });
-
-    // Handle form submission
-    document.getElementById('bookingForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        // Add your form submission logic here
-        console.log('Form submitted');
-        modal.style.display = "none";
-    });
-
-    // Handle form reset
-    document.querySelector('.reset-button').addEventListener('click', function () {
-        document.getElementById('recurrenceOptions').style.display = 'none';
-    });
 </script>
 
 @section Styles {

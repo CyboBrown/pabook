@@ -18,8 +18,7 @@ namespace ASI.Basecode.Data.Repositories
         public void AddBooking(Booking booking)
         {
             Console.WriteLine(" > BookingRepo: AddBooking");
-            var maxId = GetDbSet<Booking>().Count() == 0 ? 1 : GetDbSet<Booking>().Max(x => x.Id) + 1;
-            booking.Id = maxId;
+            // Ayaw i set manually and ID kay mag error
             this.GetDbSet<Booking>().Add(booking);
             UnitOfWork.SaveChanges();
         }
