@@ -51,7 +51,7 @@ namespace ASI.Basecode.Services.Services
                         StartTime = booking.StartTime,
                         EndTime = booking.EndTime,
                         Recurring = booking.Recurring,
-                        RecurrenceType = booking.RecurrenceType?.ToString() ?? "Unknown",
+                        RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
                         RoomName = room?.Name ?? "Unknown Room"
                     };

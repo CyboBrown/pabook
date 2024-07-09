@@ -44,12 +44,18 @@ namespace ASI.Basecode.WebApp.Controllers
             _userService = userService;
         }
 
+        private UserManagementViewModel GetCurrentUser()
+        {
+            var userId = HttpContext.User.Identity.Name; 
+            var user = _userManagementService.GetUserById(userId); 
+            return user;
+        }
         /// <summary>
         /// Returns Admin Home View.
         /// </summary>
         /// <returns> Admin Home View </returns>
 
-        public IActionResult Index(string tab = "Room")
+        public IActionResult Index(string tab = "Bookings")
         {
             ViewData["ActiveTab"] = tab;
             var model = new AdminHomeViewModel
@@ -236,6 +242,8 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        
+
         [HttpGet]
         public IActionResult CreateUser()
         {
@@ -297,6 +305,7 @@ namespace ASI.Basecode.WebApp.Controllers
             TempData["AddedRoom"] = "Added Successfully!";
             return RedirectToAction("Index");
         }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]

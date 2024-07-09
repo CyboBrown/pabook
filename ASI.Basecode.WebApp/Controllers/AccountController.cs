@@ -83,7 +83,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 await _signInManager.SignInAsync(user);
                 _session.SetString("UserName", user.UserName);
                 _session.SetString("UserRole", user.UserRole.ToString()); // Store role as string
-
+                _session.SetString("FullName", $"{user.FirstName} {user.LastName}");
+                _session.SetString("Email", user.Email);
                 Console.WriteLine($"User authenticated: {user.UserName}, Role: {user.UserRole}");
 
                 if (user.UserRole == 0) // Admin
