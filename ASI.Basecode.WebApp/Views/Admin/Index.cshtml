@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Admin Home Page";
 }
-
+<link rel="stylesheet" href="~/css/admin.css" />
 <div class="outer-container">
     <div class="main-content">
         <div class="mytabs">
@@ -114,7 +114,7 @@
                     
                     @*<div class="container tbl-container"*@
 
-                    <div class="scroll-div">
+                    <div class="scroll-container">
                         <table class="table-scroll">
                             <thead>
                                 <tr>
@@ -315,10 +315,10 @@
 
    </script> 
 }
-
+@*
  <style>
 
-    @*css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
+    
     body {
         margin: 0;
         font-family: Arial, sans-serif;
@@ -439,7 +439,7 @@
         align-items: center;
         grid-gap: 0px;
         background-color: transparent;
-        margin-bottom: 20px;
+        margin-bottom: 0px;
     }
 
     .add-room .refresh i {
@@ -482,20 +482,24 @@
         flex-basis: 500px;
         
     }
+    .scroll-container {
+        height: 300px; /* Set the desired height for the scrollable area */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
 
     .table-data .order table {
         width: 100%;
         border-collapse: collapse;
         background-color: white;
-        height: 300px;
+        /*height: 300px;
         overflow: hidden;
-        overflow-y: scroll;
+        overflow-y: scroll;*/
     }
 
     
     .table-data .order table th,
     .table-data .order table td {
-        padding: 12px 15px; /* Adjust padding as needed */
+        padding: 12px 15px; 
     }
 
     .table-data .order table th {
@@ -505,8 +509,7 @@
     }
 
     .table-data .order table tr {
-        line-height:1.0; /* Adjust line-height for better row spacing */
-          
+        line-height:1.0; 
         padding: 12px 15px;
     }
 
@@ -516,15 +519,7 @@
 
     .table-scroll {
       overflow-y: auto;
-      height: 300px; /* Adjust the height as needed */
+      height: 300px; 
     }
-    /*
-    .scroll-div{
-        width: 400px;
-        background: rgb(11,11,114);
-        height: 300px;
-        overflow: hidden;
-        overflow-y: scroll;
-    }
-    */
-</style>  
+    
+</style>  *@
