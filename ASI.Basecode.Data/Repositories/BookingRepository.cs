@@ -64,7 +64,7 @@ namespace ASI.Basecode.Data.Repositories
         public IQueryable<Booking> GetBookings()
         {
             Console.WriteLine(" > BookingRepo: GetBookings");
-            return this.GetDbSet<Booking>();
+            return this.GetDbSet<Booking>().Where(b => !b.Cancelled); 
         }
 
         public void UpdateBooking(Booking booking)

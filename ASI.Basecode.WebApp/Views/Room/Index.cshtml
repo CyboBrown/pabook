@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomViewModel>
+﻿@*@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomViewModel>
 ﻿
 @{
     ViewData["Title"] = "Rooms";
@@ -59,315 +59,316 @@
     </tbody>
 </table>
 
-@*
-<h1>Rooms</h1>
-@{
-    ViewData["Title"] = "Room Management";
-}
+*@
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+@model IEnumerable<ASI.Basecode.Services.ServiceModels.RoomViewModel>
+
+@{
+    ViewData["Title"] = "Admin Home Page";
+}
+<link rel="stylesheet" href="~/css/admin.css" />
 <div class="outer-container">
     <div class="main-content">
-        <div class="head-title">
-            <div class="left">
-                <h1>Room Management</h1>
-            </div>
-        </div>
+        <div class="mytabs">
 
-        <div class="floor-buttons">
-            <button onclick="showRoomDetails('floor10')">
-                <i class='bx bxs-group'></i>
-                <span>10th Floor</span>
-            </button>
-            <button onclick="showRoomDetails('floor11')">
-                <i class='bx bxs-group'></i>
-                <span>11th Floor</span>
-            </button>
-            <button onclick="showRoomDetails('floor14')">
-                <i class='bx bxs-group'></i>
-                <span>14th Floor</span>
-            </button>
+            <input type="radio" id="tabRoom" name="mytabs" onchange="loadTabContent('Room')" @((ViewData["ActiveTab"] as string == "Room") ? "checked" : "")>
+            <label for="tabRoom">Room</label>
 
-        </div>
-
-        <div class="table-data">
-            <div class="order">
-                <div class="head">
-                    <h3>Room Details</h3>
-
-                    <div class="add-room">
-                        <a href="@Url.Action("Create", "Room")" class="btn btn-success">
-                            <i class='bx bx-plus'></i> Add
-                        </a>
-                    </div>
-
-                    <div class="view-room">
-                        <button id="detailsButton" class="btn btn-info btn-sm">
-                            <i class='bx bx-info-circle'></i> Details
-                        </button>
-                    </div>
-                    <div class="edit-room">
-                        <button id="editButton" class="btn btn-warning btn-sm">
-                            <i class='bx bx-edit'></i> Edit
-                        </button>
-                    </div>
-
-                    <div class="delete-room">
-                        
-                            <button id="deleteButton" class="btn btn-danger btn-sm" onclick="showDeleteModal()">Delete</button>
-                           
-                    </div>
-
-                    <button class="btn btn-secondary btn-sm" onclick="refreshPage()">
-                        <i class='bx bx-refresh'></i> Refresh
+            <div class="tab" id="tabRoomContent">
+                <h2>Room</h2>
+                <div class="floor-buttons">
+                    <button onclick="showRoomDetails('10th Floor')">
+                        <i class='bx bxs-group'></i>
+                        <span>10th Floor</span>
+                    </button>
+                    <button onclick="showRoomDetails('11th Floor')">
+                        <i class='bx bxs-group'></i>
+                        <span>11th Floor</span>
+                    </button>
+                    <button onclick="showRoomDetails('14th Floor')">
+                        <i class='bx bxs-group'></i>
+                        <span>14th Floor</span>
                     </button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>ID</th>
-                            <th>Type</th>                           
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Capacity</th>
-                        </tr>
-                    </thead>
-                    <tbody id="room-details-body">
-                        @foreach (var room in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <input type="radio" name="selectedRoom" value="@room.Id" />
-                                </td>
-                                <td>@room.Id</td>
-                                <td>@room.Type</td>
-                                <td>@room.Name</td>
-                                <td>@room.Location</td>
-                                <td>@room.Capacity</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+
+                <div class="table-data">
+                    <div class="order">
+                        <div class="head">
+                            <h3>Room Details</h3>
+
+                            <div class="add-room">
+                                <a href="@Url.Action("CreateRoom", "Admin")" class="btn btn-success">
+                                    <i class='bx bx-plus'></i>
+                                </a>
+                            </div>
+                            <div class="refresh">
+                                <button class="btn btn-secondary btn-sm" onclick="refreshRoomDetails()">
+                                    <i class='bx bx-refresh'></i>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="scroll-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Name)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Type)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Capacity)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Location)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Facilities)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="table-scroll">
+                                <table>
+                                    <tbody id="room-details-body">
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Facilities)</td>
+                                                <td>
+                                                    @Html.ActionLink("Edit", "Edit", "Room", new { Id = item.Id }, new { @class = "btn btn-primary btn-sm" })
+                                                    @Html.ActionLink("Details", "Details", "Room", new { Id = item.Id }, new { @class = "btn btn-info btn-sm" })
+                                                    <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@item.Id)">Delete</button>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Cancel Reservation?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to cancel this one?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #000;
+}
 
-<form id="deleteForm" asp-action="PostDelete" method="post" style="display:none;">
-    <input type="hidden" id="RoomIdToDelete" name="RoomId" value="" />
-</form>
-
-
-
-@section Scripts {
-   <script>
-        toastr.options = {
-            positionClass: "toast-top-center",
-            timeOut: 5000,
-            closeButton: true,
-            progressBar: true
-        };
-
-        var successMessage = '@TempData["SuccessMessage"]';
-        var addedRoom = '@TempData["AddedRoom"]';
-        var successDeletion = '@TempData["SuccessDeletion"]';
-
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
-        if (addedRoom) {
-            toastr.success(addedRoom);
-        }
-        if (successDeletion) {
-            toastr.success(successDeletion);
-        }
-
-        document.getElementById('detailsButton').addEventListener('click', function () {
-            var selected = document.querySelector('input[name="selectedRoom"]:checked');
-            if (selected) {
-                var roomId = selected.value;
-                window.location.href = '@Url.Action("Details", "Room")' + '?RoomId=' + roomId;
-            } else {
-                alert('Please select a room.');
-            }
-        });
-
-        document.getElementById('editButton').addEventListener('click', function () {
-            var selected = document.querySelector('input[name="selectedRoom"]:checked');
-            if (selected) {
-                var roomId = selected.value;
-                window.location.href = '@Url.Action("Edit", "Room")' + '?RoomId=' + roomId;
-            } else {
-                alert('Please select a room.');
-            }
-        });
-
-        function showDeleteModal() {
-            var selected = document.querySelector('input[name="selectedRoom"]:checked');
-            if (selected) {
-                var roomId = selected.value;
-                document.getElementById('RoomIdToDelete').value = roomId;
-                $('#deleteModal').modal('show');
-            } else {
-                alert('Please select a room.');
-            }
-        }
-
-
-        function confirmDelete() {
-            document.getElementById('deleteForm').submit();
-        }
-
-
-        function refreshPage() {
-            location.reload();
-        }
-   </script>
+.outer-container {
+    box-sizing: border-box;
+    background-color: var(--light);
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+    flex-direction: column;
+    width: calc(100% - 215px);
+    height: calc(100%-40px);
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    margin-left: 100px;
+    position: fixed;
+    z-index: 0;
 }
 
 
-<style>
-            .outer-container {
-                width: 100%;
-                background-color: var(--light);
-                padding: 20px;
-                border-radius: 20px;
-                display: flex;
-                flex-direction: column-reverse;
-                flex-direction: column;
-                width: calc(100% - 185px);
-                height: 100vh;
-                top: 20px;
-                right: 0px;
-                bottom: 10px;
-                padding-top: 20px;
-                margin-left: 100px;
-                position: fixed;
-                z-index: 1;
-                transition: margin-right 0.3s ease, width 0.3s ease;
-            }
-              
-            .main-content {
-                background-color: #185D62;
-                padding: 15px;
-                border-radius: 10px;
-                z-index: 2;
-            }
+.main-content {
+    height: 85vh;
+    background-color: #185D62;
+    padding: 20px;
+    color: #fff;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-grow: 1;
+}
 
-            .main-content .head-title {
-                display: flex;
-                font-weight: bold;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                align-content: center;
-                padding: 6px;
-                color: #fff;
-                flex-grow: 1;
-                max-width: calc(100% - 80px);
-            }
+.main-content nav {
+    position: relative;
+    height: 100px;
+    width: calc(100%-300px);
+    padding-left: 20px;
+    padding-right: 20px;
+}
 
-            .table-data {
-                display: flex;
-                flex-wrap: wrap;
-                grid-gap: 24px;
-                margin-top: 24px;
-                width: 100%;
-                color: var(--dark);
-            }
+/*ROOM nga styles*/
+.mytabs {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 25px;
+    background-color: transparent;
+    display: flex;
+    justify-content: left;
+    margin-bottom: 20px;
+    padding: 0px;
+}
 
-                .table-data > div {
-                    border-radius: 20px;
-                    background: var(--light);
-                    padding: 24px;
-                    overflow-x: auto;
-                }
+.mytabs input[type="radio"] {
+    display: none;
+}
 
-                .table-data .head {
-                    display: flex;
-                    align-items: center;
-                    grid-gap: 16px;
-                    margin-bottom: 24px;
-                }
+.mytabs label {
+    padding: 15px;
+    background: #185D62;
+    font-weight: bold;
+    border-bottom: 2px solid #1BC7D2;
+    width: 100px;
+    text-align: center;
+    cursor: pointer;
+}
 
-                .table-data .add-room {
-                    background-color: var(--blue);
-                    border-radius: 5px;
-                    font-size: 10px;
-                }
+.mytabs .tab {
+    width: 100%;
+    padding: 20px;
+    background: #185D62;
+    order: 1;
+    display: none;
+}
 
-                .table-data .add-room a {
-                    border-radius: 5px;
-                    font-size: 10px;
-                }
+.mytabs .tab h2 {
+    font-size: 3em;
+}
 
-                .table-data .head h3 {
-                    margin-right: auto;
-                    font-size: 24px;
-                    font-weight: 600;
-                }
+.mytabs input[type='radio']:checked + label + .tab {
+    display: block;
+}
 
-                .table-data .order {
-                    flex-grow: 1;
-                    flex-basis: 500px;
-                }
+.mytabs input[type="radio"]:checked + label {
+    background: #1BC7D2;
+}
 
-                .table-data .order table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
+.table-data {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 24px;
+    margin-top: 24px;
+    width: 100%;
+    color: var(--dark);
+}
 
-                .table-data .order table th {
-                    padding-bottom: 12px;
-                    font-size: 13px;
-                    text-align: left;
-                    border-bottom: 1px solid var(--grey);
-                }
+.table-data > div {
+    border-radius: 20px;
+    background: var(--light);
+    padding: 10px;
+    overflow-x: auto;
+}
 
-                .table-data .order table td {
-                    padding: 16px 0;
-                }
+.table-data .head {
+    display: flex;
+    align-items: center;
+    grid-gap: 0px;
+    background-color: transparent;
+    margin-bottom: 20px;
+}
 
-                .table-data .order table tr td:first-child {
-                    display: flex;
-                    align-items: center;
-                    grid-gap: 12px;
-                    padding-left: 6px;
-                }
+.add-room .refresh i {
+    background-color: transparent;
+}
 
-                .table-data .order table td img {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 50%;
-                    object-fit: cover;
-                }
+.table-data .head h3 {
+    margin-right: auto;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px;
+}
 
-                .table-data .order .room-details-body tr:hover {
-                    background: var(--grey);
-                }
+.refresh {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
 
-</style>*@
+.add-room {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
 
-﻿
+    .add-room .btn-success {
+        background-color: transparent;
+        border: none;
+        color: inherit; 
+    }
+
+.refresh .btn-secondary {
+    background-color: transparent;
+    border: none;
+    color: inherit; 
+}
+
+.table-data .order {
+    flex-grow: 1;
+    flex-basis: 500px;
+}
+
+.scroll-container {
+    max-height: 60vh; /* Set the maximum height for the scrollable area */
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* Hide scrollbar for IE, Edge, and Chrome */
+    -ms-overflow-style: none;
+}
+/* Hide scrollbar for Chrome */
+.scroll-container::-webkit-scrollbar {
+    display: none;
+}
+        .table-scroll {
+    max-height: 60vh; /* Adjust the maximum height as needed */
+    overflow-y: auto;
+}
+
+.table-data .order table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+    .table-data .order table th,
+    .table-data .order table td {
+        padding: 12px 15px; /* Adjust padding as needed */
+    }
+
+    .table-data .order table th {
+        font-size: 13px;
+        text-align: left;
+        border-bottom: 1px solid var(--grey);
+    }
+
+    .table-data .order table tr {
+        line-height: 1.0; /* Adjust line-height for better row spacing */
+        padding: 12px 15px;
+    }
+
+        .table-data .order table tr:hover {
+            background: var(--grey);
+        }
+
+
+</style>

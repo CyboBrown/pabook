@@ -1,19 +1,201 @@
 ﻿@{
     ViewData["Title"] = "Analytics";
 }
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
 <div class="outer-container">
     <div class="main-content">
         <h1>Report and Analytics</h1>
-        <!--I add dri report and analytics code for later -->
+        
+
+        <div class="main-cards">
+
+            <div class="card">
+                <div class="card-inner">
+                    <h3>BOOKINGS</h3>
+                    <span class="material-icons-outlined">inventory_2</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Cancelled Booking
+                        <span class="badge bg-primary rounded-pill">249</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Booking
+                        <span class="badge bg-primary rounded-pill">1000</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-inner">
+                    <h3>USERS</h3>
+                    <span class="material-icons-outlined">groups</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Deleted User
+                        <span class="badge bg-primary rounded-pill">156</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total User
+                        <span class="badge bg-primary rounded-pill">500</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="charts">
+
+            <div class="charts-card">
+                <h2 class="chart-title">OVERALL BOOKINGS AND USERS</h2>
+                <div id="area-chart"></div>
+            </div>
+
+        </div>
+
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+
 </div>
 
-@section Styles {
-    <style>
 
-         @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
 
-        body {
+
+
+<script>
+    
+
+    // ---------- CHARTS ----------
+
+    // AREA CHART
+    const areaChartOptions = {
+        series: [
+            {
+                name: 'Booking Summary',
+                data: [31, 40, 28, 51, 42, 109, 100],
+            },
+            {
+                name: 'Room Usage',
+                data: [11, 32, 45, 32, 34, 52, 41],
+            },
+        ],
+        chart: {
+            type: 'area',
+            background: 'transparent',
+            height: 350,
+            stacked: false,
+            toolbar: {
+                show: false,
+            },
+        },
+        colors: ['#00ab57', '#d50000'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        dataLabels: {
+            enabled: false,
+        },
+        fill: {
+            gradient: {
+                opacityFrom: 0.4,
+                opacityTo: 0.1,
+                shadeIntensity: 1,
+                stops: [0, 100],
+                type: 'vertical',
+            },
+            type: 'gradient',
+        },
+        grid: {
+            borderColor: '#55596e',
+            yaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+            xaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+        },
+        legend: {
+            labels: {
+                colors: '#f5f7ff',
+            },
+            show: true,
+            position: 'top',
+        },
+        markers: {
+            size: 6,
+            strokeColors: '#1b2635',
+            strokeWidth: 3,
+        },
+        stroke: {
+            curve: 'smooth',
+        },
+        xaxis: {
+            axisBorder: {
+                color: '#55596e',
+                show: true,
+            },
+            axisTicks: {
+                color: '#55596e',
+                show: true,
+            },
+            labels: {
+                offsetY: 5,
+                style: {
+                    colors: '#f5f7ff',
+                },
+            },
+        },
+        yaxis: [
+            {
+                title: {
+                    text: 'Booking Summary',
+                    style: {
+                        color: '#f5f7ff',
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: ['#f5f7ff'],
+                    },
+                },
+            },
+            {
+                opposite: true,
+                title: {
+                    text: 'Room Usage',
+                    style: {
+                        color: '#f5f7ff',
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: ['#f5f7ff'],
+                    },
+                },
+            },
+        ],
+        tooltip: {
+            shared: true,
+            intersect: false,
+            theme: 'dark',
+        },
+    };
+
+    const areaChart = new ApexCharts(
+        document.querySelector('#area-chart'),
+        areaChartOptions
+    );
+    areaChart.render();
+
+</script>
+
+
+<style>
+    body {
         margin: 0;
         font-family: Arial, sans-serif;
         width: 100%;
@@ -23,46 +205,159 @@
         align-items: center;
         overflow: hidden;
         background-color: #000;
+    }
+
+    .outer-container {
+        box-sizing: border-box;
+        background-color: var(--light);
+        padding: 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column-reverse;
+        flex-direction: column;
+        width: calc(100% - 215px);
+        height: calc(100%-40px);
+        top: 20px;
+        right: 20px;
+        bottom: 20px;
+        margin-left: 100px;
+        position: fixed;
+        z-index: 0;
+    }
+
+        .outer-container.expand {
+            width: calc(100% - 60px);
         }
 
-        .outer-container {
-            box-sizing: border-box;
-            background-color: var(--light);
-            padding: 10px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column-reverse;
-            flex-direction: column;
-            width: calc(100% - 215px);
-            height: calc(100%-40px);
-            top: 20px;
-            right: 20px;
-            bottom: 20px;
-            margin-left: 100px;
-            position: fixed;
-            z-index: 0;
+    .main-content {
+        height: 85vh;
+        background-color: #185D62;
+        padding: 20px;
+        color: #fff;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+    }
+
+        .main-content nav {
+            position: relative;
+            height: 100px;
+            width: calc(100%-300px);
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
-        .main-content {
-            height: 85vh;
-            background-color: #185D62;
-            padding: 20px;
-            color: #fff;
-            border-radius: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            flex-grow: 1;
-        }
+    h1 {
+        font-size: 36px;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 30px;
+        letter-spacing: 0.5px;
+    }
 
-        h1 {
-            font-size: 36px;
-            font-weight: 500;
-            margin-top: 0;
-            margin-bottom: 30px;
-            letter-spacing: 0.5px;
-        }
-
-        <!--Add dri code sa imong css styles sa imong report and analytics nga code-->
-
-    </style>
+.material-icons-outlined {
+  vertical-align: middle;
+  line-height: 1px;
+  font-size: 35px;
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 260px 1fr 1fr 1fr;
+  grid-template-rows: 0.2fr 3fr;
+  grid-template-areas:
+    'sidebar header header header'
+    'sidebar main main main';
+  height: 100vh;
+}
+
+
+
+
+/* ---------- MAIN ---------- */
+
+.main-container {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 20px 20px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+
+.main-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 25px;
+  border-radius: 5px;
+}
+
+.card:first-child {
+  background-color: #2962ff;
+}
+
+.card:nth-child(2) {
+  background-color: #ff6d00;
+}
+
+    .list-group-item {
+        background-color: transparent;
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+        font-weight: bold;
+    }
+
+        .list-group-item span {
+            background-color: #1BC7D2;
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+
+
+
+.card-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-inner > .material-icons-outlined {
+  font-size: 45px;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 60px;
+}
+
+.charts-card {
+  /*background-color: #263043;*/
+  background-color: #185D62
+  margin-bottom: 20px;
+  padding: 25px;
+  box-sizing: border-box;
+  -webkit-column-break-inside: avoid;
+  border-radius: 5px;
+  box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+}
+
+.chart-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+</style>
