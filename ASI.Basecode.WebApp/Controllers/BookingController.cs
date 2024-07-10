@@ -82,5 +82,51 @@ namespace ASI.Basecode.WebApp.Controllers
                                           .ToList();
             return Ok(bookings);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetBooking(int id)
+        {
+            var booking = _bookingService.GetBookingById(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+            return Ok(booking);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateBooking(int id, [FromBody] BookingViewModel booking)
+        {
+            if (id != booking.Id)
+            {
+                return BadRequest(new { success = false, message = "Booking ID mismatch." });
+            }
+
+            try
+            {
+                _bookingService.UpdateBooking(booking);
+                return Ok(new { success = true, message = "Booking updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error updating booking");
+                return BadRequest(new { success = false, message = "An error occurred while updating the booking. Please try again.", error = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult CancelBooking(int id)
+        {
+            try
+            {
+                _bookingService.CancelBooking(id);
+                return Ok(new { success = true, message = "Booking cancelled successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

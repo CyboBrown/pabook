@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-
+    </div>
     </div>
 </div>
 
@@ -156,13 +156,28 @@
     </div>
 </div>
 
+<!-- Modal for details -->
+<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
+        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
+        <div id="bookingDetailsContent"></div>
+    </div>
+</div>
+
+
+
 <script>
     //fetching karon nga bookings
     document.addEventListener('DOMContentLoaded', function () {
         fetchTodaysBookings();
 
-        // Refreshes kada 5 minutes
-        setInterval(fetchTodaysBookings, 300000);
+        // Refreshes kada 1 sec
+        setInterval(fetchTodaysBookings, 1000);
     });
 
     function fetchTodaysBookings() {
@@ -283,7 +298,55 @@
         const bookingForm = document.getElementById('bookingForm');
         const submitButton = bookingForm.querySelector('button[type="submit"]');
 
-        // form submission
+        function loadBookings() {
+            fetch('/api/Booking/bookings')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('bookingsTableBody');
+                    tableBody.innerHTML = '';
+                    data.forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${booking.recurring ? 'Yes' : 'No'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
+                            <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
+                            <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                        </td>
+                    `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // Add event listeners to the new buttons
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        btn.addEventListener('click', () => editBooking(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.details-btn').forEach(btn => {
+                        btn.addEventListener('click', () => showBookingDetails(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.cancel-btn').forEach(btn => {
+                        btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error fetching bookings:', error));
+        }
+
+        // i laod ang bookings
+        loadBookings();
+
+        // Form submission
         bookingForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -293,6 +356,33 @@
             }
 
             const formData = new FormData(this);
+            const startTime = formData.get('startTime');
+            const endTime = formData.get('endTime');
+            const date = formData.get('date');
+
+            // Validate date is not before the current date
+            const currentDate = new Date().toISOString().split('T')[0];
+            if (date < currentDate) {
+                alert('Selected date cannot be in the past.');
+                return;
+            }
+
+            // Validate start time is not before the current time if booking is for today
+            const currentDateTime = new Date();
+            const selectedDateTime = new Date(`${date}T${startTime}`);
+            if (date === currentDate && selectedDateTime < currentDateTime) {
+                alert('Start time cannot be in the past.');
+                return;
+            }
+
+            // Validate duration is at least 5 minutes
+            const startTimeInMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
+            const endTimeInMinutes = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
+            if (endTimeInMinutes - startTimeInMinutes < 5) {
+                alert('The duration between start time and end time must be at least 5 minutes.');
+                return;
+            }
+
             const data = {
                 title: formData.get('title'),
                 description: formData.get('description'),
@@ -303,14 +393,24 @@
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
-                userId: getCurrentUserId() // pagkuha sa current user ID
+                userId: getCurrentUserId()
             };
 
+            if (this.dataset.mode === 'edit') {
+                data.id = parseInt(this.dataset.bookingId); // Ensure the id is included and correctly parsed
+            }
+
+            const submitButton = this.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
 
-            fetch('/api/Booking/create', {
-                method: 'POST',
+            const url = this.dataset.mode === 'edit'
+                ? `/api/Booking/${this.dataset.bookingId}`
+                : '/api/Booking/create';
+            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -323,20 +423,32 @@
                     return response.json();
                 })
                 .then(result => {
-                    console.log('Booking created:', result);
+                    console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
-                    loadBookings();
+                    loadBookings(); // This will refresh the entire table
                     bookingForm.reset();
 
-                    // Checker if ang booking kay for today
+                    // Reset form mode and submit button text
+                    this.dataset.mode = 'create';
+                    delete this.dataset.bookingId;
+                    submitButton.textContent = 'Create Booking';
+
+                    // Check if the booking is for today
                     const today = new Date().toISOString().split('T')[0];
                     if (data.date === today) {
-                        fetchTodaysBookings(); // if yes, kay mu refresh sa table
+                        fetchTodaysBookings();
+                    }
+
+                    // Add success alert only for new bookings
+                    if (method === 'POST') {
+                        alert('Booking created successfully!');
+                    } else {
+                        alert('Booking updated successfully!');
                     }
                 })
                 .catch(error => {
-                    console.error('Error creating booking:', error);
-                    let errorMessage = 'An error occurred while creating the booking. Please try again.';
+                    console.error('Error ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' booking:', error);
+                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the booking. Please try again.';
                     if (error.errors) {
                         errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
                     }
@@ -344,42 +456,102 @@
                 })
                 .finally(() => {
                     submitButton.disabled = false;
-                    submitButton.textContent = 'Create Booking';
+                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
                 });
         });
 
-
-        function loadBookings() {
-            fetch('/api/Booking/bookings')
+        // Function to edit booking
+        function editBooking(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.getElementById('bookingsTableBody');
-                    tableBody.innerHTML = ''; 
-                    data.forEach(booking => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                    ${booking.recurring ? 'Yes' : 'No'}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
-                                <button class="text-green-600 hover:text-green-900 mr-2">Details</button>
-                                <button class="text-red-600 hover:text-red-900">Cancel</button>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
+                .then(booking => {
+                    // Populate the form with booking details
+                    document.getElementById('title').value = booking.title;
+                    document.getElementById('description').value = booking.description;
+                    document.getElementById('date').value = booking.date.split('T')[0];
+                    document.getElementById('room').value = booking.roomId;
+                    document.getElementById('startTime').value = booking.startTime;
+                    document.getElementById('endTime').value = booking.endTime;
+                    document.getElementById('recurring').value = booking.recurring ? 'true' : 'false';
+
+                    if (booking.recurring) {
+                        document.getElementById('recurrenceOptions').style.display = 'block';
+                        document.getElementById('RecurrenceTypeId').value = booking.recurrenceTypeId;
+                        document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
+                    }
+
+                    // Change form submission to update instead of create
+                    const form = document.getElementById('bookingForm');
+                    form.dataset.mode = 'edit';
+                    form.dataset.bookingId = bookingId;
+
+                    // Change submit button text to 'Update Booking'
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.textContent = 'Update Booking';
+
+                    // Show the modal
+                    document.getElementById('addMeetingModal').style.display = 'block';
                 })
-                .catch(error => console.error('Error fetching bookings:', error));
+                .catch(error => console.error('Error fetching booking details:', error));
         }
 
-        // i laod ang bookings
-        loadBookings();
+        function showBookingDetails(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    const modal = document.getElementById('bookingDetailsModal');
+                    const content = document.getElementById('bookingDetailsContent');
+                    content.innerHTML = `
+                    <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                    <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
+                    <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                    <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                    <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
+                    <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                    ${booking.recurring ? `
+                        <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                        <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                    ` : ''}
+                `;
+                    modal.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+
+        function closeBookingDetailsModal() {
+            const modal = document.getElementById('bookingDetailsModal');
+            modal.classList.add('hidden');
+        }
+
+        // Event listener for the close button
+        document.getElementById('closeModalBtn').addEventListener('click', closeBookingDetailsModal);
+
+        // Event listener for closing the modal when clicking outside the content
+        document.getElementById('bookingDetailsModal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeBookingDetailsModal();
+            }
+        });
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            // Remove the row from the table
+                            const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
+                            row.remove();
+                            alert('Booking cancelled successfully');
+                        } else {
+                            throw new Error('Failed to cancel booking');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling booking:', error);
+                        alert('Failed to cancel booking. Please try again.');
+                    });
+            }
+        }
 
         // pag open/close sa modal
         var modal = document.getElementById("addMeetingModal");
