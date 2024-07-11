@@ -7,6 +7,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Services.Services
@@ -16,12 +17,14 @@ namespace ASI.Basecode.Services.Services
         private readonly IBookingRepository _bookingRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public BookingService(IBookingRepository bookingRepository, IRoomRepository roomRepository, IMapper mapper)
+        public BookingService(IBookingRepository bookingRepository, IRoomRepository roomRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _bookingRepository = bookingRepository;
             _roomRepository = roomRepository;
             _mapper = mapper;
+            _contextAccessor = contextAccessor;
         }
 
         public IEnumerable<BookingViewModel> GetAllBookings()
@@ -76,9 +79,9 @@ namespace ASI.Basecode.Services.Services
         {
             var booking = new Booking();
             _mapper.Map(model, booking);
-            booking.CreatedBy = "Admin"; // placeholder pani, dapat user ni realtime
+            booking.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name; // placeholder pani, dapat user ni realtime
             booking.CreatedDate = DateTime.Now;
-            booking.UpdatedBy = "Admin"; // placeholder pani, dapat user ni realtime
+            booking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name; // placeholder pani, dapat user ni realtime
             booking.UpdatedDate = DateTime.Now;
             booking.Deleted = false;
 
@@ -151,7 +154,7 @@ namespace ASI.Basecode.Services.Services
             }
 
             _mapper.Map(booking, existingBooking);
-            existingBooking.UpdatedBy = "[Current User]";
+            existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             existingBooking.UpdatedDate = DateTime.Now;
 
             _bookingRepository.UpdateBooking(existingBooking);

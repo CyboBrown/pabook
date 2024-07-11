@@ -34,7 +34,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="loggerFactory"></param>
         /// <param name="configuration"></param>
         /// <param name="mapper"></param>
-        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService _bookingService, IUserService userService, IHttpContextAccessor httpContextAccessor,
+        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService bookingService, IUserService userService, IHttpContextAccessor httpContextAccessor,
                                ILoggerFactory loggerFactory,
                                IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
@@ -42,6 +42,7 @@ namespace ASI.Basecode.WebApp.Controllers
             _roomService = roomService;
             _userManagementService = userManagementService;
             _userService = userService;
+            _bookingService = bookingService;
         }
 
         private UserManagementViewModel GetCurrentUser()

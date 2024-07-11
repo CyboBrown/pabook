@@ -3,6 +3,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace ASI.Basecode.Services.Services
         private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public RoomService(IRoomRepository roomRepository, IMapper mapper, IMemoryCache cache)
+        public RoomService(IRoomRepository roomRepository, IMapper mapper, IMemoryCache cache, IHttpContextAccessor contextAccessor)
         {
             _roomRepository = roomRepository;
             _mapper = mapper;
             _cache = cache;
+            _contextAccessor = contextAccessor;
         }
 
         public IEnumerable<RoomViewModel> GetAll(int? id = null, string name = null)
@@ -71,9 +74,9 @@ namespace ASI.Basecode.Services.Services
             Console.WriteLine(" > RoomService: Add");
             var newModel = new Room();
             _mapper.Map(model, newModel);
-            newModel.CreatedBy = "Admin";
+            newModel.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             newModel.CreatedDate = DateTime.Now;
-            newModel.UpdatedBy = "Admin";
+            newModel.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             newModel.UpdatedDate = DateTime.Now;
             newModel.Deleted = false;
             _roomRepository.AddRoom(newModel);
@@ -90,7 +93,7 @@ namespace ASI.Basecode.Services.Services
             Console.WriteLine(" > RoomService: Update");
             var existingData = _roomRepository.GetRooms().Where(s => s.Id == model.Id).FirstOrDefault();
             _mapper.Map(model, existingData);
-            existingData.UpdatedBy = "Kent";
+            existingData.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             existingData.UpdatedDate = DateTime.Now;
             _roomRepository.UpdateRoom(existingData);
         }

@@ -13,6 +13,7 @@ using System.IO;
 
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -21,12 +22,14 @@ namespace ASI.Basecode.Services.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public UserManagementService(IUserRepository userRepository, IMapper mapper, IMemoryCache cache)
+        public UserManagementService(IUserRepository userRepository, IMapper mapper, IMemoryCache cache, IHttpContextAccessor contextAccessor)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _cache = cache;
+            _contextAccessor = contextAccessor;
         }
 
         public IEnumerable<UserManagementViewModel> GetAll(int? id = null, string name = null)
@@ -88,8 +91,8 @@ namespace ASI.Basecode.Services.Services
             user.Password = PasswordManager.EncryptPassword(model.Password);
             user.CreatedDate = DateTime.Now;
             user.UpdatedDate = DateTime.Now;
-            user.CreatedBy = Environment.UserName;
-            user.UpdatedBy = Environment.UserName;
+            user.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+            user.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
 
             _userRepository.AddUser(user);
         }
