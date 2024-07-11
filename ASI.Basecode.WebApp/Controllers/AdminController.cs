@@ -309,7 +309,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateUser(UserViewModel model)
+        public IActionResult CreateUser(UserManagementViewModel model)
         {
             bool isDuplicate = _userService.GetAll().Any(user => user.UserName == model.UserName || user.Email == model.Email);
             if (isDuplicate)
@@ -321,10 +321,22 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 try
                 {
-                    _userService.Add(model);
+                    // Map UserManagementViewModel to UserViewModel
+                    var userViewModel = new UserViewModel
+                    {
+                        UserName = model.UserName,
+                        LastName = model.LastName,
+                        FirstName = model.FirstName,
+                        Email = model.Email,
+                        UserRole = model.UserRole,
+                        Password = model.Password
+                    };
+
+                    _userService.Add(userViewModel);
                     TempData["SuccessMessage"] = "User created successfully.";
                     return RedirectToAction("Index");
-                } catch (InvalidDataException ex)
+                }
+                catch (InvalidDataException ex)
                 {
                     ModelState.AddModelError("", ex.Message);
                 }
