@@ -5,6 +5,8 @@
 @{
     ViewData["Title"] = "Admin Home Page";
 }
+
+@*Home Page*@
 <div class="outer-container">
     <div class="main-content">
         <div class="header">
@@ -22,42 +24,45 @@
                 
             </div>
         </div>
+        @*Bookings View*@
         <div id="bookingsContent" class="content flex">
-            <div class="left-pane">
-                <div class="background-image">
-                    <div class="overlay">
-                        <div class="date-time">
-                            <span id="time-now" class="time-now"></span><br>
-                            <span id="date-now" class="date-now"></span>
-                        </div>
-                        <div class="book-now">
-                            <button>Book now</button>
-                        </div>
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
+                    <div class="flex space-x-2">
+                        <button id="filterBookingsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-filter mr-2"></i>
+                        </button>
+                        <button id="addBookingButton" class="book-now px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button id="refreshBookingsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-sync-alt"></i> 
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div class="right-pane">
-                <div class="booking-info">
-                    <h1 class="text-3xl font-bold mb-4">Today's Booking</h1>
-                    
-                    <div class="overflow-x-auto">
-                        <div class="max-h-96 overflow-y-auto">
-                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bookingItems" class="divide-y divide-gray-200">
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recurring</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- ari ang mga bookings ma display -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+        @*User View*@
         <div id="usersContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
@@ -87,6 +92,7 @@
                 </div>
             </div>
         </div>
+        @*Room View*@
         <div id="roomsContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
@@ -102,7 +108,6 @@
                         <button id="refreshRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
                             <i class="fas fa-sync-alt"></i>
                         </button>
-                        
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -129,6 +134,75 @@
     </div>
 </div>
 
+@*Add Booking Modal*@
+<div id="addBookingModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="font-size: 2.5rem;">Booking Form</h1>
+        <form id="bookingForm">
+            <div class="form-group full-width">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description">
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="room">Room:</label>
+                <select id="room" name="room" required>
+                    <option value="">Select a room</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="startTime">Start Time:</label>
+                <input type="time" id="startTime" name="startTime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endTime">End Time:</label>
+                <input type="time" id="endTime" name="endTime" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="recurring">Recurring:</label>
+                <select id="recurring" name="recurring">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+
+            <div id="recurrenceOptions" class="full-width" style="display: none;">
+                <div class="form-group-half">
+                    <label for="recurrenceType">Recurrence Type:</label>
+                    <select id="RecurrenceTypeId" name="RecurrenceTypeId" class="form-control">
+                        <option value="">Select Recurrence Type</option>
+                    </select>
+                </div>
+
+                <div class="form-group-half">
+                    <label for="recurrenceEndDate">Recurrence End Date:</label>
+                    <input type="date" id="recurrenceEndDate" name="recurrenceEndDate">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit">Create Booking</button>
+                <button type="reset" class="reset-button">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*Add Room Modal*@
 <div id="addRoomModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -167,8 +241,20 @@
     </div>
 </div>
 
+@*Booking Details Modal*@
+<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
+        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
+        <div id="bookingDetailsContent"></div>
+    </div>
+</div>
 
-
+@*Switch Tabs Script*@
 <script>
     function switchTab(tabName) {
         // Hide all content sections
@@ -185,13 +271,12 @@
         document.getElementById(tabName + 'Content').style.display = 'flex';
         document.getElementById(tabName + 'Tab').classList.add('active');
     }
-
-
 </script>
 
+@*Booking Script*@
 <script>
     // Open/close the booking modal
-    var bookingModal = document.getElementById("addMeetingModal");
+    var bookingModal = document.getElementById("addBookingModal");
     var bookingBtn = document.querySelector(".book-now button");
     var bookingSpan = bookingModal.getElementsByClassName("close")[0];
 
@@ -209,7 +294,10 @@
             bookingModal.style.display = "none";
         }
     }
+ </script>
 
+ @*Room Script*@
+ <script>
     // Open/close the room modal
     var roomModal = document.getElementById("addRoomModal");
     var roomBtn = document.getElementById("addRoomButton");
