@@ -31,6 +31,8 @@ namespace ASI.Basecode.Data.Repositories
         public void AddUser(User user)
         {
             Console.WriteLine(" > UserRepo: AddUser");
+            var maxId = GetDbSet<User>().Count() == 0 ? 1 : GetDbSet<User>().Max(x => x.Id) + 1;
+            user.Id = maxId;
             this.GetDbSet<User>().Add(user);
             UnitOfWork.SaveChanges();
         }
@@ -65,6 +67,14 @@ namespace ASI.Basecode.Data.Repositories
         {
             Console.WriteLine(" > UserRepo: GetUserById");
             return this.GetDbSet<User>().FirstOrDefault(x => x.Id == id);
+        }
+
+        public int GetMaxUserId()
+        {
+            using (var context = new AsiBasecodeDbContext())
+            {
+                return context.Users.Max(u => u.Id);
+            }
         }
     }
 }

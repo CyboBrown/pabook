@@ -57,6 +57,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedDate = DateTime.Now;
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
+                user.UserRole = 2;
 
                 _userRepository.AddUser(user);
             }

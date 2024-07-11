@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
@@ -8,6 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+
+using ASI.Basecode.Services.Manager;
+using ASI.Basecode.Data;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -63,6 +68,40 @@ namespace ASI.Basecode.Services.Services
             }
 
             return null; // Handle if user not found or userId is not valid
+        }
+
+        public void Add(UserViewModel model)
+        {
+            Console.WriteLine(" > UserManagementService: Add");
+
+            //Check if user already exists
+            if (_userRepository.UserExists(model.UserName))
+            {
+                throw new InvalidDataException("User already exists.");
+            }
+
+            // Retrieve the maximum current Id value
+            int maxId = _userRepository.GetMaxUserId();
+
+            var user = _mapper.Map<User>(model);
+
+            user.Password = PasswordManager.EncryptPassword(model.Password);
+            user.CreatedDate = DateTime.Now;
+            user.UpdatedDate = DateTime.Now;
+            user.CreatedBy = Environment.UserName;
+            user.UpdatedBy = Environment.UserName;
+
+            _userRepository.AddUser(user);
+        }
+
+        // Repository method to add a new user
+        public void AddUser(User user)
+        {
+            using (var context = new AsiBasecodeDbContext())
+            {
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
         }
     }
 }
