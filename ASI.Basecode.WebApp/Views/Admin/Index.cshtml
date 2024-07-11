@@ -1,8 +1,585 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminHomeViewModel
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 
 @{
     ViewData["Title"] = "Admin Home Page";
 }
+<div class="outer-container">
+    <div class="main-content">
+        <div class="header">
+            <div id="bookingsTab" class="tab active" onclick="switchTab('bookings')">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Bookings</span>
+            </div>
+            <div id="usersTab" class="tab" onclick="switchTab('users')">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </div>
+            <div id="roomsTab" class="tab" onclick="switchTab('rooms')">
+                <i class="fas fa-door-open"></i>
+                <span>Rooms</span>
+                
+            </div>
+        </div>
+        <div id="bookingsContent" class="content flex">
+            <div class="left-pane">
+                <div class="background-image">
+                    <div class="overlay">
+                        <div class="date-time">
+                            <span id="time-now" class="time-now"></span><br>
+                            <span id="date-now" class="date-now"></span>
+                        </div>
+                        <div class="book-now">
+                            <button>Book now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-pane">
+                <div class="booking-info">
+                    <h1 class="text-3xl font-bold mb-4">Today's Booking</h1>
+                    
+                    <div class="overflow-x-auto">
+                        <div class="max-h-96 overflow-y-auto">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingItems" class="divide-y divide-gray-200">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="usersContent" class="content hidden">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchUsersBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
+                    <button id="filterUsersButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                        <i class="fas fa-filter mr-2"></i>
+                        Filter
+                    </button>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- User data goes here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="roomsContent" class="content hidden">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
+                    <div class="flex space-x-2">
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-filter mr-2"></i>
+                        </button>
+                        <button id="addRoomButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button id="refreshRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        
+                    </div>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Room data goes here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="addRoomModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="font-size: 2.5rem;">Add Room</h1>
+        <form id="roomForm">
+            <div class="form-group full-width">
+                <label for="roomName">Room Name:</label>
+                <input type="text" id="roomName" name="roomName" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="roomType">Room Type:</label>
+                <input type="text" id="roomType" name="roomType" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="capacity">Capacity:</label>
+                <input type="number" id="capacity" name="capacity" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="facilities">Facilities:</label>
+                <textarea id="facilities" name="facilities"></textarea>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit">Add Room</button>
+                <button type="reset" class="reset-button">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    function switchTab(tabName) {
+        // Hide all content sections
+        document.getElementById('bookingsContent').style.display = 'none';
+        document.getElementById('usersContent').style.display = 'none';
+        document.getElementById('roomsContent').style.display = 'none';
+
+        // Remove the active class from all tabs
+        document.getElementById('bookingsTab').classList.remove('active');
+        document.getElementById('usersTab').classList.remove('active');
+        document.getElementById('roomsTab').classList.remove('active');
+
+        // Show the selected content and add the active class to the selected tab
+        document.getElementById(tabName + 'Content').style.display = 'flex';
+        document.getElementById(tabName + 'Tab').classList.add('active');
+    }
+
+
+</script>
+
+<script>
+    // Open/close the booking modal
+    var bookingModal = document.getElementById("addMeetingModal");
+    var bookingBtn = document.querySelector(".book-now button");
+    var bookingSpan = bookingModal.getElementsByClassName("close")[0];
+
+    bookingBtn.onclick = function () {
+        bookingModal.style.display = "block";
+        document.getElementById('bookingForm').reset(); // reset button
+    }
+
+    bookingSpan.onclick = function () {
+        bookingModal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == bookingModal) {
+            bookingModal.style.display = "none";
+        }
+    }
+
+    // Open/close the room modal
+    var roomModal = document.getElementById("addRoomModal");
+    var roomBtn = document.getElementById("addRoomButton");
+    var roomSpan = roomModal.getElementsByClassName("close")[0];
+
+    roomBtn.onclick = function () {
+        roomModal.style.display = "block";
+        document.getElementById('roomForm').reset(); // reset button
+    }
+
+    roomSpan.onclick = function () {
+        roomModal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == roomModal) {
+            roomModal.style.display = "none";
+        }
+    }
+</script>
+
+@section Styles {
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .outer-container {
+            box-sizing: border-box;
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+            flex-direction: column;
+            width: calc(100% - 215px);
+            height: calc(100%-40px);
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            margin-left: 100px;
+            position: fixed;
+            z-index: 0;
+        }
+
+        .notification-profile {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .notification {
+            position: relative;
+            margin-right: 20px;
+            color: #185D62;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            padding: 4px 6px;
+            border-radius: 50%;
+        }
+
+        .profile-picture {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #1BC7D2;
+        }
+
+            .profile-picture img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+
+        .main-content {
+            height: 85vh;
+            background-color: #185D62;
+            padding: 20px;
+            color: #fff;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1BC7D2;
+        }
+
+            .header .tab {
+                padding: 10px 20px;
+                cursor: pointer;
+                background-color: #185D62;
+                color: #fff;
+                border-radius: 5px 5px 0 0;
+                margin-right: 10px;
+            }
+
+                .header .tab.active {
+                    background-color: #1BC7D2;
+                    color: #000;
+                }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            height: 100%;
+            overflow-y: hidden;
+        }
+
+        .left-pane, .right-pane {
+            flex: 1;
+            margin: 10px;
+        }
+
+        .background-image {
+            background-image: url("/img/book.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 85%;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .date-time {
+            margin-bottom: 100px;
+        }
+
+            .date-time .time-now,
+            .date-time .date-now {
+                font-size: 40px;
+                line-height: 1.2;
+                margin-bottom: 10px;
+            }
+
+        .book-now button {
+            background-color: #5bc0de;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+            .book-now button:hover {
+                background-color: #31b0d5;
+            }
+
+        .booking-info {
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+
+        .time {
+            font-weight: bold;
+            flex: 0 0 80px;
+        }
+
+        .title {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .location {
+            font-style: italic;
+            flex: 0 0 150px;
+            text-align: right;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        #addBookingContent, #myBookingsContent {
+            display: flex;
+        }
+
+
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .modal-content {
+            background-color: #185D62;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #185D62;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-family: 'YourMainContainerFont', sans-serif;
+            color: white;
+            position: relative;
+        }
+
+            .modal-content h1 {
+                text-align: center;
+                color: #ecf0f1;
+                margin-bottom: 10px;
+            }
+
+            .modal-content form {
+                background: #fff;
+                padding: 15px;
+                border-radius: 8px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .modal-content label {
+                display: block;
+                margin-bottom: 2px;
+                font-weight: bold;
+                font-size: 0.9em;
+                color: #000;
+            }
+
+            .modal-content input,
+            .modal-content select {
+                width: 100%;
+                padding: 6px;
+                margin-bottom: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+                background-color: #ecf0f1;
+                color: #2c3e50;
+            }
+
+        .form-group {
+            flex: 1 1 calc(50% - 8px);
+            min-width: 200px;
+        }
+
+        .full-width {
+            flex: 1 1 100%;
+        }
+
+        .form-group-half {
+            flex: 1 1 calc(50% - 8px);
+            min-width: calc(50% - 8px);
+            margin-right: 10px;
+        }
+
+        .modal-content button {
+            background-color: #5bc0de;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+            .modal-content button:hover {
+                background-color: #31b0d5;
+            }
+
+        .close {
+            color: #fff;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #ecf0f1;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        #recurrenceOptions {
+            margin-top: 6px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(76vh - 10rem);
+        }
+
+    </style>
+}
+
+
+
+
+
+
+
+
+@*
 <link rel="stylesheet" href="~/css/admin.css" />
 <div class="outer-container">
     <div class="main-content">
@@ -11,9 +588,7 @@
             <label for="tabBookings">Bookings</label>
             <div class="tab" id="tabBookingsContent">
               <h2>Bookings</h2>
-              <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>
-                
-              
+              <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>                            
             </div>
 
             <input type="radio" id="tabUser" name="mytabs" onchange="loadTabContent('User')" @((ViewData["ActiveTab"] as string == "User") ? "checked" : "")>
@@ -59,10 +634,7 @@
                                         <td>@user.FirstName</td>
                                         <td>@user.Email</td>
                                         <td>@user.UserRole</td>
-                                        @*<td>
-                                            @Html.ActionLink("Edit", "Edit", "UserManagement", new { Id = user.Id }, new { @class = "btn btn-primary btn-sm" })
-                                            @Html.ActionLink("Details", "Details", "UserManagement", new { Id = user.Id }, new { @class = "btn btn-info btn-sm" })
-                                        </td>   *@                                    
+                                                                           
                                     </tr>
                                 }
                                 
@@ -112,7 +684,6 @@
                         
                     </div>
                     
-                    @*<div class="container tbl-container"*@
 
                     <div class="scroll-container">
                         <table class="table-scroll">
@@ -176,8 +747,6 @@
     </div>
 </div>
 
-
-
 @section Styles {
     <script>
         toastr.options = {
@@ -226,50 +795,6 @@
         }
 
 
-
-        /*
-        function loadTabContent(tab) {
-            let contentUrl = '';
-            switch(tab) {
-                case 'Room':
-                    contentUrl = '@Url.Action("GetRoomContent", "Admin")';
-                    break;
-                case 'User':
-                    contentUrl = '@Url.Action("GetUserContent", "Admin")';
-                    break;
-                case 'Bookings':
-                    contentUrl = '@Url.Action("GetBookingsContent", "Admin")';
-                    break;
-            }
-
-            if (contentUrl) {
-                $.ajax({
-                    url: contentUrl,
-                    type: 'GET',
-                    success: function (data) {
-                        $('#tabContent').html(data); // Update tab content
-                    }
-                });
-            }
-        }
-
-        /*
-        function loadTabContent(tab) {
-            $.ajax({
-                url: '@Url.Action("Index", "Admin")',
-                type: 'GET',
-                data: { tab: tab },
-                success: function (result) {
-                    $('.tab').hide();
-                    $('#tab' + tab + 'Content').html($(result).find('#tab' + tab + 'Content').html());
-                    $('#tab' + tab + 'Content').show();
-                },
-                error: function () {
-                    alert('Failed to load tab content.');
-                }
-            });
-        }
-        */
         function showRoomDetails(floor) {
             $.ajax({
                 url: '@Url.Action("GetRoomDetailsByFloor", "Admin")',
@@ -314,7 +839,7 @@
         }
 
    </script> 
-}
+}*@
 @*
  <style>
 
