@@ -32,8 +32,8 @@
         </ul>
 
     <div class="user-details">
-        <span class="user-name">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
-        <span class="user-email">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+        <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+        <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
     </div>
         <div class="notification-section">
             <a href="#" id="notificationToggle">
@@ -44,7 +44,7 @@
         <div class="signout">
             <a asp-action="SignOutAdmin" asp-controller="Account">
                 <i class="fas fa-sign-out-alt"></i>
-            <span>Logout/@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            <span>Logout, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
             </a>
         </div>
     </div>
@@ -177,5 +177,9 @@
 
     .signout i {
         margin-right: 10px;
-    }
+     }
+
+     .fas {
+         width: 25px;
+     }
 </style>
