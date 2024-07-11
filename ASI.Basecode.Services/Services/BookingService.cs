@@ -28,7 +28,9 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var bookings = _bookingRepository.GetBookings().ToList();
+                var bookings = _bookingRepository.GetBookings()
+                                                 .Where(b => !b.Cancelled) // Filter out cancelled bookings
+                                                 .ToList();
                 var bookingViewModels = new List<BookingViewModel>();
 
                 foreach (var booking in bookings)
@@ -53,7 +55,8 @@ namespace ASI.Basecode.Services.Services
                         Recurring = booking.Recurring,
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
-                        RoomName = room?.Name ?? "Unknown Room"
+                        RoomName = room?.Name ?? "Unknown Room",
+                        Cancelled = booking.Cancelled 
                     };
 
                     bookingViewModels.Add(bookingViewModel);
@@ -80,6 +83,31 @@ namespace ASI.Basecode.Services.Services
             booking.Deleted = false;
 
             _bookingRepository.AddBooking(booking);
+        }
+
+        public BookingViewModel GetBookingById(int id)
+        {
+            var booking = _bookingRepository.GetBooking(id);
+            if (booking == null)
+            {
+                return null;
+            }
+
+            var room = _roomRepository.GetRoom(booking.RoomId);
+            return new BookingViewModel
+            {
+                Id = booking.Id,
+                Title = booking.Title ?? "No Title",
+                Description = booking.Description,
+                Date = booking.Date,
+                RoomId = booking.RoomId,
+                StartTime = booking.StartTime,
+                EndTime = booking.EndTime,
+                Recurring = booking.Recurring,
+                RecurrenceTypeId = booking.RecurrenceTypeId,
+                RecurrenceEndDate = booking.RecurrenceEndDate,
+                RoomName = room?.Name ?? "Unknown Room"
+            };
         }
 
         public void Delete(int id)
@@ -114,14 +142,24 @@ namespace ASI.Basecode.Services.Services
             return data;
         }
 
-        public void Update(BookingViewModel model)
+        public void UpdateBooking(BookingViewModel booking)
         {
-            Console.WriteLine(" > BookingService: Update");
-            var existingData = _bookingRepository.GetBookings().Where(s => s.Id == model.Id).FirstOrDefault();
-            _mapper.Map(model, existingData);
-            existingData.UpdatedBy = "[Current User]";
-            existingData.UpdatedDate = DateTime.Now;
-            _bookingRepository.UpdateBooking(existingData);
+            var existingBooking = _bookingRepository.GetBooking(booking.Id);
+            if (existingBooking == null)
+            {
+                throw new Exception("Booking not found");
+            }
+
+            _mapper.Map(booking, existingBooking);
+            existingBooking.UpdatedBy = "[Current User]";
+            existingBooking.UpdatedDate = DateTime.Now;
+
+            _bookingRepository.UpdateBooking(existingBooking);
+        }
+
+        public void CancelBooking(int id)
+        {
+            _bookingRepository.CancelBooking(id);
         }
     }
 }

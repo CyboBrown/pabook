@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -42,9 +44,30 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Indexes this instance.
         /// </summary>
         /// <returns></returns>
-        
+        public IActionResult Index(string tab = "Room")
+        {
+            ViewData["ActiveTab"] = tab;
+            
+
+            switch (tab)
+            {
+                
+                case "Bookings":
+                    
+                    return View("Index", "Bookings");
+                case "User":
+                    return View("Index"); // Pass a single UserViewModel
+                case "Room":
+                    var rooms = _roomService.GetAll();// Replace with your actual method to fetch rooms
+                    return View("Index", rooms); // Pass a single RoomViewModel
+                default:
+                    return View("Index");
+            }
+
+            
+        }
         #region GET METHODS
-        
+
 
         [HttpGet]
         public IActionResult Details(int Id)
