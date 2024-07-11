@@ -282,10 +282,11 @@ namespace ASI.Basecode.WebApp.Controllers
         #endregion
 
         #region POST METHODS
+
+        /*
         [HttpPost]
         public IActionResult PostCreate(RoomViewModel model, string requestId)
         {
-            /*Console.WriteLine("Passed Controller Post Create");*/
 
             if (_roomService.RequestAlreadyProcessed(requestId))
             {
@@ -307,7 +308,7 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("Index");
         }
         
-
+        */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUser(UserManagementViewModel model)
@@ -344,13 +345,13 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             return View(model);
         }
-
+        /*
         [HttpPost]
         public IActionResult PostUpdate(RoomViewModel model)
         {
             _roomService.Update(model);
             return RedirectToAction("Index");
-        }
+        }*/
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {

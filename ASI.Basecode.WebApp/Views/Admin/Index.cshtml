@@ -29,7 +29,7 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
+                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
                     <div class="flex space-x-2">
                         <button id="filterBookingsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
                             <i class="fas fa-filter"></i>
@@ -69,12 +69,23 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchUsersBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
-                    <button id="filterUsersButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
-                        <i class="fas fa-filter mr-2"></i>
-                        Filter
-                    </button>
+                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
+                    <div class="flex space-x-2">                    
+                        <button id="filterUsersButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-filter mr-2"></i>
+                        </button>
+                        <button id="addUserButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button id="refreshUsersButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
+                
+
+                
+
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
                         <table class="min-w-full max-w-full divide-y divide-gray-200">
@@ -99,7 +110,7 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
+                    <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
                     <div class="flex space-x-2">
                         <button id="filterRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
                             <i class="fas fa-filter mr-2"></i>
@@ -146,7 +157,6 @@
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
-
             <div class="form-group full-width">
                 <label for="description">Description:</label>
                 <input type="text" id="description" name="description">
@@ -208,16 +218,16 @@
 <div id="addRoomModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Add Room</h1>
+        <h1 style="font-size: 2.5rem;">Create Room</h1>
         <form id="roomForm">
             <div class="form-group full-width">
-                <label for="roomName">Room Name:</label>
-                <input type="text" id="roomName" name="roomName" required>
+                <label for="name">Room Name:</label>
+                <input type="text" id="name" name="name" required>
             </div>
 
             <div class="form-group full-width">
-                <label for="roomType">Room Type:</label>
-                <input type="text" id="roomType" name="roomType" required>
+                <label for="type">Room Type:</label>
+                <input type="number" id="type" name="type" required>
             </div>
 
             <div class="form-group full-width">
@@ -232,7 +242,8 @@
 
             <div class="form-group full-width">
                 <label for="facilities">Facilities:</label>
-                <textarea id="facilities" name="facilities"></textarea>
+                @*<textarea id="facilities" name="facilities"></textarea>*@
+                <input type="text" id="facilities" name="facilities" required>
             </div>
 
             <div class="form-group full-width">
@@ -636,28 +647,200 @@
     });
  </script>
 
- @*Room Script*@
- <script>
-    // Open/close the room modal
-    var roomModal = document.getElementById("addRoomModal");
-    var roomBtn = document.getElementById("addRoomButton");
-    var roomSpan = roomModal.getElementsByClassName("close")[0];
+@*Room Script*@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function validateForm() {
+            const requiredFields = roomForm.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('invalid');
+                } else {
+                    field.classList.remove('invalid');
+                }
+            });
+            return isValid;
+        }
 
-    roomBtn.onclick = function () {
-        roomModal.style.display = "block";
-        document.getElementById('roomForm').reset(); // reset button
-    }
+        const roomForm = document.getElementById('roomForm');
+        const submitButton = roomForm.querySelector('button[type="submit"]');
 
-    roomSpan.onclick = function () {
-        roomModal.style.display = "none";
-    }
+        function loadRooms() {
+            fetch('/api/Room/rooms')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('roomsTableBody');
+                    tableBody.innerHTML = '';
+                    data.forEach(room => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.type}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.location}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
+                                    <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
+                                    <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
+                                </td>
+                            `;
+                        tableBody.appendChild(row);
+                    });
 
-    window.onclick = function (event) {
-        if (event.target == roomModal) {
+                    document.querySelectorAll('.edit-room-btn').forEach(btn => {
+                        btn.addEventListener('click', () => editRoom(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.details-room-btn').forEach(btn => {
+                        btn.addEventListener('click', () => showRoomDetails(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.delete-room-btn').forEach(btn => {
+                        btn.addEventListener('click', () => deleteRoom(btn.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error fetching rooms:', error));
+        }
+
+        loadRooms();
+
+        roomForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const data = {
+                name: formData.get('name'),
+                facilities: formData.get('facilities'),
+                capacity: parseInt(formData.get('capacity')),
+                type: parseInt(formData.get('type')),
+                location: formData.get('location')
+            };
+
+            if (this.dataset.mode === 'edit') {
+                data.id = parseInt(this.dataset.roomId);
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            const url = this.dataset.mode === 'edit' ? `/api/Room/${this.dataset.roomId}` : '/api/Room/add';
+            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    console.log('Room ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    roomModal.style.display = "none";
+                    loadRooms();
+                    roomForm.reset();
+
+                    this.dataset.mode = 'add';
+                    delete this.dataset.roomId;
+                    submitButton.textContent = 'Add Room';
+
+                    //alert('Room ' + (method === 'POST' ? 'created' : 'updated') + ' successfully!');
+                    
+                    // Add success alert only for new bookings
+                    if (method === 'POST') {
+                        alert('Room created successfully!');
+                    } else {
+                        alert('Room updated successfully!');
+                    }
+                })
+            
+                .catch(error => {
+                    
+                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the room. Please try again.';
+
+                    if (error.status) {
+                        errorMessage += '\n\nStatus Code: ' + error.status;
+                    }
+
+                    if (error.errors) {
+                        // Check for specific validation errors
+                        if (error.errors.id) {
+                            errorMessage += '\n\nID Error: ' + error.errors.id[0]; // Display the specific validation error for 'id'
+                        } else {
+                            errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                        }
+                    }
+
+                    alert(errorMessage);
+                })
+
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Room' : 'Add Room';
+                });
+        });
+
+        function editRoom(roomId) {
+            fetch(`/api/Room/${roomId}`)
+                .then(response => response.json())
+                .then(room => {
+                    document.getElementById('name').value = room.name;
+                    document.getElementById('facilities').value = room.facilities;
+                    document.getElementById('capacity').value = room.capacity;
+                    document.getElementById('type').value = room.type;
+                    document.getElementById('location').value = room.location;
+
+                    const form = document.getElementById('roomForm');
+                    form.dataset.mode = 'edit';
+                    form.dataset.roomId = roomId;
+
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.textContent = 'Update Room';
+
+                    document.getElementById('addRoomModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching room details:', error));
+        }
+
+        var roomModal = document.getElementById("addRoomModal");
+        var roomBtn = document.getElementById("addRoomButton");
+        var span = roomModal.getElementsByClassName("close")[0];
+
+        roomBtn.onclick = function () {
+            roomModal.style.display = "block";
+            roomForm.reset();
+        }
+
+        span.onclick = function () {
             roomModal.style.display = "none";
         }
-    }
+
+        window.onclick = function (event) {
+            if (event.target == roomModal) {
+                roomModal.style.display = "none";
+            }
+        }
+
+        document.querySelector('.reset-button').addEventListener('click', function () {
+            roomForm.reset();
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        });
+    });
 </script>
+
+
+
 
 @section Styles {
     <style>

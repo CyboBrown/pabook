@@ -15,6 +15,7 @@ namespace ASI.Basecode.Data.Interfaces
         void AddRoom(Room room);
         void UpdateRoom(Room room);
         void DeleteRoom(int id);
+        void CancelRoom(int id);
 
     }
 }
