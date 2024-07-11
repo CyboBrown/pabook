@@ -10,7 +10,7 @@
         <div class="row">
             <div class="inside">
                 
-                <form asp-action="PostCreate" id="createForm">
+                <form asp-action="CreateUser" id="createForm">
                  <input type="hidden" id="requestId" name="requestId" value="@Guid.NewGuid().ToString()" />
                     <div>
                         <a href="@Url.Action("Index", "Admin", new { tab = "User" })" onclick="selectUserTab()">Back to List</a>
@@ -95,7 +95,7 @@
     }
 
 
-    document.getElementById('createForm').addEventListener('submit', function(event) {
+    /*document.getElementById('createForm').addEventListener('submit', function(event) {
         var typeField = document.querySelector('input[name="Type"]');
         var capacityField = document.querySelector('input[name="Capacity"]');
             
@@ -108,7 +108,7 @@
             event.preventDefault();
             alert("Capacity cannot be a negative number.");
         }
-    });
+    });*/
 </script>
 
     <style>
