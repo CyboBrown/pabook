@@ -1,525 +1,1259 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminHomeViewModel
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 
 @{
     ViewData["Title"] = "Admin Home Page";
 }
-<link rel="stylesheet" href="~/css/admin.css" />
+
+@*Home Page*@
 <div class="outer-container">
     <div class="main-content">
-        <div class="mytabs">
-            <input type="radio" id="tabBookings" name="mytabs" onchange="loadTabContent('Bookings')" @((ViewData["ActiveTab"] as string == "Bookings") ? "checked" : "")>
-            <label for="tabBookings">Bookings</label>
-            <div class="tab" id="tabBookingsContent">
-              <h2>Bookings</h2>
-              <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>
+        <div class="header">
+            <div id="bookingsTab" class="tab active" onclick="switchTab('bookings')">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Bookings</span>
+            </div>
+            <div id="usersTab" class="tab" onclick="switchTab('users')">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </div>
+            <div id="roomsTab" class="tab" onclick="switchTab('rooms')">
+                <i class="fas fa-door-open"></i>
+                <span>Rooms</span>
                 
-              
             </div>
-
-            <input type="radio" id="tabUser" name="mytabs" onchange="loadTabContent('User')" @((ViewData["ActiveTab"] as string == "User") ? "checked" : "")>
-            <label for="tabUser">User</label>
-
-            <div class="tab" id="tabUserContent">
-              <h2>User Management</h2>
-              <div class="table-data">
-                <div class="order">
-                    <div class="head">
-                        <h3>User Details</h3>
-
-                        <div class="add-user">
-                                <a href="@Url.Action("CreateUser", "Admin")" class="btn btn-success">
-                                    <i class='bx bx-plus'></i> 
-                                </a>
-                        </div>
-                        <div class="refresh">
-                            <button class="btn btn-secondary btn-sm" onclick="refreshUserDetails()">
-                                <i class='bx bx-refresh'></i> 
-                            </button>
-                        </div>
-                        
-                    </div>
-                    
-                    <div class="user-table"><!--"scroll-div"-->
-                        <table class="user-scroll"><!--"table-scroll"-->
-                            <thead>
-                                <tr>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().Id)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().LastName)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().FirstName)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().Email)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().UserRole)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-details-body">
-                                @foreach (var user in Model.Users)
-                                {
-                                    <tr>
-                                        <td>@user.Id</td>
-                                        <td>@user.LastName</td>
-                                        <td>@user.FirstName</td>
-                                        <td>@user.Email</td>
-                                        <td>@user.UserRole</td>
-                                        @*<td>
-                                            @Html.ActionLink("Edit", "Edit", "UserManagement", new { Id = user.Id }, new { @class = "btn btn-primary btn-sm" })
-                                            @Html.ActionLink("Details", "Details", "UserManagement", new { Id = user.Id }, new { @class = "btn btn-info btn-sm" })
-                                        </td>   *@                                    
-                                    </tr>
-                                }
-                                
-                            </tbody>                            
-                        </table>    
-                    </div>
-                </div>
-              </div>
-            </div>
-
-
-            <input type="radio" id="tabRoom" name="mytabs" onchange="loadTabContent('Room')" @((ViewData["ActiveTab"] as string == "Room") ? "checked" : "")>
-            <label for="tabRoom">Room</label>
-
-            <div class="tab" id="tabRoomContent">
-              <h2>Room</h2>
-              <div class="floor-buttons">
-                <button onclick="showRoomDetails('10th Floor')">
-                    <i class='bx bxs-group'></i>
-                    <span>10th Floor</span>
-                </button>
-                <button onclick="showRoomDetails('11th Floor')">
-                    <i class='bx bxs-group'></i>
-                    <span>11th Floor</span>
-                </button>
-                <button onclick="showRoomDetails('14th Floor')">
-                    <i class='bx bxs-group'></i>
-                    <span>14th Floor</span>
-                </button>
-              </div>
-            
-              <div class="table-data">
-                <div class="order">
-                    <div class="head">
-                        <h3>Room Details</h3>
-
-                        <div class="add-room">
-                                <a href="@Url.Action("CreateRoom", "Admin")" class="btn btn-success">
-                                    <i class='bx bx-plus'></i> 
-                                </a>
-                        </div>
-                        <div class="refresh">
-                            <button class="btn btn-secondary btn-sm" onclick="refreshRoomDetails()">
-                                <i class='bx bx-refresh'></i> 
-                            </button>
-                        </div>
-                        
-                    </div>
-                    
-                    @*<div class="container tbl-container"*@
-
-                    <div class="scroll-container">
-                        <table class="table-scroll">
-                            <thead>
-                                <tr>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Id)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Type)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Capacity)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Location)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Facilities)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="room-details-body">
-                                @foreach (var room in Model.Rooms)
-                                {
-                                    <tr>
-                                        <td>@room.Id</td>
-                                        <td>@room.Name</td>
-                                        <td>@room.Type</td>
-                                        <td>@room.Capacity</td>
-                                        <td>@room.Location</td>
-                                        <td>@room.Facilities</td>
-                                        <td>
-                                            @Html.ActionLink("Edit", "Edit", "Room", new { Id = room.Id }, new { @class = "btn btn-primary btn-sm" })
-                                            @Html.ActionLink("Details", "Details", "Room", new { Id = room.Id }, new { @class = "btn btn-info btn-sm" })
-                                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@room.Id)">Delete</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>                            
-                        </table>    
-                    </div>
-                </div>
-              </div>
-            </div>
-            
         </div>
+        @*Bookings View*@
+        <div id="bookingsContent" class="content flex">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
+                    <div class="flex space-x-2">
+                        <button id="filterBookingsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                        <div class="book-now">
+                        <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        </div>
+                        <button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-sync-alt"></i> 
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recurring</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- ari ang mga bookings ma display -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*User View*@
+        <div id="usersContent" class="content hidden">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
+                    <div class="flex space-x-2">                    
+                        <button id="filterUsersButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-filter mr-2"></i>
+                        </button>
+                        <button id="addUserButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button id="refreshUsersButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+
+                
+
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- User data goes here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*Room View*@
+        <div id="roomsContent" class="content hidden">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
+                    <div class="flex space-x-2">
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-filter mr-2"></i>
+                        </button>
+                        <button id="addRoomButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button id="refreshRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Room data goes here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<!-- _DeleteModal.cshtml -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+@*Add Booking Modal*@
+<div id="addBookingModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="font-size: 2.5rem;">Booking Form</h1>
+        <form id="bookingForm">
+            <div class="form-group full-width">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to remove this room?</p>
+            <div class="form-group full-width">
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description">
             </div>
-            <div class="modal-footer">
-                <input type="hidden" id="RoomIdToDelete" />
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label for="room">Room:</label>
+                <select id="room" name="room" required>
+                    <option value="">Select a room</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="startTime">Start Time:</label>
+                <input type="time" id="startTime" name="startTime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endTime">End Time:</label>
+                <input type="time" id="endTime" name="endTime" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="recurring">Recurring:</label>
+                <select id="recurring" name="recurring">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+
+            <div id="recurrenceOptions" class="full-width" style="display: none;">
+                <div class="form-group-half">
+                    <label for="recurrenceType">Recurrence Type:</label>
+                    <select id="RecurrenceTypeId" name="RecurrenceTypeId" class="form-control">
+                        <option value="">Select Recurrence Type</option>
+                    </select>
+                </div>
+
+                <div class="form-group-half">
+                    <label for="recurrenceEndDate">Recurrence End Date:</label>
+                    <input type="date" id="recurrenceEndDate" name="recurrenceEndDate">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit">Create Booking</button>
+                <button type="reset" class="reset-button">Reset</button>
+            </div>
+        </form>
     </div>
 </div>
+
+@*Add Room Modal*@
+<div id="addRoomModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="font-size: 2.5rem;">Create Room</h1>
+        <form id="roomForm">
+            <div class="form-group full-width">
+                <label for="name">Room Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="type">Room Type:</label>
+                <input type="number" id="type" name="type" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="capacity">Capacity:</label>
+                <input type="number" id="capacity" name="capacity" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="facilities">Facilities:</label>
+                @*<textarea id="facilities" name="facilities"></textarea>*@
+                <input type="text" id="facilities" name="facilities" required>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit">Add Room</button>
+                <button type="reset" class="reset-button">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*Booking Details Modal*@
+<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
+        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
+        <div id="bookingDetailsContent"></div>
+    </div>
+</div>
+
+@*Room Details Modal*@
+<div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
+        <button id="closeDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h3 class="text-xl font-semibold mb-4">Room Details</h3>
+        <div id="roomDetailsContent"></div>
+    </div>
+</div>
+
+
+@*Switch Tabs Script*@
+<script>
+    function switchTab(tabName) {
+        // Hide all content sections
+        document.getElementById('bookingsContent').style.display = 'none';
+        document.getElementById('usersContent').style.display = 'none';
+        document.getElementById('roomsContent').style.display = 'none';
+
+        // Remove the active class from all tabs
+        document.getElementById('bookingsTab').classList.remove('active');
+        document.getElementById('usersTab').classList.remove('active');
+        document.getElementById('roomsTab').classList.remove('active');
+
+        // Show the selected content and add the active class to the selected tab
+        document.getElementById(tabName + 'Content').style.display = 'flex';
+        document.getElementById(tabName + 'Tab').classList.add('active');
+    }
+</script>
+
+
+
+@*Booking Script*@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Fetch rooms and populate the select element
+        fetch('/api/Booking/rooms')
+            .then(response => response.json())
+            .then(data => {
+                const roomSelect = document.getElementById('room');
+                data.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room.id;
+                    option.text = room.name;
+                    roomSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching rooms:', error));
+
+        //For fetching recurr types
+        function populateRecurrenceTypes() {
+            $.ajax({
+                url: '/api/Booking/recurrenceTypes',
+                type: 'GET',
+                success: function (data) {
+                    var dropdown = $('#RecurrenceTypeId');
+                    dropdown.empty();
+                    dropdown.append($('<option></option>').val('').text('Select Recurrence Type'));
+                    $.each(data, function (i, item) {
+                        dropdown.append($('<option></option>').val(item.id).text(item.name));
+                    });
+                },
+                error: function (error) {
+                    console.log('Error fetching recurrence types:', error);
+                }
+            });
+        }
+
+        // Call this function when the page loads
+        $(document).ready(function () {
+            populateRecurrenceTypes();
+        });
+
+
+        // Add form validation
+        function validateForm() {
+            const requiredFields = bookingForm.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('invalid');
+                } else {
+                    field.classList.remove('invalid');
+                }
+            });
+            return isValid;
+        }
+
+        // format time to TimeSpan string
+        function formatTimeToTimeSpan(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            return `${hours.padStart(2, '0')}:${minutes}:00`;
+        }
+
+        const bookingForm = document.getElementById('bookingForm');
+        const submitButton = bookingForm.querySelector('button[type="submit"]');
+
+        function loadBookings() {
+            fetch('/api/Booking/bookings')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('bookingsTableBody');
+                    tableBody.innerHTML = '';
+                    data.forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${booking.recurring ? 'Yes' : 'No'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
+                                <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
+                                <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // Add event listeners to the new buttons
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        btn.addEventListener('click', () => editBooking(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.details-btn').forEach(btn => {
+                        btn.addEventListener('click', () => showBookingDetails(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.cancel-btn').forEach(btn => {
+                        btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error fetching bookings:', error));
+        }
+
+        // i laod ang bookings
+        loadBookings();
+
+        // Form submission
+        bookingForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const startTime = formData.get('startTime');
+            const endTime = formData.get('endTime');
+            const date = formData.get('date');
+
+            // Validate date is not before the current date
+            const currentDate = new Date().toISOString().split('T')[0];
+            if (date < currentDate) {
+                alert('Selected date cannot be in the past.');
+                return;
+            }
+
+            // Validate start time is not before the current time if booking is for today
+            const currentDateTime = new Date();
+            const selectedDateTime = new Date(`${date}T${startTime}`);
+            if (date === currentDate && selectedDateTime < currentDateTime) {
+                alert('Start time cannot be in the past.');
+                return;
+            }
+
+            // Validate duration is at least 5 minutes
+            const startTimeInMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
+            const endTimeInMinutes = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
+            if (endTimeInMinutes - startTimeInMinutes < 5) {
+                alert('The duration between start time and end time must be at least 5 minutes.');
+                return;
+            }
+
+            const data = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                date: formData.get('date'),
+                roomId: parseInt(formData.get('room')),
+                startTime: formatTimeToTimeSpan(formData.get('startTime')),
+                endTime: formatTimeToTimeSpan(formData.get('endTime')),
+                recurring: formData.get('recurring') === 'true',
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
+                recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
+                userId: getCurrentUserId()
+            };
+
+            if (this.dataset.mode === 'edit') {
+                data.id = parseInt(this.dataset.bookingId); // Ensure the id is included and correctly parsed
+            }
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            const url = this.dataset.mode === 'edit'
+                ? `/api/Booking/${this.dataset.bookingId}`
+                : '/api/Booking/create';
+            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    modal.style.display = "none";
+                    loadBookings(); // This will refresh the entire table
+                    bookingForm.reset();
+
+                    // Reset form mode and submit button text
+                    this.dataset.mode = 'create';
+                    delete this.dataset.bookingId;
+                    submitButton.textContent = 'Create Booking';
+
+                    // Check if the booking is for today
+                    const today = new Date().toISOString().split('T')[0];
+                    if (data.date === today) {
+                        fetchTodaysBookings();
+                    }
+
+                    // Add success alert only for new bookings
+                    if (method === 'POST') {
+                        alert('Booking created successfully!');
+                    } else {
+                        alert('Booking updated successfully!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' booking:', error);
+                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the booking. Please try again.';
+                    if (error.errors) {
+                        errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                    }
+                    alert(errorMessage);
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
+                });
+        });
+
+        // Function to edit booking
+        function editBooking(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    // Populate the form with booking details
+                    document.getElementById('title').value = booking.title;
+                    document.getElementById('description').value = booking.description;
+                    document.getElementById('date').value = booking.date.split('T')[0];
+                    document.getElementById('room').value = booking.roomId;
+                    document.getElementById('startTime').value = booking.startTime;
+                    document.getElementById('endTime').value = booking.endTime;
+                    document.getElementById('recurring').value = booking.recurring ? 'true' : 'false';
+
+                    if (booking.recurring) {
+                        document.getElementById('recurrenceOptions').style.display = 'block';
+                        document.getElementById('RecurrenceTypeId').value = booking.recurrenceTypeId;
+                        document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
+                    }
+
+                    // Change form submission to update instead of create
+                    const form = document.getElementById('bookingForm');
+                    form.dataset.mode = 'edit';
+                    form.dataset.bookingId = bookingId;
+
+                    // Change submit button text to 'Update Booking'
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.textContent = 'Update Booking';
+
+                    // Show the modal
+                    document.getElementById('addBookingModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+
+        function showBookingDetails(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    const modal = document.getElementById('bookingDetailsModal');
+                    const content = document.getElementById('bookingDetailsContent');
+                    content.innerHTML = `
+                        <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                        <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
+                        <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                        <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                        <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
+                        <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                        ${booking.recurring ? `
+                            <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                            <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                        ` : ''}
+                    `;
+                    modal.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+
+        function closeBookingDetailsModal() {
+            const modal = document.getElementById('bookingDetailsModal');
+            modal.classList.add('hidden');
+        }
+
+        // Event listener for the close button
+        document.getElementById('closeModalBtn').addEventListener('click', closeBookingDetailsModal);
+
+        // Event listener for closing the modal when clicking outside the content
+        document.getElementById('bookingDetailsModal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeBookingDetailsModal();
+            }
+        });
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            // Remove the row from the table
+                            const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
+                            row.remove();
+                            alert('Booking cancelled successfully');
+                        } else {
+                            throw new Error('Failed to cancel booking');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling booking:', error);
+                        alert('Failed to cancel booking. Please try again.');
+                    });
+            }
+        }
+
+        // pag open/close sa modal
+        var modal = document.getElementById("addBookingModal");
+        var btn = document.querySelector(".book-now button");
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function () {
+            modal.style.display = "block";
+            bookingForm.reset(); // reset button
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // recurring nga choice
+        document.getElementById('recurring').addEventListener('change', function () {
+            document.getElementById('recurrenceOptions').style.display =
+                this.value === 'true' ? 'flex' : 'none';
+        });
+
+        // reset function
+        document.querySelector('.reset-button').addEventListener('click', function () {
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        });
+
+        // get current user ID (to be implemented)
+        function getCurrentUserId() {            
+            return 1; // Placeholder value for now
+        }
+    });
+ </script>
+
+@*Room Script*@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function validateForm() {
+            const requiredFields = roomForm.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('invalid');
+                } else {
+                    field.classList.remove('invalid');
+                }
+            });
+            return isValid;
+        }
+
+        const roomForm = document.getElementById('roomForm');
+        const submitButton = roomForm.querySelector('button[type="submit"]');
+
+        function loadRooms() {
+            fetch('/api/Room/rooms')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('roomsTableBody');
+                    tableBody.innerHTML = '';
+                    data.forEach(room => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.type}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.location}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
+                                    <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
+                                    <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
+                                </td>
+                            `;
+                        tableBody.appendChild(row);
+                    });
+
+                    document.querySelectorAll('.edit-room-btn').forEach(btn => {
+                        btn.addEventListener('click', () => editRoom(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.details-room-btn').forEach(btn => {
+                        btn.addEventListener('click', () => showRoomDetails(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.delete-room-btn').forEach(btn => {
+                        btn.addEventListener('click', () => deleteRoom(btn.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error fetching rooms:', error));
+        }
+
+        loadRooms();
+
+        roomForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const data = {
+                name: formData.get('name'),
+                facilities: formData.get('facilities'),
+                capacity: parseInt(formData.get('capacity')),
+                type: parseInt(formData.get('type')),
+                location: formData.get('location')
+            };
+
+            if (this.dataset.mode === 'edit') {
+                data.id = parseInt(this.dataset.roomId);
+            } 
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+
+            const url = this.dataset.mode === 'edit' ? `/api/Room/${this.dataset.roomId}` : '/api/Room/add';
+            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    console.log('Room ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    roomModal.style.display = "none";
+                    loadRooms();
+                    roomForm.reset();
+
+                    this.dataset.mode = 'add';
+                    delete this.dataset.roomId;
+                    submitButton.textContent = 'Add Room';
+
+                    //alert('Room ' + (method === 'POST' ? 'created' : 'updated') + ' successfully!');
+                    
+                    // Add success alert only for new bookings
+                    if (method === 'POST') {
+                        alert('Room created successfully!');
+                    } else {
+                        alert('Room updated successfully!');
+                    }
+                })
+            
+                .catch(error => {
+                    
+                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the room. Please try again.';
+
+                    if (error.status) {
+                        errorMessage += '\n\nStatus Code: ' + error.status;
+                    }
+
+                    if (error.errors) {
+                        // Check for specific validation errors
+                        if (error.errors.id) {
+                            errorMessage += '\n\nID Error: ' + error.errors.id[0]; // Display the specific validation error for 'id'
+                        } else {
+                            errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                        }
+                    }
+
+                    alert(errorMessage);
+                })
+
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Room' : 'Add Room';
+                });
+        });
+
+        //EDIT or UPDATE the room
+        function editRoom(roomId) {
+            fetch(`/api/Room/${roomId}`)
+                .then(response => response.json())
+                .then(room => {
+                    document.getElementById('name').value = room.name;
+                    document.getElementById('facilities').value = room.facilities;
+                    document.getElementById('capacity').value = room.capacity;
+                    document.getElementById('type').value = room.type;
+                    document.getElementById('location').value = room.location;
+
+                    const form = document.getElementById('roomForm');
+                    form.dataset.mode = 'edit';
+                    form.dataset.roomId = roomId;
+
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.textContent = 'Update Room';
+
+                    document.getElementById('addRoomModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching room details:', error));
+        }
+
+        // DETAILS of the Room
+        function showRoomDetails(roomId) {
+            fetch(`/api/Room/${roomId}`)
+                .then(response => response.json())
+                .then(room => {
+                    const modal = document.getElementById('roomDetailsModal');
+                    const content = document.getElementById('roomDetailsContent');
+                    content.innerHTML = `
+                    <p class="mb-2"><strong>Name:</strong> ${room.name}</p>
+                    <p class="mb-2"><strong>Capacity:</strong> ${room.capacity}</p>
+                    <p class="mb-2"><strong>Type:</strong> ${room.type}</p>
+                    <p class="mb-2"><strong>Location:</strong> ${room.location}</p>
+                    <p class="mb-2"><strong>Facilities:</strong> ${room.facilities}</p>
+                `;
+                    modal.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching room details:', error));
+        }
+
+        function closeRoomDetailsModal() {
+            const modal = document.getElementById('roomDetailsModal');
+            modal.classList.add('hidden');
+        }
+
+        // Event listener for the close button
+        document.getElementById('closeDetailsBtn').addEventListener('click', closeRoomDetailsModal);
+
+        // Event listener for closing the modal when clicking outside the content
+        document.getElementById('roomDetailsModal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeRoomDetailsModal();
+            }
+        });
+
+
+        //DELETE Room
+        function deleteRoom(roomId) {
+            if (confirm('Are you sure you want to remove this room?')) {
+                fetch(`/api/Room/${roomId}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            const row = document.querySelector(`button[data-id="${roomId}"]`).closest('tr');
+                            row.remove();
+                            alert('Room cancelled successfully');
+                        } else {
+                            throw new Error('Failed to cancel room');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling room:', error);
+                        alert('Failed to cancel room. Please try again.');
+                    });
+            }
+        }
+
+
+        var roomModal = document.getElementById("addRoomModal");
+        var roomBtn = document.getElementById("addRoomButton");
+        var span = roomModal.getElementsByClassName("close")[0];
+
+        roomBtn.onclick = function () {
+            roomModal.style.display = "block";
+            roomForm.reset();
+        }
+
+        span.onclick = function () {
+            roomModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == roomModal) {
+                roomModal.style.display = "none";
+            }
+        }
+
+        document.querySelector('.reset-button').addEventListener('click', function () {
+            roomForm.reset();
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 @section Styles {
-    <script>
-        toastr.options = {
-            positionClass: "toast-top-center",
-            timeOut: 5000,
-            closeButton: true,
-            progressBar: true
-        };
-
-        var successMessage = '@TempData["SuccessMessage"]';
-        var addedRoom = '@TempData["AddedRoom"]';
-        var successDeletion = '@TempData["SuccessDeletion"]';
-
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
-        if (addedRoom) {
-            toastr.success(addedRoom);
-        }
-        if (successDeletion) {
-            toastr.success(successDeletion);
-        }
-        
-        function showDeleteModal(roomId) {
-            document.getElementById('RoomIdToDelete').value = roomId;
-            $('#deleteModal').modal('show');
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: #000;
         }
 
-        // Function to handle deletion after confirmation
-        function confirmDelete() {
-            var roomId = document.getElementById('RoomIdToDelete').value;
-
-            $.ajax({
-                url: '@Url.Action("PostDelete", "Admin")',
-                type: 'POST',
-                data: { id: roomId },
-                success: function () {
-                    toastr.success('Room deleted successfully.');
-                    $('#deleteModal').modal('hide');
-                    refreshRoomDetails(); 
-                },
-                error: function () {
-                    toastr.error('Failed to delete room.');
-                }
-            });
+        .outer-container {
+            box-sizing: border-box;
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+            flex-direction: column;
+            width: calc(100% - 265px);
+            height: calc(100%-40px);
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            margin-left: 100px;
+            position: fixed;
+            z-index: 0;
         }
 
+        .notification-profile {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
 
+        .notification {
+            position: relative;
+            margin-right: 20px;
+            color: #185D62;
+            font-size: 24px;
+            cursor: pointer;
+        }
 
-        /*
-        function loadTabContent(tab) {
-            let contentUrl = '';
-            switch(tab) {
-                case 'Room':
-                    contentUrl = '@Url.Action("GetRoomContent", "Admin")';
-                    break;
-                case 'User':
-                    contentUrl = '@Url.Action("GetUserContent", "Admin")';
-                    break;
-                case 'Bookings':
-                    contentUrl = '@Url.Action("GetBookingsContent", "Admin")';
-                    break;
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            padding: 4px 6px;
+            border-radius: 50%;
+        }
+
+        .profile-picture {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #1BC7D2;
+        }
+
+            .profile-picture img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
             }
 
-            if (contentUrl) {
-                $.ajax({
-                    url: contentUrl,
-                    type: 'GET',
-                    success: function (data) {
-                        $('#tabContent').html(data); // Update tab content
-                    }
-                });
+        .main-content {
+            height: 85vh;
+            background-color: #185D62;
+            padding: 20px;
+            color: #fff;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1BC7D2;
+        }
+
+            .header .tab {
+                padding: 10px 20px;
+                cursor: pointer;
+                background-color: #185D62;
+                color: #fff;
+                border-radius: 5px 5px 0 0;
+                margin-right: 10px;
             }
-        }
 
-        /*
-        function loadTabContent(tab) {
-            $.ajax({
-                url: '@Url.Action("Index", "Admin")',
-                type: 'GET',
-                data: { tab: tab },
-                success: function (result) {
-                    $('.tab').hide();
-                    $('#tab' + tab + 'Content').html($(result).find('#tab' + tab + 'Content').html());
-                    $('#tab' + tab + 'Content').show();
-                },
-                error: function () {
-                    alert('Failed to load tab content.');
+                .header .tab.active {
+                    background-color: #1BC7D2;
+                    color: #000;
                 }
-            });
-        }
-        */
-        function showRoomDetails(floor) {
-            $.ajax({
-                url: '@Url.Action("GetRoomDetailsByFloor", "Admin")',
-                type: 'GET',
-                data: { floor: floor },
-                success: function (result) {
-                    $('#room-details-body').html(result);
-                },
-                error: function () {
-                    alert('Failed to load room details.');
-                }
-            });
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            height: 100%;
+            overflow-y: hidden;
         }
 
-        function showUserDetails() {
-            $.ajax({
-                url: '@Url.Action("GetAll", "Admin")',
-                type: 'GET',
-                data: { floor: floor },
-                success: function (result) {
-                    $('#room-details-body').html(result);
-                },
-                error: function () {
-                    alert('Failed to load user details.');
-                }
-            });
+        .left-pane, .right-pane {
+            flex: 1;
+            margin: 10px;
+        }
+
+        .background-image {
+            background-image: url("/img/book.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 85%;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .date-time {
+            margin-bottom: 100px;
+        }
+
+            .date-time .time-now,
+            .date-time .date-now {
+                font-size: 40px;
+                line-height: 1.2;
+                margin-bottom: 10px;
+            }
+
+        .booking-info {
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
         }
 
 
-        function refreshRoomDetails() {
-            $.ajax({
-                url: '@Url.Action("GetRoomDetails", "Admin")',
-                type: 'GET',
-                success: function (data) {
-                    $('#room-details-body').html(data); // Replace table body with updated data
-                    toastr.success('Room details refreshed.');
-                },
-                error: function () {
-                    toastr.error('Failed to refresh room details.');
-                }
-            });
+        .time {
+            font-weight: bold;
+            flex: 0 0 80px;
         }
 
-   </script> 
+        .title {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .location {
+            font-style: italic;
+            flex: 0 0 150px;
+            text-align: right;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        #addBookingContent, #myBookingsContent {
+            display: flex;
+        }
+
+
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .modal-content {
+            background-color: #185D62;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #185D62;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-family: 'YourMainContainerFont', sans-serif;
+            color: white;
+            position: relative;
+        }
+
+            .modal-content h1 {
+                text-align: center;
+                color: #ecf0f1;
+                margin-bottom: 10px;
+            }
+
+            .modal-content form {
+                background: #fff;
+                padding: 15px;
+                border-radius: 8px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .modal-content label {
+                display: block;
+                margin-bottom: 2px;
+                font-weight: bold;
+                font-size: 0.9em;
+                color: #000;
+            }
+
+            .modal-content input,
+            .modal-content select {
+                width: 100%;
+                padding: 6px;
+                margin-bottom: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+                background-color: #ecf0f1;
+                color: #2c3e50;
+            }
+
+        .form-group {
+            flex: 1 1 calc(50% - 8px);
+            min-width: 200px;
+        }
+
+        .full-width {
+            flex: 1 1 100%;
+        }
+
+        .form-group-half {
+            flex: 1 1 calc(50% - 8px);
+            min-width: calc(50% - 8px);
+            margin-right: 10px;
+        }
+
+        .modal-content button {
+            background-color: #5bc0de;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+            .modal-content button:hover {
+                background-color: #31b0d5;
+            }
+
+        .close {
+            color: #fff;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #ecf0f1;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        #recurrenceOptions {
+            margin-top: 6px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(76vh - 10rem);
+        }
+
+    </style>
 }
-@*
- <style>
 
-    
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        background-color: #000;
-    }
-
-    .outer-container {
-            
-        box-sizing: border-box;
-        background-color: var(--light);
-        padding: 10px;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column-reverse;
-        flex-direction: column;
-        width: calc(100% - 215px);
-        height: calc(100%-40px);
-        top: 20px;
-        right: 20px;
-        bottom: 20px;
-        margin-left: 100px;
-        position: fixed;
-        z-index: 0;
-    }
-
-    .outer-container.expand{           
-        width: calc(100% - 60px);
-    }
-
-    .main-content {
-        height: 85vh;
-        background-color: #185D62;
-        padding: 20px;
-        color: #fff;
-        border-radius: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        flex-grow: 1;
-    }
-    .main-content nav{
-        position: relative;
-        height: 100px;
-        width: calc(100%-300px);
-        padding-left: 20px;
-        padding-right: 20px;
-    }       
-
-
-    /*ROOM nga styles*/
-    .mytabs {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 25px;
-        background-color: transparent;
-        display: flex;
-        justify-content: left;
-        margin-bottom: 20px;         
-        padding: 0px;
-    }
-    .mytabs input[type="radio"] {
-        display: none;
-    }
-    .mytabs label {
-        padding: 15px;
-        background: #185D62;
-        font-weight: bold;
-        border-bottom: 2px solid #1BC7D2;
-        width: 100px;
-        text-align: center;
-        cursor: pointer;
-    }
-
-    .mytabs .tab {
-        width: 100%;
-        padding: 20px;
-        background: #185D62;
-        order: 1;
-        display: none;
-    }
-    .mytabs .tab h2 {
-        font-size: 3em;
-    }
-
-    .mytabs input[type='radio']:checked + label + .tab {
-        display: block;
-    }
-
-    .mytabs input[type="radio"]:checked + label {
-        background: #1BC7D2;
-    }
-    
-
-    .table-data {
-        display: flex;
-        flex-wrap: wrap;
-        grid-gap: 24px;
-        margin-top: 24px;
-        width: 100%;
-        color: var(--dark);
-    }
-
-    .table-data > div {
-        border-radius: 20px;
-        background: var(--light);
-        padding: 10px;
-        overflow-x: auto;
-        
-    }
-
-    .table-data .head {
-        display: flex;
-        align-items: center;
-        grid-gap: 0px;
-        background-color: transparent;
-        margin-bottom: 0px;
-    }
-
-    .add-room .refresh i {
-        
-        background-color: transparent;
-        
-    }
-    
-    .table-data .head h3 {
-        margin-right: auto;
-        font-size: 24px;
-        font-weight: 600;
-        padding: 10px;
-    }
-    .refresh {
-        display: flex;
-        justify-content: flex-end;
-        padding-right: 10px;
-    }
-
-    .add-room {
-        display: flex;
-        justify-content: flex-end;
-        padding-right: 10px;
-    }
-    .add-room .btn-success {
-        background-color: transparent;
-        border: none;
-        color: inherit; /* To maintain the original font color */
-    }
-
-    .refresh .btn-secondary {
-        background-color: transparent;
-        border: none;
-        color: inherit; /* To maintain the original font color */
-    }
-
-    .table-data .order {
-        flex-grow: 1;
-        flex-basis: 500px;
-        
-    }
-    .scroll-container {
-        height: 300px; /* Set the desired height for the scrollable area */
-        overflow-y: auto; /* Enable vertical scrolling */
-    }
-
-    .table-data .order table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: white;
-        /*height: 300px;
-        overflow: hidden;
-        overflow-y: scroll;*/
-    }
-
-    
-    .table-data .order table th,
-    .table-data .order table td {
-        padding: 12px 15px; 
-    }
-
-    .table-data .order table th {
-        font-size: 13px;
-        text-align: left;
-        border-bottom: 1px solid var(--grey);
-    }
-
-    .table-data .order table tr {
-        line-height:1.0; 
-        padding: 12px 15px;
-    }
-
-    .table-data .order table tr:hover {
-        background: var(--grey);
-    }
-
-    .table-scroll {
-      overflow-y: auto;
-      height: 300px; 
-    }
-    
-</style>  *@

@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,11 +18,13 @@ namespace ASI.Basecode.Services.Services
         {
             private readonly IUserRepository _userRepository;
             private readonly IMapper _mapper;
+            private readonly IHttpContextAccessor _contextAccessor;
 
-        public UserService(IUserRepository repository, IMapper mapper)
+        public UserService(IUserRepository repository, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _mapper = mapper;
             _userRepository = repository;
+            _contextAccessor = contextAccessor;
         }
 
         public LoginResult Authenticate(string username, string password, out User user)
@@ -55,8 +58,9 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedDate = DateTime.Now;
                 user.UpdatedDate = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
+                user.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                user.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                user.UserRole = 1;
 
                 _userRepository.AddUser(user);
             }
@@ -92,7 +96,7 @@ namespace ASI.Basecode.Services.Services
             Console.WriteLine(" > UserService: Update");
             var existingData = _userRepository.GetUsers().Where(s => s.UserName == model.UserName).FirstOrDefault();
             _mapper.Map(model, existingData);
-            existingData.UpdatedBy = "[Current User]";
+            existingData.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             existingData.UpdatedDate = DateTime.Now;
             _userRepository.UpdateUser(existingData);
         }

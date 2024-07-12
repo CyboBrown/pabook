@@ -18,6 +18,7 @@ namespace ASI.Basecode.Data.Repositories
 
         public IQueryable<Room> GetRooms()
         {
+            Console.WriteLine(" > RoomRepo: GetRooms");
             return this.GetDbSet<Room>().Where(r => !r.Deleted);
         }
 
@@ -43,7 +44,18 @@ namespace ASI.Basecode.Data.Repositories
             this.GetDbSet<Room>().Update(room);
             UnitOfWork.SaveChanges();
         }
-
+        public void CancelRoom(int id)
+        {
+            Console.WriteLine(" > RoomRepo: CancelRoom");
+            var roomToCancel = this.GetDbSet<Room>().FirstOrDefault(x => x.Deleted != true && x.Id == id);
+            if (roomToCancel != null)
+            {
+                roomToCancel.Deleted = true;
+                roomToCancel.UpdatedDate = DateTime.Now;
+                roomToCancel.UpdatedBy = "[Cancelled]";
+            }
+            UnitOfWork.SaveChanges();
+        }
         public void DeleteRoom(int id)
         {
             Console.WriteLine(" > RoomRepo: DeleteRoom");

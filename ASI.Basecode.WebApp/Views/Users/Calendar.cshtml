@@ -80,16 +80,21 @@
         }
 
         .outer-container {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 40px);
-            width: calc(150vh - 10px);
             box-sizing: border-box;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+            flex-direction: column;
+            width: calc(100% - 265px);
+            height: calc(100%-40px);
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            margin-left: 100px;
+            position: fixed;
+            z-index: 0;
         }
 
         .main-content {

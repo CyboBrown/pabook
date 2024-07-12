@@ -9,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     /// <summary>
     /// Room Controller
     /// </summary>
@@ -40,60 +41,113 @@ namespace ASI.Basecode.WebApp.Controllers
             _roomService = roomService;
         }
 
-        /// <summary>
-        /// Indexes this instance.
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult Index(string tab = "Room")
-        {
-            ViewData["ActiveTab"] = tab;
-            
 
-            switch (tab)
+        [HttpGet("rooms")]
+        public IActionResult GetRooms()
+        {
+            var rooms = _roomService.GetAllRooms().ToList();
+            return Ok(rooms);
+
+        }
+
+
+
+        // POST api/Room/add
+        [HttpPost("add")]
+        public IActionResult AddRoom([FromBody] RoomViewModel room)
+        {
+            /*
+            if (ModelState.IsValid)
             {
-                
-                case "Bookings":
-                    
-                    return View("Index", "Bookings");
-                case "User":
-                    return View("Index"); // Pass a single UserViewModel
-                case "Room":
-                    var rooms = _roomService.GetAll();// Replace with your actual method to fetch rooms
-                    return View("Index", rooms); // Pass a single RoomViewModel
-                default:
-                    return View("Index");
+                _roomService.AddRoom(room);
+                return Ok(new { success = true, message = "Room created successfully" });
+            }
+            return BadRequest(new { success = false, message = "Invalid booking data" });
+            */
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
-            
-        }
-        #region GET METHODS
-
-
-        [HttpGet]
-        public IActionResult Details(int Id)
-        {
-            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
-            return View(data);
+            _roomService.AddRoom(room);
+            return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
         }
 
-        [HttpGet]
-        public IActionResult Edit(int Id)
+
+        /*
+         [HttpPost]
+         [Route("add")]
+         public IActionResult AddRoom([FromBody] RoomViewModel room)
+         {
+             if (!ModelState.IsValid)
+             {
+                 return BadRequest(ModelState);
+             }
+
+             try
+             {
+                 // Log the received room data
+                 _logger.LogInformation("Received room data: {@Room}", room);
+
+                 // Your code to add the room
+                 _roomService.AddRoom(room);
+                 return Ok(room);
+             }
+             catch (Exception ex)
+             {
+                 _logger.LogError(ex, "Error adding room");
+                 return StatusCode(500, "Internal server error");
+             }
+         }*/
+
+        [HttpGet("{id}")]
+        public IActionResult GetRoom(int id)
         {
-            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
-            return View(data);
+            var room = _roomService.GetRoomById(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+            return Ok(room);
+        }
+        
+        [HttpPut("{id}")]
+        public IActionResult UpdateRoom(int id, [FromBody] RoomViewModel room)
+        {
+            if (id != room.Id)
+            {
+                return BadRequest(new { success = false, message = "Room ID mismatch." });
+            }
+
+            try
+            {
+                _roomService.UpdateRoom(room);
+                return Ok(new { success = true, message = "Room updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error updating room");
+                return BadRequest(new { success = false, message = "An error occurred while updating the room. Please try again.", error = ex.Message });
+            }
+        }
+        
+             
+        [HttpDelete("{id}")]
+        public IActionResult CancelRoom(int id)
+        {
+            try
+            {
+                _roomService.CancelRoom(id);
+                return Ok(new { success = true, message = "Room deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
-        
-        #endregion
-        
-        #region POST METHODS
-        
-        [HttpPost]
-        public IActionResult PostUpdate(RoomViewModel model)
-        {
-            _roomService.Update(model);
-            return RedirectToAction("Index", "Admin");
-        }       
-        #endregion
+
+
     }
 }

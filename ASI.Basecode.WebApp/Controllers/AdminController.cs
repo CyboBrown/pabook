@@ -34,7 +34,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="loggerFactory"></param>
         /// <param name="configuration"></param>
         /// <param name="mapper"></param>
-        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService _bookingService, IUserService userService, IHttpContextAccessor httpContextAccessor,
+        public AdminController(IRoomService roomService, IUserManagementService userManagementService, IBookingService bookingService, IUserService userService, IHttpContextAccessor httpContextAccessor,
                                ILoggerFactory loggerFactory,
                                IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
@@ -42,6 +42,7 @@ namespace ASI.Basecode.WebApp.Controllers
             _roomService = roomService;
             _userManagementService = userManagementService;
             _userService = userService;
+            _bookingService = bookingService;
         }
 
         private UserManagementViewModel GetCurrentUser()
@@ -281,10 +282,11 @@ namespace ASI.Basecode.WebApp.Controllers
         #endregion
 
         #region POST METHODS
+
+        /*
         [HttpPost]
         public IActionResult PostCreate(RoomViewModel model, string requestId)
         {
-            /*Console.WriteLine("Passed Controller Post Create");*/
 
             if (_roomService.RequestAlreadyProcessed(requestId))
             {
@@ -306,10 +308,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("Index");
         }
         
-
+        */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateUser(UserViewModel model)
+        public IActionResult CreateUser(UserManagementViewModel model)
         {
             bool isDuplicate = _userService.GetAll().Any(user => user.UserName == model.UserName || user.Email == model.Email);
             if (isDuplicate)
@@ -321,23 +323,35 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 try
                 {
-                    _userService.Add(model);
+                    // Map UserManagementViewModel to UserViewModel
+                    var userViewModel = new UserViewModel
+                    {
+                        UserName = model.UserName,
+                        LastName = model.LastName,
+                        FirstName = model.FirstName,
+                        Email = model.Email,
+                        UserRole = model.UserRole,
+                        Password = model.Password
+                    };
+
+                    _userService.Add(userViewModel);
                     TempData["SuccessMessage"] = "User created successfully.";
                     return RedirectToAction("Index");
-                } catch (InvalidDataException ex)
+                }
+                catch (InvalidDataException ex)
                 {
                     ModelState.AddModelError("", ex.Message);
                 }
             }
             return View(model);
         }
-
+        /*
         [HttpPost]
         public IActionResult PostUpdate(RoomViewModel model)
         {
             _roomService.Update(model);
             return RedirectToAction("Index");
-        }
+        }*/
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {

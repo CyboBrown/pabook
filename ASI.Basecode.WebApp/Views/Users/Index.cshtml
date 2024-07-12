@@ -45,7 +45,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="bookingItems" class="divide-y divide-gray-200">
-                                      <!-- ari ang mga bookings ma display -->
+                                      
                                 </tbody>
                             </table>
                         </div>
@@ -84,7 +84,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </div>
 
@@ -175,7 +174,6 @@
     //fetching karon nga bookings
     document.addEventListener('DOMContentLoaded', function () {
         fetchTodaysBookings();
-
         // Refreshes kada 1 sec
         setInterval(fetchTodaysBookings, 1000);
     });
@@ -299,7 +297,7 @@
         const submitButton = bookingForm.querySelector('button[type="submit"]');
 
         function loadBookings() {
-            fetch('/api/Booking/bookings')
+            fetch('/api/Booking/myBookings')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -496,6 +494,14 @@
         }
 
         function showBookingDetails(bookingId) {
+            function getRecurrenceTypeName(recurrenceId) {
+                result = "Error";
+                fetch(`/api/Booking/recurrence/${recurrenceId}`)
+                    .then(response => response.json())
+                    .then(data => result = data)
+                    .catch(error => console.error('Error getting recurrence type name:', error));
+                return result;
+            }
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
@@ -509,7 +515,7 @@
                     <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
                     <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
                     ${booking.recurring ? `
-                        <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                                <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
                         <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
                     ` : ''}
                 `;
@@ -594,7 +600,7 @@
 </script>
 
 
-
+@*Switch Tabs Script*@
 <script>
     function switchTab(tabName) {
         // Taguan ani tanan content
@@ -626,16 +632,21 @@
         }
 
         .outer-container {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 40px);
-            width: calc(150vh - 10px);
             box-sizing: border-box;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+            flex-direction: column;
+            width: calc(100% - 265px);
+            height: calc(100%-40px);
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            margin-left: 100px;
+            position: fixed;
+            z-index: 0;
         }
 
         .notification-profile {

@@ -16,5 +16,6 @@ namespace ASI.Basecode.Data.Interfaces
         void UpdateUser(User user);
         void DeleteUser(int id);
         User GetUserById(int id);
+        int GetMaxUserId();
     }
 }
