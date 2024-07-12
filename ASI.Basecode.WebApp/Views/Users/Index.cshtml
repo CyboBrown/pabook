@@ -297,7 +297,7 @@
         const submitButton = bookingForm.querySelector('button[type="submit"]');
 
         function loadBookings() {
-            fetch('/api/Booking/bookings')
+            fetch('/api/Booking/myBookings')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -494,6 +494,14 @@
         }
 
         function showBookingDetails(bookingId) {
+            function getRecurrenceTypeName(recurrenceId) {
+                result = "Error";
+                fetch(`/api/Booking/recurrence/${recurrenceId}`)
+                    .then(response => response.json())
+                    .then(data => result = data)
+                    .catch(error => console.error('Error getting recurrence type name:', error));
+                return result;
+            }
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
@@ -507,7 +515,7 @@
                     <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
                     <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
                     ${booking.recurring ? `
-                        <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                                <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
                         <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
                     ` : ''}
                 `;
