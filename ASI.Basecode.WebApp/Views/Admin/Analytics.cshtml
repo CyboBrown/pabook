@@ -97,6 +97,7 @@
     // ---------- CHARTS ----------
 
     // AREA CHART
+    // AREA CHART
     const areaChartOptions = {
         series: [
             {
@@ -111,7 +112,7 @@
         chart: {
             type: 'area',
             background: 'transparent',
-            height: 350,
+            height: 250,
             stacked: false,
             toolbar: {
                 show: false,
@@ -153,9 +154,9 @@
             position: 'top',
         },
         markers: {
-            size: 6,
+            size: 4,
             strokeColors: '#1b2635',
-            strokeWidth: 3,
+            strokeWidth: 2,
         },
         stroke: {
             curve: 'smooth',
@@ -170,9 +171,10 @@
                 show: true,
             },
             labels: {
-                offsetY: 5,
+                offsetY: 0,
                 style: {
                     colors: '#f5f7ff',
+                    fontSize: '0.75rem'
                 },
             },
         },
@@ -182,11 +184,13 @@
                     text: 'Booking Summary',
                     style: {
                         color: '#f5f7ff',
+                        fontSize: '0.8rem'
                     },
                 },
                 labels: {
                     style: {
                         colors: ['#f5f7ff'],
+                        fontSize: '0.75rem'
                     },
                 },
             },
@@ -196,11 +200,13 @@
                     text: 'Room Usage',
                     style: {
                         color: '#f5f7ff',
+                        fontSize: '0.8rem'
                     },
                 },
                 labels: {
                     style: {
                         colors: ['#f5f7ff'],
+                        fontSize: '0.75rem'
                     },
                 },
             },
@@ -243,6 +249,7 @@
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
         margin: 0;
         font-family: 'Poppins', sans-serif;
@@ -315,6 +322,7 @@
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1rem;
         margin-bottom: 1rem;
+        font-family: 'Inter', sans-serif;
     }
 
     .card {
@@ -335,8 +343,9 @@
     .card h3 {
         margin-top: 0;
         margin-bottom: 1rem;
-        font-size: 1.4rem;
-        font-weight: 600;
+        font-size: 1.5rem; 
+        font-weight: 700;
+        color: #1F2937;
     }
 
     .card-content {
@@ -352,15 +361,15 @@
     }
 
     .label {
-        font-size: 0.9rem;
-        color: #7f8c8d;
+        font-size: 0.875rem; 
+        color: #4B5563; 
         font-weight: 500;
     }
 
     .value {
-        font-size: 1.4rem;
+        font-size: 1.25rem;
         font-weight: 700;
-        color: #2c3e50;
+        color: #1F2937; 
     }
 
     .card i {
@@ -373,29 +382,30 @@
     }
 
     .charts-section {
-        background-color: #185D62;
-        border-radius: 12px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-        align-items: center;
-        justify-content: center;
+    background-color: #185D62;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
     }
 
     .chart {
-        height: 100px;
-        margin-top: 1rem;
+        height: 200px;
+        margin-top: 0.5rem;
     }
 
     .btn {
-        padding: 0.8rem 1.5rem;
-        border-radius: 30px;
+        padding: 0.6rem 1rem;
+        border-radius: 25px;
         border: none;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.7px;
     }
 
     .btn:hover {
@@ -405,15 +415,15 @@
 
     #generate-report-btn {
         display: block;
-        margin: 2rem auto;
+        margin: 1.5rem auto;
         background-color: #4D869C;
         color: #fff;
-        font-size: 1.1rem;
-        padding: 1rem 2rem;
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
     }
 
     .pulse {
-        animation: pulse 2s infinite;
+        animation: pulse 1.5s infinite;
     }
 
     @@keyframes pulse {
@@ -421,7 +431,7 @@
             box-shadow: 0 0 0 0 rgba(114, 151, 98, 0.7);
         }
         70% {
-            box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+            box-shadow: 0 0 0 7px rgba(52, 152, 219, 0);
         }
         100% {
             box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
