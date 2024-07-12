@@ -32,7 +32,6 @@ namespace ASI.Basecode.Services.Services
             try
             {
                 var bookings = _bookingRepository.GetBookings()
-                                                 .Where(b => !b.Cancelled) // Filter out cancelled bookings
                                                  .ToList();
                 var bookingViewModels = new List<BookingViewModel>();
 
@@ -70,6 +69,54 @@ namespace ASI.Basecode.Services.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return Enumerable.Empty<BookingViewModel>();
+            }
+        }
+
+        public IEnumerable<BookingViewModel> GetUserBookings()
+        {
+            try
+            {
+                var bookings = _bookingRepository.GetBookings()
+                                                 .Where(b => b.CreatedBy == _contextAccessor.HttpContext.User.Identity.Name)
+                                                 .ToList();
+                var bookingViewModels = new List<BookingViewModel>();
+
+                foreach (var booking in bookings)
+                {
+                    if (booking == null)
+                    {
+                        Console.WriteLine("Encountered a null booking object");
+                        continue;
+                    }
+
+                    var room = _roomRepository.GetRoom(booking.RoomId);
+
+                    var bookingViewModel = new BookingViewModel
+                    {
+                        Id = booking.Id,
+                        Title = booking.Title ?? "No Title",
+                        Description = booking.Description,
+                        Date = booking.Date,
+                        RoomId = booking.RoomId,
+                        StartTime = booking.StartTime,
+                        EndTime = booking.EndTime,
+                        Recurring = booking.Recurring,
+                        RecurrenceTypeId = booking.RecurrenceTypeId,
+                        RecurrenceEndDate = booking.RecurrenceEndDate,
+                        RoomName = room?.Name ?? "Unknown Room",
+                        Cancelled = booking.Cancelled
+                    };
+
+                    bookingViewModels.Add(bookingViewModel);
+                }
+
+                return bookingViewModels;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }

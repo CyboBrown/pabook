@@ -50,6 +50,13 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(recurrenceTypes);
         }
 
+        [HttpGet("recurrence/{id}")]
+        public IActionResult GetRecurrenceTypeById(int id)
+        {
+            var recurrenceType = _recurrenceTypeService.GetRecurrenceType(id);
+            return Ok(recurrenceType.Name);
+        }
+
         [HttpPost("create")]
         public IActionResult CreateBooking([FromBody] BookingViewModel booking)
         {
@@ -68,12 +75,22 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
+        [HttpGet("myBookings")]
+        public IActionResult GetBookingsByUser()
+        {
+            var bookings = _bookingService.GetUserBookings()
+                                                 .Where(b => !b.Cancelled)
+                                                 .ToList();
+            return Ok(bookings);
+        }
+
         [HttpGet("todaysBookings")]
         public IActionResult GetTodaysBookings()
         {
             var today = DateTime.Today;
-            var bookings = _bookingService.GetAllBookings()
+            var bookings = _bookingService.GetUserBookings()
                                           .Where(b => b.Date.Date == today)
+                                          .Where(b => !b.Cancelled)
                                           .Select(b => new {
                                               b.StartTime,
                                               b.Title,
