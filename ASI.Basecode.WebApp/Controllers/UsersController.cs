@@ -38,10 +38,6 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-        public IActionResult ViewBookings()
-        {
-            return View();
-        }
         public IActionResult Calendar()
         {
             return View();
