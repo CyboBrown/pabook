@@ -32,8 +32,8 @@ namespace ASI.Basecode.Data.Repositories
         public void AddRoom(Room room)
         {
             Console.WriteLine(" > RoomRepo: AddRoom");
-            /*var maxId = GetDbSet<Room>().Count() == 0 ? 1 : GetDbSet<Room>().Max(x => x.Id) + 1;
-            room.Id = maxId;*/
+            var maxId = GetDbSet<Room>().Count() == 0 ? 1 : GetDbSet<Room>().Max(x => x.Id) + 1;
+            room.Id = maxId;
             this.GetDbSet<Room>().Add(room);
             UnitOfWork.SaveChanges();
         }
