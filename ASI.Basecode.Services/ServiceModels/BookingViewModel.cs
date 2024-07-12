@@ -25,5 +25,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<RoomViewModel> Rooms { get; set; }
         public string RecurrenceType { get; set; }
         public string RoomName { get; set; }
+        public string CreatedBy { get; set; }
     }
 }
