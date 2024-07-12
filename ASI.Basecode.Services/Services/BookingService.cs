@@ -147,6 +147,7 @@ namespace ASI.Basecode.Services.Services
             return new BookingViewModel
             {
                 Id = booking.Id,
+                CreatedBy =booking.CreatedBy ?? "Unknown",
                 Title = booking.Title ?? "No Title",
                 Description = booking.Description,
                 Date = booking.Date,

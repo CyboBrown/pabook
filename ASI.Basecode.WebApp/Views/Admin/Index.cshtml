@@ -133,6 +133,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="roomsTableBody" class="bg-white divide-y divide-gray-200">
@@ -573,6 +574,7 @@
                     const content = document.getElementById('bookingDetailsContent');
                     content.innerHTML = `
                         <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                            <p class="mb-2"><strong>Created by:</strong> ${booking.createdBy || 'Unknown'}</p>
                         <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
                         <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
                         <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
