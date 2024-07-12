@@ -56,16 +56,21 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost("add")]
         public IActionResult AddRoom([FromBody] RoomViewModel room)
         {
-
+            /*
             if (ModelState.IsValid)
             {
                 _roomService.AddRoom(room);
                 return Ok(new { success = true, message = "Room created successfully" });
             }
             return BadRequest(new { success = false, message = "Invalid booking data" });
-            // Implementation to add a room
-            // Ensure the method logic handles the POST request correctly
-            //return Ok(new { message = "Room added successfully" });
+            */
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _roomService.AddRoom(room);
+            return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
         }
 
 
