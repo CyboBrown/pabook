@@ -11,12 +11,6 @@
                     <span>Home</span>
                 </a>
             </li>
-            <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "ViewBookings" ? "active" : "")">
-                <a asp-controller="Users" asp-action="ViewBookings">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>View Bookings</span>
-                </a>
-            </li>
             <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Calendar" ? "active" : "")">
                 <a asp-controller="Users" asp-action="Calendar">
                     <i class="fas fa-calendar"></i>
