@@ -253,7 +253,7 @@
 </div>
 
 @*Booking Details Modal*@
-<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
         <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -266,7 +266,7 @@
 </div>
 
 @*Room Details Modal*@
-<div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+<div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
         <button id="closeDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1132,7 +1132,6 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
@@ -1141,6 +1140,7 @@
             background-color: rgba(0,0,0,0.4);
             padding-top: 20px;
             padding-bottom: 20px;
+            z-index: 50;
         }
 
         .modal-content {
@@ -1223,6 +1223,9 @@
                 background-color: #31b0d5;
             }
 
+            .bookingDetailsModal {
+                z-index: 100;
+            }
         .close {
             color: #fff;
             position: absolute;
