@@ -1,0 +1,214 @@
+﻿:root {
+    --light-bg: #fff;
+    --light-main: #ADC5CF;
+    --light-outer: #A4C1CD;
+    --dark-bg: #000;
+    --dark-main: #185D62;
+    --dark-outer: #fff;
+}
+
+/* Body styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--dark-bg);
+    transition: background-color 0.4s ease;
+    
+}
+
+/* Outer container */
+.outer-container {
+    box-sizing: border-box;
+    background-color: var(--dark-outer);
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 265px);
+    height: calc(100% - 40px);
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 5;
+    transition: background-color 0.4s ease;
+}
+
+.main-content {
+    height: 85vh;
+    background-color: var(--dark-main);
+    padding: 20px;
+    color: #185D62;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-grow: 1;
+    color: #fff;
+}
+
+    .main-content nav {
+        position: relative;
+        height: 100px;
+        width: calc(100%-300px);
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+}
+
+/* Dark Mode */
+body.night {
+    background-color: var(--light-bg);
+    color: #fff;
+}
+
+.outer-container.night {
+    background-color: var(--light-outer);
+    color: grey;
+}
+
+.main-content.night {
+    background-color: var(--light-main);
+    color: #185D62; /* Change text color for dark mode if necessary */
+}
+.sidebar.night {
+    background-color: var(--light-bg);
+    color: #000; /* Change text color for dark mode if necessary */
+    transition: background-color 0.4s ease;
+}
+.sidebar-menu. li a night {   
+    color: #000; /* Change text color for dark mode if necessary */
+}
+
+/*Label styles for switch */
+label {
+    border: 2px solid;
+    border-radius: 20px;
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 25px;
+}
+
+    label:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 1px;
+        top: 1px;
+        bottom: 1px;
+        background: #fff;
+        cursor: pointer;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    label.active:before {
+        left: 20px;
+        right: 1px;
+        top: 1px;
+        background: #185D62;
+    }
+
+
+
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    background-color: #ccc;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-name {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.profile-status {
+    font-size: 16px;
+    color: #ccc;
+}
+
+.settings-section {
+    margin-top: 20px;
+}
+
+.setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+    .setting span {
+        font-size: 18px;
+    }
+
+.status {
+    font-size: 18px;
+    color: #ccc;
+}
+
+
+
+.time-select {
+    font-size: 18px;
+    background-color: transparent;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.save-button {
+    background-color: #28a745;
+    color: white;
+    margin-right: 10px;
+}
+
+.cancel-button {
+    background-color: #6c757d;
+    color: white;
+}

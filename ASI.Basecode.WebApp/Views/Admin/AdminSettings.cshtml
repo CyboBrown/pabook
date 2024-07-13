@@ -9,17 +9,20 @@
             <div class="profile-pic"></div>
             <div class="profile-info">
                 <span class="profile-name">ADMIN USER</span>
-                <span class="profile-status">Active</span>
+                <span class="profile-status">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
             </div>
         </div>
-        <div class="settings-section">
+
+
+        <div class="settings-section">            
             <div class="setting">
-                <span>Switch to darkmode</span>
-                <label class="switch">
+                <span>Switch to lightmode</span>
+                <label id="dark-change" class="toggle-switch">
                     <input type="checkbox">
-                    <span class="slider round"></span>
+                    <span class="slider"></span>
                 </label>
             </div>
+
             <div class="setting">
                 <span>Notification</span>
                 <span class="status">On</span>
@@ -38,4 +41,39 @@
         </div>
     </div>
 </div>
+
+<script>
+    var darkMode = document.getElementById('dark-change');
+    darkMode.addEventListener('change', function () {
+        document.body.classList.toggle('night', this.checked);
+        document.querySelector('.outer-container').classList.toggle('night', this.checked);
+        document.querySelector('.main-content').classList.toggle('night', this.checked);
+        document.querySelector('.profile-pic').classList.toggle('night', this.checked);
+        document.querySelector('.sidebar').classList.toggle('night', this.checked);       
+        document.querySelectorAll('.sidebar-menu li a').forEach(function (link) {
+            link.classList.toggle('night', darkMode.checked);
+        });
+        document.querySelector('.user-details').classList.toggle('night', darkMode.checked);
+        document.querySelector('.notification-section').classList.toggle('night', darkMode.checked);
+        document.querySelector('.signout').classList.toggle('night', darkMode.checked);
+        document.querySelector('.logo-img').classList.toggle('night', darkMode.checked);
+
+        /*document.querySelector('.profile-status').classList.toggle('night', darkMode.checked);
+        document.querySelectorAll('.notification-section a').forEach(function (link) {
+            link.classList.toggle('night', darkMode.checked);
+        });
+        document.querySelectorAll('.signout a').forEach(function (link) {
+            link.classList.toggle('night', darkMode.checked);
+        });*/
+
+        // Toggle logo
+        if (content.classList.contains('night')) {
+            logoImg.src = '/img/logo-light-horizontal.png';
+        } else {
+            logoImg.src = '/img/logo-dark-horizontal.png';
+        }
+    });
+
+</script>
+
 
