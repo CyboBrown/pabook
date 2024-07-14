@@ -12,7 +12,8 @@ namespace ASI.Basecode.Services.Interfaces
     {
         IEnumerable<UserManagementViewModel> GetAll(int? id = null, string name = null);
         UserManagementViewModel GetUserById(string userId);
-
-        void Add(UserViewModel user);
+        void Add(UserManagementViewModel user);
+        void Update(UserManagementViewModel user);
+        void Delete(int id);
     }
 }

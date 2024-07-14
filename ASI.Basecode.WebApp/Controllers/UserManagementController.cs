@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,8 @@ using System.Linq;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     /// <summary>
     /// Room Controller
     /// </summary>
@@ -64,6 +67,13 @@ namespace ASI.Basecode.WebApp.Controllers
             var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
             return View(data);
         }*/
+        [HttpGet("users")]
+        public IActionResult GetUsers()
+        {
+            var users = _userManagementService.GetAll().ToList();
+            return Ok(users);
+
+        }
 
         [HttpGet]
         public IActionResult Details(int Id)
@@ -83,24 +93,45 @@ namespace ASI.Basecode.WebApp.Controllers
         #endregion
 
         #region POST METHODS
-        /*
-        [HttpPost]
-        public IActionResult PostCreate(RoomViewModel model)
+        [HttpPost("add")]
+        public IActionResult Add([FromBody] UserManagementViewModel model)
         {
-            Console.WriteLine("Passed Controller Post Create");
-            bool isDuplicate = _roomService.GetAll().Any(data => data.Location == model.Location && data.Name == model.Name);
-            if (isDuplicate)
+
+            if (ModelState.IsValid)
             {
-                TempData["DuplicateErr"] = "Room Already Exists";
-                return RedirectToAction("CreateRoom", model);
+                _userManagementService.Add(model);
+                return Ok(new { success = true, message = "User created successfully" });
             }
-
-
-            _roomService.Add(model);
-            TempData["SuccessMessage"] = "Added Successfuly!"; _roomService.Add(model);
-            return RedirectToAction("Index");
+            return BadRequest(new { success = false, message = "Invalid booking data" });
+            // Implementation to add a room
+            // Ensure the method logic handles the POST request correctly
+            //return Ok(new { message = "User added successfully" });
         }
-        */
+
+        [HttpGet("{id}")]
+        public IActionResult GetUser(UserManagementViewModel model)
+        {
+            var user = _userManagementService.GetUserById(model.Id.ToString());
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                _userManagementService.Delete(id);
+                return Ok(new { success = true, message = "User deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
         #endregion
     }
 }

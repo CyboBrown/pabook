@@ -43,9 +43,11 @@ namespace ASI.Basecode.Services.Services
                 .Select(s => new UserManagementViewModel
                 {
                     Id = s.Id,
+                    UserName = s.UserName,
                     LastName = s.LastName,
                     FirstName = s.FirstName,
-                    Email = s.Email
+                    Email = s.Email,
+                    UserRole = s.UserRole,
                 });
 
             return data;
@@ -73,7 +75,7 @@ namespace ASI.Basecode.Services.Services
             return null; // Handle if user not found or userId is not valid
         }
 
-        public void Add(UserViewModel model)
+        public void Add(UserManagementViewModel model)
         {
             Console.WriteLine(" > UserManagementService: Add");
 
@@ -97,14 +99,26 @@ namespace ASI.Basecode.Services.Services
             _userRepository.AddUser(user);
         }
 
-        // Repository method to add a new user
-        public void AddUser(User user)
+        public void Update(UserManagementViewModel model)
         {
-            using (var context = new AsiBasecodeDbContext())
+            Console.WriteLine(" > UserManagementService: Update");
+            var existingUser = _userRepository.GetUserById(model.Id);
+            if (existingUser == null)
             {
-                context.Users.Add(user);
-                context.SaveChanges();
+                throw new Exception("User not found");
             }
+
+            _mapper.Map(model, existingUser);
+            existingUser.UpdatedDate = DateTime.Now;
+            existingUser.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+
+            _userRepository.UpdateUser(existingUser);
+        }
+
+        public void Delete(int id)
+        {
+            Console.WriteLine(" > UserManagementService: Delete");
+            _userRepository.DeleteUser(id);
         }
     }
 }

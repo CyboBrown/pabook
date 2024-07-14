@@ -91,7 +91,9 @@
                         <table class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -248,6 +250,54 @@
 
             <div class="form-group full-width">
                 <button type="submit">Add Room</button>
+                <button type="reset" class="reset-button">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*Add User Modal*@
+<div id="addUserModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="font-size: 2.5rem;">Create User</h1>
+        <form id="userForm">
+            <div class="form-group full-width">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="role">Role:</label>
+                <select id="role" name="role" required>
+                    <option value="0">Admin</option>
+                    <option value="1">Manager</option>
+                    <option value="2">User</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit">Add User</button>
                 <button type="reset" class="reset-button">Reset</button>
             </div>
         </form>
@@ -645,6 +695,199 @@
             return 1; // Placeholder value for now
         }
     });
+ </script>
+
+ @*User Script*@
+ <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         function validateForm() {
+             const requiredFields = userForm.querySelectorAll('[required]');
+             let isValid = true;
+             requiredFields.forEach(field => {
+                 if (!field.value.trim()) {
+                     isValid = false;
+                     field.classList.add('invalid');
+                 } else {
+                     field.classList.remove('invalid');
+                 }
+             });
+             return isValid;
+         }
+
+        const userForm = document.getElementById('userForm');
+         const submitButton = userForm.querySelector('button[type="submit"]');
+
+         function loadUsers() {
+             fetch('/api/UserManagement/users')
+                 .then(response => response.json())
+                 .then(data => {
+                     const tableBody = document.getElementById('usersTableBody');
+                     tableBody.innerHTML = '';
+                     data.forEach(user => {
+                        console.log("User data:", user);
+                         const row = document.createElement('tr');
+                         row.innerHTML = `
+                                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.userName}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastName}</td>
+                                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.userRole}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                  <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
+                                                      <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
+                                                      <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
+                                              </td>
+                                          `;
+                         tableBody.appendChild(row);
+                     });
+
+                     document.querySelectorAll('.edit-user-btn').forEach(btn => {
+                         btn.addEventListener('click', () => editRoom(btn.dataset.id));
+                     });
+                     document.querySelectorAll('.details-user-btn').forEach(btn => {
+                         btn.addEventListener('click', () => showRoomDetails(btn.dataset.id));
+                     });
+                     document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                         btn.addEventListener('click', () => deleteRoom(btn.dataset.id));
+                     });
+                 })
+                 .catch(error => console.error('Error fetching user:', error));
+         }
+
+         loadUsers();
+
+         userForm.addEventListener('submit', function (e) {
+             e.preventDefault();
+
+             if (!validateForm()) {
+                 alert('Please fill in all required fields.');
+                 return;
+             }
+
+             const formData = new FormData(this);
+             const data = {
+                userName: formData.get('userName'),
+                lastName: formData.get('lastName'),
+                firstName: formData.get('firstName'),
+                email: formData.get('email'),
+                location: parseInt(formData.get('userRole')),
+                password: formData.get('password'),
+             };
+
+             if (this.dataset.mode === 'edit') {
+                 data.id = parseInt(this.dataset.userId);
+             }
+
+             submitButton.disabled = true;
+             submitButton.textContent = 'Submitting...';
+
+             const url = this.dataset.mode === 'edit' ? `/api/UserManagement/${this.dataset.userId}` : '/api/UserMangement/add';
+             const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+
+             fetch(url, {
+                 method: method,
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify(data)
+             })
+                 .then(response => {
+                     if (!response.ok) {
+                         return response.json().then(err => { throw err; });
+                     }
+                     return response.json();
+                 })
+                 .then(result => {
+                     console.log('User ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                     roomModal.style.display = "none";
+                     loadUsers();
+                     userForm.reset();
+
+                     this.dataset.mode = 'add';
+                     delete this.dataset.userId;
+                     submitButton.textContent = 'Add User';
+
+                     //alert('Room ' + (method === 'POST' ? 'created' : 'updated') + ' successfully!');
+
+                     // Add success alert only for new bookings
+                     if (method === 'POST') {
+                         alert('User created successfully!');
+                     } else {
+                        alert('User updated successfully!');
+                     }
+                 })
+
+                 .catch(error => {
+
+                     let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the user. Please try again.';
+
+                     if (error.status) {
+                         errorMessage += '\n\nStatus Code: ' + error.status;
+                     }
+
+                     if (error.errors) {
+                         // Check for specific validation errors
+                         if (error.errors.id) {
+                             errorMessage += '\n\nID Error: ' + error.errors.id[0]; // Display the specific validation error for 'id'
+                         } else {
+                             errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                         }
+                     }
+
+                     alert(errorMessage);
+                 })
+
+                 .finally(() => {
+                     submitButton.disabled = false;
+                     submitButton.textContent = this.dataset.mode === 'edit' ? 'Update User' : 'Add User';
+                 });
+         });
+
+        function editUser(userId) {
+            fetch(`/api/UserManagement/${userId}`)
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('userName').value = user.userName;
+                    document.getElementById('lastName').value = user.lastName;
+                    document.getElementById('firstName').value = user.firstName;
+                    document.getElementById('email').value = user.email;
+                    document.getElementById('userRole').value = user.userRole;
+
+                    const form = document.getElementById('userorm');
+                    form.dataset.mode = 'edit';
+                    form.dataset.roomId = userId;
+
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.textContent = 'Update User';
+
+                    document.getElementById('addUserModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching user details:', error));
+        }
+
+        var userModal = document.getElementById("addUserModal");
+        var userBtn = document.getElementById("addUserButton");
+        var span = userModal.getElementsByClassName("close")[0];
+
+        userBtn.onclick = function () {
+            userModal.style.display = "block";
+            userForm.reset();
+        }
+
+        span.onclick = function () {
+            userModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == userModal) {
+                userModal.style.display = "none";
+            }
+        }
+
+        document.querySelector('.reset-button').addEventListener('click', function () {
+            userForm.reset();
+        });
+     });
  </script>
 
 @*Room Script*@
