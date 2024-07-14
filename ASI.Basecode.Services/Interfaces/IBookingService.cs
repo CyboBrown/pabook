@@ -11,6 +11,7 @@ namespace ASI.Basecode.Services.Interfaces
     {
         IEnumerable<BookingViewModel> GetAll(int? id = null, string title = null, string room = null);
         IEnumerable<BookingViewModel> GetAllBookings();
+        IEnumerable<BookingViewModel> GetUserBookings();
         /*void Add(BookingViewModel model);*/
         void Delete(int id);
         void AddBooking(BookingViewModel booking);

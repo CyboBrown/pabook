@@ -6,53 +6,80 @@
 
 <div class="outer-container">
     <div class="main-content">
-        <h1>Report and Analytics</h1>
-        
+        <h1>Report and Analytics Dashboard</h1>
 
-        <div class="main-cards">
-
-            <div class="card">
-                <div class="card-inner">
-                    <h3>BOOKINGS</h3>
-                    <span class="material-icons-outlined">inventory_2</span>
+        <div class="summary-cards">
+            <div class="card bookings">
+                <h3>Bookings</h3>
+                <div class="card-content">
+                    <div class="stat">
+                        <span class="label">Total Bookings</span>
+                        <span class="value">1,000</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Cancelled</span>
+                        <span class="value">249</span>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Cancelled Booking
-                        <span class="badge bg-primary rounded-pill">249</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Total Booking
-                        <span class="badge bg-primary rounded-pill">1000</span>
-                    </li>
-                </ul>
+                <i class="fas fa-calendar-check"></i>
             </div>
 
-            <div class="card">
-                <div class="card-inner">
-                    <h3>USERS</h3>
-                    <span class="material-icons-outlined">groups</span>
+            <div class="card users">
+                <h3>Users</h3>
+                <div class="card-content">
+                    <div class="stat">
+                        <span class="label">Total Users</span>
+                        <span class="value">500</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Deleted</span>
+                        <span class="value">156</span>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Deleted User
-                        <span class="badge bg-primary rounded-pill">156</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Total User
-                        <span class="badge bg-primary rounded-pill">500</span>
-                    </li>
-                </ul>
+                <i class="fas fa-user"></i>
+            </div>
+
+            <div class="card room-usage">
+                <h3>Room Usage</h3>
+                <div class="card-content">
+                    <div class="stat">
+                        <span class="label">Most Booked</span>
+                        <span class="value">Room A</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Peak Time</span>
+                        <span class="value">2-4 PM</span>
+                    </div>
+                </div>
+                <i class="fas fa-door-open"></i>
             </div>
         </div>
 
-        <div class="charts">
+        <div class="charts-section">
+            <h2>Overall Bookings and Users</h2>
+            <div id="area-chart" class="chart"></div>
+        </div>
 
-            <div class="charts-card">
-                <h2 class="chart-title">OVERALL BOOKINGS AND USERS</h2>
-                <div id="area-chart"></div>
+        <button id="generate-report-btn" class="btn pulse">Generate Report</button>
+
+        <!-- Modal sa Generated Reports -->
+        <div id="report-modal" class="modalRA">
+            <div class="modal-contentRA">
+                <span class="closeRA">&times;</span>
+                <h2>Generated Reports</h2>
+                <div class="report-options">
+                    <select id="report-type">
+                        <option value="room-usage">Room Usage Report</option>
+                        <option value="user-activity">User Activity Report</option>
+                        <option value="booking-summary">Booking Summary Report</option>
+                    </select>
+                    <button id="generate-report" class="btn btn-primary">Generate</button>
+                    <button id="download-pdf" class="btn btn-secondary">Download PDF</button>
+                </div>
+                <div id="report-preview" class="report-preview">
+                    <!-- Report preview here -->
+                </div>
             </div>
-
         </div>
 
     </div>
@@ -70,6 +97,7 @@
     // ---------- CHARTS ----------
 
     // AREA CHART
+    // AREA CHART
     const areaChartOptions = {
         series: [
             {
@@ -84,7 +112,7 @@
         chart: {
             type: 'area',
             background: 'transparent',
-            height: 350,
+            height: 250,
             stacked: false,
             toolbar: {
                 show: false,
@@ -126,9 +154,9 @@
             position: 'top',
         },
         markers: {
-            size: 6,
+            size: 4,
             strokeColors: '#1b2635',
-            strokeWidth: 3,
+            strokeWidth: 2,
         },
         stroke: {
             curve: 'smooth',
@@ -143,9 +171,10 @@
                 show: true,
             },
             labels: {
-                offsetY: 5,
+                offsetY: 0,
                 style: {
                     colors: '#f5f7ff',
+                    fontSize: '0.75rem'
                 },
             },
         },
@@ -155,11 +184,13 @@
                     text: 'Booking Summary',
                     style: {
                         color: '#f5f7ff',
+                        fontSize: '0.8rem'
                     },
                 },
                 labels: {
                     style: {
                         colors: ['#f5f7ff'],
+                        fontSize: '0.75rem'
                     },
                 },
             },
@@ -169,11 +200,13 @@
                     text: 'Room Usage',
                     style: {
                         color: '#f5f7ff',
+                        fontSize: '0.8rem'
                     },
                 },
                 labels: {
                     style: {
                         colors: ['#f5f7ff'],
+                        fontSize: '0.75rem'
                     },
                 },
             },
@@ -193,8 +226,308 @@
 
 </script>
 
+<script>
+    //paras modal ni
+    var modal = document.getElementById("report-modal");
+    var btn = document.getElementById("generate-report-btn");
+    var span = document.getElementsByClassName("closeRA")[0];
+
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .outer-container {
+        box-sizing: border-box;
+        background-color: var(--light);
+        padding: 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column-reverse;
+        flex-direction: column;
+        width: calc(100% - 265px);
+        height: calc(100%-40px);
+        top: 20px;
+        right: 20px;
+        bottom: 20px;
+        margin-left: 100px;
+        position: fixed;
+        z-index: 5;
+    }
+
+        .outer-container.expand {
+            width: calc(100% - 60px);
+        }
+
+    .main-content {
+        height: 85vh;
+        background-color: #185D62;
+        padding: 20px;
+        color: #fff;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+        z-index: 5;
+    }
+
+        .main-content nav {
+            position: relative;
+            height: 100px;
+            width: calc(100%-300px);
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+    h1, h2 {
+        color: #fff;
+    }
+
+    h3 {
+        color: #000;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .card {
+        background-color: #EEF7FF;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.5rem; 
+        font-weight: 700;
+        color: #1F2937;
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .label {
+        font-size: 0.875rem; 
+        color: #4B5563; 
+        font-weight: 500;
+    }
+
+    .value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1F2937; 
+    }
+
+    .card i {
+        position: absolute;
+        top: 1rem;
+        right: 1.2rem;
+        font-size: 1.5rem;
+        opacity: 0.5;
+        color: #7AB2B2;
+    }
+
+    .charts-section {
+    background-color: #185D62;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .chart {
+        height: 200px;
+        margin-top: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        border-radius: 25px;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    #generate-report-btn {
+        display: block;
+        margin: 1.5rem auto;
+        background-color: #4D869C;
+        color: #fff;
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+
+    .pulse {
+        animation: pulse 1.5s infinite;
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(114, 151, 98, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 7px rgba(52, 152, 219, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+        }
+    }
+
+    .modalRA {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6);
+    }
+
+    .modal-contentRA {
+        background-color: #185D62;
+        margin: 5% auto;
+        padding: 2rem;
+        border: none;
+        width: 80%;
+        max-width: 800px;
+        border-radius: 12px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .closeRA {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .closeRA:hover {
+        color: #2c3e50;
+    }
+
+    .report-options {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    select {
+        flex-grow: 1;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-primary {
+        background-color: #e7f0dc;
+        color: #2c3e50;
+    }
+
+        .btn-primary:hover {
+            background-color: #E6B9A6;
+        }
+
+    .btn-secondary {
+        background-color: #ecf0f1;
+        color: #a0937d;
+    }
+
+    .report-preview {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        min-height: 200px;
+    }
+
+    @@media (max-width: 768px) {
+        .summary-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .report-options {
+            flex-direction: column;
+        }
+
+        .btn, select {
+            width: 100%;
+        }
+    }
+</style>
+
+@* <style>
     body {
         margin: 0;
         font-family: Arial, sans-serif;
@@ -222,7 +555,7 @@
         bottom: 20px;
         margin-left: 100px;
         position: fixed;
-        z-index: 0;
+        z-index: 2;
     }
 
         .outer-container.expand {
@@ -256,57 +589,57 @@
         letter-spacing: 0.5px;
     }
 
-.material-icons-outlined {
-  vertical-align: middle;
-  line-height: 1px;
-  font-size: 35px;
-}
+    .material-icons-outlined {
+        vertical-align: middle;
+        line-height: 1px;
+        font-size: 35px;
+    }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 260px 1fr 1fr 1fr;
-  grid-template-rows: 0.2fr 3fr;
-  grid-template-areas:
-    'sidebar header header header'
-    'sidebar main main main';
-  height: 100vh;
-}
-
-
+    .grid-container {
+        display: grid;
+        grid-template-columns: 260px 1fr 1fr 1fr;
+        grid-template-rows: 0.2fr 3fr;
+        grid-template-areas:
+            'sidebar header header header'
+            'sidebar main main main';
+        height: 100vh;
+    }
 
 
-/* ---------- MAIN ---------- */
-
-.main-container {
-  grid-area: main;
-  overflow-y: auto;
-  padding: 20px 20px;
-  color: rgba(255, 255, 255, 0.95);
-}
 
 
-.main-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin: 20px 0;
-}
+    /* ---------- MAIN ---------- */
 
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding: 25px;
-  border-radius: 5px;
-}
+    .main-container {
+        grid-area: main;
+        overflow-y: auto;
+        padding: 20px 20px;
+        color: rgba(255, 255, 255, 0.95);
+    }
 
-.card:first-child {
-  background-color: #2962ff;
-}
 
-.card:nth-child(2) {
-  background-color: #ff6d00;
-}
+    .main-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        padding: 25px;
+        border-radius: 5px;
+    }
+
+        .card:first-child {
+            background-color: #2962ff;
+        }
+
+        .card:nth-child(2) {
+            background-color: #ff6d00;
+        }
 
     .list-group-item {
         background-color: transparent;
@@ -326,38 +659,37 @@
 
 
 
-.card-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+    .card-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-.card-inner > .material-icons-outlined {
-  font-size: 45px;
-}
+        .card-inner > .material-icons-outlined {
+            font-size: 45px;
+        }
 
-.charts {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 60px;
-}
+    .charts {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-top: 60px;
+    }
 
-.charts-card {
-  /*background-color: #263043;*/
-  background-color: #185D62
-  margin-bottom: 20px;
-  padding: 25px;
-  box-sizing: border-box;
-  -webkit-column-break-inside: avoid;
-  border-radius: 5px;
-  box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
-}
+    .charts-card {
+        /*background-color: #263043;*/
+        background-color: #185D62 margin-bottom: 20px;
+        padding: 25px;
+        box-sizing: border-box;
+        -webkit-column-break-inside: avoid;
+        border-radius: 5px;
+        box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+    }
 
-.chart-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .chart-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-</style>
+</style> *@

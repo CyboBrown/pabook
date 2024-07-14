@@ -29,11 +29,12 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
+                    <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-filter"></i>
+                        <button id="filterBookingsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                            <i class="fas fa-filter text-gray-400"></i>
                         </button>
+                        
                         <div class="book-now">
                         <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
@@ -69,23 +70,19 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
-                    <div class="flex space-x-2">                    
-                        <button id="filterUsersButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-filter mr-2"></i>
+                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
+                    <div class="flex space-x-2">
+                        <button id="filterUsersButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                            <i class="fas fa-filter text-gray-400"></i>
                         </button>
-                        <button id="addUserButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                        <button id="addUserButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <button id="refreshUsersButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                        <button id="refreshUsersButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
                 </div>
-                
-
-                
-
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
                         <table class="min-w-full max-w-full divide-y divide-gray-200">
@@ -113,14 +110,14 @@
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
-                    <div class="flex space-x-2">
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-filter mr-2"></i>
+                    <div class="flex space-x-2">                    
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                            <i class="fas fa-filter text-gray-400"></i>
                         </button>
-                        <button id="addRoomButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                        <button id="addRoomButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <button id="refreshRoomsButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                        <button id="refreshRoomsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
@@ -135,6 +132,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="roomsTableBody" class="bg-white divide-y divide-gray-200">
@@ -305,7 +303,7 @@
 </div>
 
 @*Booking Details Modal*@
-<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
         <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -316,6 +314,20 @@
         <div id="bookingDetailsContent"></div>
     </div>
 </div>
+
+@*Room Details Modal*@
+<div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
+        <button id="closeDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h3 class="text-xl font-semibold mb-4">Room Details</h3>
+        <div id="roomDetailsContent"></div>
+    </div>
+</div>
+
 
 @*Switch Tabs Script*@
 <script>
@@ -335,6 +347,8 @@
         document.getElementById(tabName + 'Tab').classList.add('active');
     }
 </script>
+
+
 
 @*Booking Script*@
 <script>
@@ -607,6 +621,7 @@
                     const content = document.getElementById('bookingDetailsContent');
                     content.innerHTML = `
                         <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                            <p class="mb-2"><strong>Created by:</strong> ${booking.createdBy || 'Unknown'}</p>
                         <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
                         <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
                         <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
@@ -689,9 +704,7 @@
         });
 
         // get current user ID (to be implemented)
-        function getCurrentUserId() {
-            // should return the ID of the currently logged-in user
-            // pwede from global var, local stor, or API call
+        function getCurrentUserId() {            
             return 1; // Placeholder value for now
         }
     });
@@ -967,10 +980,11 @@
 
             if (this.dataset.mode === 'edit') {
                 data.id = parseInt(this.dataset.roomId);
-            }
+            } 
 
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
+
 
             const url = this.dataset.mode === 'edit' ? `/api/Room/${this.dataset.roomId}` : '/api/Room/add';
             const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
@@ -1034,6 +1048,7 @@
                 });
         });
 
+        //EDIT or UPDATE the room
         function editRoom(roomId) {
             fetch(`/api/Room/${roomId}`)
                 .then(response => response.json())
@@ -1055,6 +1070,62 @@
                 })
                 .catch(error => console.error('Error fetching room details:', error));
         }
+
+        // DETAILS of the Room
+        function showRoomDetails(roomId) {
+            fetch(`/api/Room/${roomId}`)
+                .then(response => response.json())
+                .then(room => {
+                    const modal = document.getElementById('roomDetailsModal');
+                    const content = document.getElementById('roomDetailsContent');
+                    content.innerHTML = `
+                    <p class="mb-2"><strong>Name:</strong> ${room.name}</p>
+                    <p class="mb-2"><strong>Capacity:</strong> ${room.capacity}</p>
+                    <p class="mb-2"><strong>Type:</strong> ${room.type}</p>
+                    <p class="mb-2"><strong>Location:</strong> ${room.location}</p>
+                    <p class="mb-2"><strong>Facilities:</strong> ${room.facilities}</p>
+                `;
+                    modal.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching room details:', error));
+        }
+
+        function closeRoomDetailsModal() {
+            const modal = document.getElementById('roomDetailsModal');
+            modal.classList.add('hidden');
+        }
+
+        // Event listener for the close button
+        document.getElementById('closeDetailsBtn').addEventListener('click', closeRoomDetailsModal);
+
+        // Event listener for closing the modal when clicking outside the content
+        document.getElementById('roomDetailsModal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeRoomDetailsModal();
+            }
+        });
+
+
+        //DELETE Room
+        function deleteRoom(roomId) {
+            if (confirm('Are you sure you want to remove this room?')) {
+                fetch(`/api/Room/${roomId}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            const row = document.querySelector(`button[data-id="${roomId}"]`).closest('tr');
+                            row.remove();
+                            alert('Room cancelled successfully');
+                        } else {
+                            throw new Error('Failed to cancel room');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling room:', error);
+                        alert('Failed to cancel room. Please try again.');
+                    });
+            }
+        }
+
 
         var roomModal = document.getElementById("addRoomModal");
         var roomBtn = document.getElementById("addRoomButton");
@@ -1081,6 +1152,23 @@
         });
     });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1287,7 +1375,6 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
@@ -1296,6 +1383,7 @@
             background-color: rgba(0,0,0,0.4);
             padding-top: 20px;
             padding-bottom: 20px;
+            z-index: 50;
         }
 
         .modal-content {
@@ -1378,6 +1466,9 @@
                 background-color: #31b0d5;
             }
 
+            .bookingDetailsModal {
+                z-index: 100;
+            }
         .close {
             color: #fff;
             position: absolute;
@@ -1411,479 +1502,3 @@
     </style>
 }
 
-
-
-
-
-
-
-
-@*
-<link rel="stylesheet" href="~/css/admin.css" />
-<div class="outer-container">
-    <div class="main-content">
-        <div class="mytabs">
-            <input type="radio" id="tabBookings" name="mytabs" onchange="loadTabContent('Bookings')" @((ViewData["ActiveTab"] as string == "Bookings") ? "checked" : "")>
-            <label for="tabBookings">Bookings</label>
-            <div class="tab" id="tabBookingsContent">
-              <h2>Bookings</h2>
-              <p>sorry kj di gyud nako makuha imong code lisod kaayu</p>                            
-            </div>
-
-            <input type="radio" id="tabUser" name="mytabs" onchange="loadTabContent('User')" @((ViewData["ActiveTab"] as string == "User") ? "checked" : "")>
-            <label for="tabUser">User</label>
-
-            <div class="tab" id="tabUserContent">
-              <h2>User Management</h2>
-              <div class="table-data">
-                <div class="order">
-                    <div class="head">
-                        <h3>User Details</h3>
-
-                        <div class="add-user">
-                                <a href="@Url.Action("CreateUser", "Admin")" class="btn btn-success">
-                                    <i class='bx bx-plus'></i> 
-                                </a>
-                        </div>
-                        <div class="refresh">
-                            <button class="btn btn-secondary btn-sm" onclick="refreshUserDetails()">
-                                <i class='bx bx-refresh'></i> 
-                            </button>
-                        </div>
-                        
-                    </div>
-                    
-                    <div class="user-table"><!--"scroll-div"-->
-                        <table class="user-scroll"><!--"table-scroll"-->
-                            <thead>
-                                <tr>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().Id)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().LastName)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().FirstName)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().Email)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Users.First().UserRole)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-details-body">
-                                @foreach (var user in Model.Users)
-                                {
-                                    <tr>
-                                        <td>@user.Id</td>
-                                        <td>@user.LastName</td>
-                                        <td>@user.FirstName</td>
-                                        <td>@user.Email</td>
-                                        <td>@user.UserRole</td>
-                                                                           
-                                    </tr>
-                                }
-                                
-                            </tbody>                            
-                        </table>    
-                    </div>
-                </div>
-              </div>
-            </div>
-
-
-            <input type="radio" id="tabRoom" name="mytabs" onchange="loadTabContent('Room')" @((ViewData["ActiveTab"] as string == "Room") ? "checked" : "")>
-            <label for="tabRoom">Room</label>
-
-            <div class="tab" id="tabRoomContent">
-              <h2>Room</h2>
-              <div class="floor-buttons">
-                <button onclick="showRoomDetails('10th Floor')">
-                    <i class='bx bxs-group'></i>
-                    <span>10th Floor</span>
-                </button>
-                <button onclick="showRoomDetails('11th Floor')">
-                    <i class='bx bxs-group'></i>
-                    <span>11th Floor</span>
-                </button>
-                <button onclick="showRoomDetails('14th Floor')">
-                    <i class='bx bxs-group'></i>
-                    <span>14th Floor</span>
-                </button>
-              </div>
-            
-              <div class="table-data">
-                <div class="order">
-                    <div class="head">
-                        <h3>Room Details</h3>
-
-                        <div class="add-room">
-                                <a href="@Url.Action("CreateRoom", "Admin")" class="btn btn-success">
-                                    <i class='bx bx-plus'></i> 
-                                </a>
-                        </div>
-                        <div class="refresh">
-                            <button class="btn btn-secondary btn-sm" onclick="refreshRoomDetails()">
-                                <i class='bx bx-refresh'></i> 
-                            </button>
-                        </div>
-                        
-                    </div>
-                    
-
-                    <div class="scroll-container">
-                        <table class="table-scroll">
-                            <thead>
-                                <tr>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Id)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Type)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Capacity)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Location)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Rooms.First().Facilities)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="room-details-body">
-                                @foreach (var room in Model.Rooms)
-                                {
-                                    <tr>
-                                        <td>@room.Id</td>
-                                        <td>@room.Name</td>
-                                        <td>@room.Type</td>
-                                        <td>@room.Capacity</td>
-                                        <td>@room.Location</td>
-                                        <td>@room.Facilities</td>
-                                        <td>
-                                            @Html.ActionLink("Edit", "Edit", "Room", new { Id = room.Id }, new { @class = "btn btn-primary btn-sm" })
-                                            @Html.ActionLink("Details", "Details", "Room", new { Id = room.Id }, new { @class = "btn btn-info btn-sm" })
-                                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal(@room.Id)">Delete</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>                            
-                        </table>    
-                    </div>
-                </div>
-              </div>
-            </div>
-            
-        </div>
-    </div>
-</div>
-
-<!-- _DeleteModal.cshtml -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to remove this room?</p>
-            </div>
-            <div class="modal-footer">
-                <input type="hidden" id="RoomIdToDelete" />
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Styles {
-    <script>
-        toastr.options = {
-            positionClass: "toast-top-center",
-            timeOut: 5000,
-            closeButton: true,
-            progressBar: true
-        };
-
-        var successMessage = '@TempData["SuccessMessage"]';
-        var addedRoom = '@TempData["AddedRoom"]';
-        var successDeletion = '@TempData["SuccessDeletion"]';
-
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
-        if (addedRoom) {
-            toastr.success(addedRoom);
-        }
-        if (successDeletion) {
-            toastr.success(successDeletion);
-        }
-        
-        function showDeleteModal(roomId) {
-            document.getElementById('RoomIdToDelete').value = roomId;
-            $('#deleteModal').modal('show');
-        }
-
-        // Function to handle deletion after confirmation
-        function confirmDelete() {
-            var roomId = document.getElementById('RoomIdToDelete').value;
-
-            $.ajax({
-                url: '@Url.Action("PostDelete", "Admin")',
-                type: 'POST',
-                data: { id: roomId },
-                success: function () {
-                    toastr.success('Room deleted successfully.');
-                    $('#deleteModal').modal('hide');
-                    refreshRoomDetails(); 
-                },
-                error: function () {
-                    toastr.error('Failed to delete room.');
-                }
-            });
-        }
-
-
-        function showRoomDetails(floor) {
-            $.ajax({
-                url: '@Url.Action("GetRoomDetailsByFloor", "Admin")',
-                type: 'GET',
-                data: { floor: floor },
-                success: function (result) {
-                    $('#room-details-body').html(result);
-                },
-                error: function () {
-                    alert('Failed to load room details.');
-                }
-            });
-        }
-
-        function showUserDetails() {
-            $.ajax({
-                url: '@Url.Action("GetAll", "Admin")',
-                type: 'GET',
-                data: { floor: floor },
-                success: function (result) {
-                    $('#room-details-body').html(result);
-                },
-                error: function () {
-                    alert('Failed to load user details.');
-                }
-            });
-        }
-
-
-        function refreshRoomDetails() {
-            $.ajax({
-                url: '@Url.Action("GetRoomDetails", "Admin")',
-                type: 'GET',
-                success: function (data) {
-                    $('#room-details-body').html(data); // Replace table body with updated data
-                    toastr.success('Room details refreshed.');
-                },
-                error: function () {
-                    toastr.error('Failed to refresh room details.');
-                }
-            });
-        }
-
-   </script> 
-}*@
-@*
- <style>
-
-    
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        background-color: #000;
-    }
-
-    .outer-container {
-            
-        box-sizing: border-box;
-        background-color: var(--light);
-        padding: 10px;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column-reverse;
-        flex-direction: column;
-        width: calc(100% - 215px);
-        height: calc(100%-40px);
-        top: 20px;
-        right: 20px;
-        bottom: 20px;
-        margin-left: 100px;
-        position: fixed;
-        z-index: 0;
-    }
-
-    .outer-container.expand{           
-        width: calc(100% - 60px);
-    }
-
-    .main-content {
-        height: 85vh;
-        background-color: #185D62;
-        padding: 20px;
-        color: #fff;
-        border-radius: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        flex-grow: 1;
-    }
-    .main-content nav{
-        position: relative;
-        height: 100px;
-        width: calc(100%-300px);
-        padding-left: 20px;
-        padding-right: 20px;
-    }       
-
-
-    /*ROOM nga styles*/
-    .mytabs {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 25px;
-        background-color: transparent;
-        display: flex;
-        justify-content: left;
-        margin-bottom: 20px;         
-        padding: 0px;
-    }
-    .mytabs input[type="radio"] {
-        display: none;
-    }
-    .mytabs label {
-        padding: 15px;
-        background: #185D62;
-        font-weight: bold;
-        border-bottom: 2px solid #1BC7D2;
-        width: 100px;
-        text-align: center;
-        cursor: pointer;
-    }
-
-    .mytabs .tab {
-        width: 100%;
-        padding: 20px;
-        background: #185D62;
-        order: 1;
-        display: none;
-    }
-    .mytabs .tab h2 {
-        font-size: 3em;
-    }
-
-    .mytabs input[type='radio']:checked + label + .tab {
-        display: block;
-    }
-
-    .mytabs input[type="radio"]:checked + label {
-        background: #1BC7D2;
-    }
-    
-
-    .table-data {
-        display: flex;
-        flex-wrap: wrap;
-        grid-gap: 24px;
-        margin-top: 24px;
-        width: 100%;
-        color: var(--dark);
-    }
-
-    .table-data > div {
-        border-radius: 20px;
-        background: var(--light);
-        padding: 10px;
-        overflow-x: auto;
-        
-    }
-
-    .table-data .head {
-        display: flex;
-        align-items: center;
-        grid-gap: 0px;
-        background-color: transparent;
-        margin-bottom: 0px;
-    }
-
-    .add-room .refresh i {
-        
-        background-color: transparent;
-        
-    }
-    
-    .table-data .head h3 {
-        margin-right: auto;
-        font-size: 24px;
-        font-weight: 600;
-        padding: 10px;
-    }
-    .refresh {
-        display: flex;
-        justify-content: flex-end;
-        padding-right: 10px;
-    }
-
-    .add-room {
-        display: flex;
-        justify-content: flex-end;
-        padding-right: 10px;
-    }
-    .add-room .btn-success {
-        background-color: transparent;
-        border: none;
-        color: inherit; /* To maintain the original font color */
-    }
-
-    .refresh .btn-secondary {
-        background-color: transparent;
-        border: none;
-        color: inherit; /* To maintain the original font color */
-    }
-
-    .table-data .order {
-        flex-grow: 1;
-        flex-basis: 500px;
-        
-    }
-    .scroll-container {
-        height: 300px; /* Set the desired height for the scrollable area */
-        overflow-y: auto; /* Enable vertical scrolling */
-    }
-
-    .table-data .order table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: white;
-        /*height: 300px;
-        overflow: hidden;
-        overflow-y: scroll;*/
-    }
-
-    
-    .table-data .order table th,
-    .table-data .order table td {
-        padding: 12px 15px; 
-    }
-
-    .table-data .order table th {
-        font-size: 13px;
-        text-align: left;
-        border-bottom: 1px solid var(--grey);
-    }
-
-    .table-data .order table tr {
-        line-height:1.0; 
-        padding: 12px 15px;
-    }
-
-    .table-data .order table tr:hover {
-        background: var(--grey);
-    }
-
-    .table-scroll {
-      overflow-y: auto;
-      height: 300px; 
-    }
-    
-</style>  *@
