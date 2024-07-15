@@ -92,6 +92,7 @@ namespace ASI.Basecode.WebApp.Controllers
                                           .Where(b => b.Date.Date == today || b.Date.Date <= today && b.RecurrenceEndDate >= today)
                                           .Where(b => !b.Cancelled)
                                           .Select(b => new {
+                                              b.Id,
                                               b.StartTime,
                                               b.Title,
                                               b.RoomName
