@@ -89,7 +89,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             var today = DateTime.Today;
             var bookings = _bookingService.GetUserBookings()
-                                          .Where(b => b.Date.Date == today)
+                                          .Where(b => b.Date.Date == today || b.Date.Date <= today && b.RecurrenceEndDate >= today)
                                           .Where(b => !b.Cancelled)
                                           .Select(b => new {
                                               b.StartTime,
