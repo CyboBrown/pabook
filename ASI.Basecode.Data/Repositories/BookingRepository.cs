@@ -15,6 +15,10 @@ namespace ASI.Basecode.Data.Repositories
         {
         }
 
+        /// <summary>
+        /// Adds the booking.
+        /// </summary>
+        /// <param name="booking">The booking.</param>
         public void AddBooking(Booking booking)
         {
             Console.WriteLine(" > BookingRepo: AddBooking");
@@ -23,12 +27,20 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Checks if booking exists.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         public bool BookingExists(int id)
         {
             Console.WriteLine(" > BookingRepo: BookingExists");
             return this.GetDbSet<Booking>().Any(x => x.Id == id);
         }
 
+        /// <summary>
+        /// Cancels the booking.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         public void CancelBooking(int id)
         {
             Console.WriteLine(" > BookingRepo: CancelBooking");
@@ -42,6 +54,10 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Deletes the booking.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         public void DeleteBooking(int id)
         {
             Console.WriteLine(" > BookingRepo: DeleteBooking");
@@ -55,18 +71,31 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Gets the booking.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The booking that match the id.</returns>
         public Booking GetBooking(int id)
         {
             Console.WriteLine(" > BookingRepo: GetBooking");
             return this.GetDbSet<Booking>().FirstOrDefault(x => x.Id == id);
         }
 
+        /// <summary>
+        /// Gets all bookings.
+        /// </summary>
+        /// <returns>All bookings.</returns>
         public IQueryable<Booking> GetBookings()
         {
             Console.WriteLine(" > BookingRepo: GetBookings");
             return this.GetDbSet<Booking>().Where(b => !b.Cancelled); 
         }
 
+        /// <summary>
+        /// Updates the booking.
+        /// </summary>
+        /// <param name="booking">The booking.</param>
         public void UpdateBooking(Booking booking)
         {
             Console.WriteLine(" > BookingRepo: UpdateBooking");

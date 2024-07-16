@@ -45,17 +45,21 @@ namespace ASI.Basecode.WebApp.Controllers
             _bookingService = bookingService;
         }
 
+        /// <summary>
+        /// Gets the current user.
+        /// </summary>
+        /// <returns>Current user.</returns>
         private UserManagementViewModel GetCurrentUser()
         {
             var userId = HttpContext.User.Identity.Name; 
             var user = _userManagementService.GetUserById(userId); 
             return user;
         }
+
         /// <summary>
         /// Returns Admin Home View.
         /// </summary>
-        /// <returns> Admin Home View </returns>
-
+        /// <returns>Admin Home Screen.</returns>
         public IActionResult Index(string tab = "Bookings")
         {
             ViewData["ActiveTab"] = tab;
@@ -118,6 +122,11 @@ namespace ASI.Basecode.WebApp.Controllers
                     return View("Index");
             }*/
         }
+
+        /// <summary>
+        /// Gets the content of the room.
+        /// </summary>
+        /// <returns>Room Tab in Admin Home Screen</returns>
         public IActionResult GetRoomContent()
         {
             var roomViewModel = GetRoomViewModel();
@@ -130,25 +139,41 @@ namespace ASI.Basecode.WebApp.Controllers
             return PartialView("Details", rooms);
         }
         */
-        
+
+        /// <summary>
+        /// Gets the content of the user.
+        /// </summary>
+        /// <returns>User Tab in Admin Home Screen</returns>
         public IActionResult GetUserContent()
         {
             var userViewModel = GetUserViewModel();
             return PartialView("_UserContentPartial", userViewModel);
         }
 
+        /// <summary>
+        /// Gets the content of the bookings.
+        /// </summary>
+        /// <returns>Booking Tab in Admin Home Screen</returns>
         public IActionResult GetBookingsContent()
         {
             var bookingsViewModel = GetBookingsViewModel();
             return PartialView("_BookingsContentPartial", bookingsViewModel);
         }
 
+        /// <summary>
+        /// Gets the content of the user management.
+        /// </summary>
+        /// <returns>Manage Role Screen</returns>
         public IActionResult GetUserManagementContent()
         {
             var userManagementViewModel = GetUserManagementViewModel();
             return PartialView("_UserManagementContentPartial", userManagementViewModel);
         }
 
+        /// <summary>
+        /// Gets the room view model.
+        /// </summary>
+        /// <returns>List of Room ViewModels</returns>
         private List<RoomViewModel> GetRoomViewModel()
         {
             var rooms = _roomService.GetAll();
@@ -165,7 +190,11 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return roomViewModels;
         }
-        
+
+        /// <summary>
+        /// Gets the user view model.
+        /// </summary>
+        /// <returns>List of User ViewModels</returns>
         private UserViewModel GetUserViewModel()
         {
 
@@ -176,6 +205,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return userViewModel;
         }
 
+        /// <summary>
+        /// Gets the bookings view model.
+        /// </summary>
+        /// <returns>List of Booking ViewModels</returns>
         private List<BookingViewModel> GetBookingsViewModel()
         {
             var bookings = _bookingService.GetAll();
@@ -188,6 +221,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return bookingViewModel;
         }
 
+        /// <summary>
+        /// Gets the user management view model.
+        /// </summary>
+        /// <returns>List of User Management ViewModels</returns>
         private List<UserManagementViewModel> GetUserManagementViewModel()
         {
             var users = _userManagementService.GetAll();
@@ -201,15 +238,10 @@ namespace ASI.Basecode.WebApp.Controllers
             }).ToList();
         }
 
-        
-
-
-
-
         /// <summary>
         /// Returns Admin Analytics View.
         /// </summary>
-        /// <returns> Admin Analytics View </returns>
+        /// <returns> Analytics Screen </returns>
         public IActionResult Analytics()
         {
             return View();
@@ -218,7 +250,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <summary>
         /// Returns Manage Roles View.
         /// </summary>
-        /// <returns> Manage Roles View </returns>
+        /// <returns> Manage Roles Screen </returns>
         public IActionResult ManageRoles()
         {
             return View();
@@ -227,14 +259,18 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <summary>
         /// Returns Admin Settings View.
         /// </summary>
-        /// <returns> Admin Settings View </returns>
+        /// <returns> Admin Settings Screen </returns>
         public IActionResult AdminSettings()
         {
             return View();
         }
 
 
-        #region GET METHODS
+        #region GET METHODS        
+        /// <summary>
+        /// Creates the room.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult CreateRoom()
         {
@@ -243,8 +279,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
-        
-
+        /// <summary>
+        /// Creates the user.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult CreateUser()
         {
@@ -252,6 +290,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Detailses the specified identifier.
+        /// </summary>
+        /// <param name="Id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Details(int Id)
         {
@@ -259,6 +302,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(data);
         }
 
+        /// <summary>
+        /// Edits the specified identifier.
+        /// </summary>
+        /// <param name="Id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(int Id)
         {
@@ -266,6 +314,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(data);
         }
 
+        /// <summary>
+        /// Deletes the specified identifier.
+        /// </summary>
+        /// <param name="Id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(int Id)
         {
@@ -273,6 +326,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(data);
         }
 
+        /// <summary>
+        /// Gets the room details.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetRoomDetails()
         {
@@ -309,6 +366,12 @@ namespace ASI.Basecode.WebApp.Controllers
         }
         
         */
+
+        /// <summary>
+        /// Creates the user.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUser(UserManagementViewModel model)
@@ -345,6 +408,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             return View(model);
         }
+
         /*
         [HttpPost]
         public IActionResult PostUpdate(RoomViewModel model)
@@ -352,12 +416,18 @@ namespace ASI.Basecode.WebApp.Controllers
             _roomService.Update(model);
             return RedirectToAction("Index");
         }*/
+
+        /// <summary>
+        /// Posts the delete.
+        /// </summary>
+        /// <param name="Id">The identifier.</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult PostDelete(int Id)
         {
             try
             {
-                _roomService.Delete(Id);
+                _roomService.DeleteRoom(Id);
                 return Ok();
             }
             catch (Exception ex)

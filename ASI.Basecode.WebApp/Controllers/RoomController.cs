@@ -41,7 +41,10 @@ namespace ASI.Basecode.WebApp.Controllers
             _roomService = roomService;
         }
 
-
+        /// <summary>
+        /// Gets the rooms.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("rooms")]
         public IActionResult GetRooms()
         {
@@ -50,9 +53,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         }
 
-
-
-        // POST api/Room/add
+        // POST api/Room/add        
+        /// <summary>
+        /// Adds the room.
+        /// </summary>
+        /// <param name="room">The room.</param>
+        /// <returns></returns>
         [HttpPost("add")]
         public IActionResult AddRoom([FromBody] RoomViewModel room)
         {
@@ -100,6 +106,11 @@ namespace ASI.Basecode.WebApp.Controllers
              }
          }*/
 
+        /// <summary>
+        /// Gets the room.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetRoom(int id)
         {
@@ -110,7 +121,13 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             return Ok(room);
         }
-        
+
+        /// <summary>
+        /// Updates the room.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="room">The room.</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public IActionResult UpdateRoom(int id, [FromBody] RoomViewModel room)
         {
@@ -131,14 +148,18 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(new { success = false, message = "An error occurred while updating the room. Please try again.", error = ex.Message });
             }
         }
-        
-             
+
+        /// <summary>
+        /// Cancels the room.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public IActionResult CancelRoom(int id)
+        public IActionResult DeleteRoom(int id)
         {
             try
             {
-                _roomService.CancelRoom(id);
+                _roomService.DeleteRoom(id);
                 return Ok(new { success = true, message = "Room deleted successfully" });
             }
             catch (Exception ex)
@@ -146,8 +167,5 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-
-
-
     }
 }
