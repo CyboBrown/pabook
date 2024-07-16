@@ -120,8 +120,8 @@ namespace ASI.Basecode.Services.Services
                 var startDate = new DateTime(currentYear, month, 1);
                 var endDate = startDate.AddMonths(1).AddDays(-1);
 
-                var bookings = _bookingRepository.GetBookings()
-                    .Where(b => !b.Deleted && !b.Cancelled &&
+                var bookings = _bookingRepository.GetAllBookingsIncludingCancelled()
+                    .Where(b => !b.Deleted &&
                                 b.Date >= startDate.Date &&
                                 b.Date <= endDate.Date)
                     .ToList();
@@ -129,7 +129,7 @@ namespace ASI.Basecode.Services.Services
                 monthlyData.Add(startDate.ToString("MMM"), new MonthlyDataViewModel
                 {
                     BookingSummary = bookings.Count(),
-                    RoomUsage = bookings.Select(b => b.RoomId).Distinct().Count()
+                    RoomUsage = bookings.Where(b => !b.Cancelled).Select(b => b.RoomId).Distinct().Count()
                 });
             }
 
