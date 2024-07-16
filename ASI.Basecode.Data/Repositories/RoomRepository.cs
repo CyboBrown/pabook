@@ -16,19 +16,31 @@ namespace ASI.Basecode.Data.Repositories
 
         }
 
+        /// <summary>
+        /// Gets all rooms.
+        /// </summary>
+        /// <returns>All rooms.</returns>
         public IQueryable<Room> GetRooms()
         {
             Console.WriteLine(" > RoomRepo: GetRooms");
             return this.GetDbSet<Room>().Where(r => !r.Deleted);
         }
 
-
+        /// <summary>
+        /// Gets the room.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The room that match the id.</returns>
         public Room GetRoom(int id)
         {
             Console.WriteLine(" > RoomRepo: GetRoom");
             return this.GetDbSet<Room>().FirstOrDefault(x => x.Id == id);
         }
 
+        /// <summary>
+        /// Adds the room.
+        /// </summary>
+        /// <param name="room">The room.</param>
         public void AddRoom(Room room)
         {
             Console.WriteLine(" > RoomRepo: AddRoom");
@@ -38,24 +50,21 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Updates the room.
+        /// </summary>
+        /// <param name="room">The room.</param>
         public void UpdateRoom(Room room)
         {
             Console.WriteLine(" > RoomRepo: UpdateRoom");
             this.GetDbSet<Room>().Update(room);
             UnitOfWork.SaveChanges();
         }
-        public void CancelRoom(int id)
-        {
-            Console.WriteLine(" > RoomRepo: CancelRoom");
-            var roomToCancel = this.GetDbSet<Room>().FirstOrDefault(x => x.Deleted != true && x.Id == id);
-            if (roomToCancel != null)
-            {
-                roomToCancel.Deleted = true;
-                roomToCancel.UpdatedDate = DateTime.Now;
-                roomToCancel.UpdatedBy = "[Cancelled]";
-            }
-            UnitOfWork.SaveChanges();
-        }
+
+        /// <summary>
+        /// Deletes the room.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         public void DeleteRoom(int id)
         {
             Console.WriteLine(" > RoomRepo: DeleteRoom");
@@ -70,6 +79,10 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Checks if room exists.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         public bool RoomExists(int id)
         {
             Console.WriteLine(" > RoomRepo: RoomExists");

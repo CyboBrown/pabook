@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ASI.Basecode.Data.Interfaces
+namespace ASI.Basecode.Services.Interfaces
 {
-    public interface IPreferenceRepository
+    public interface IPreferenceService
     {
-        bool PreferenceExists(int userId);
-        Preference GetPreference(int userId);
-        void AddPreference(Preference preference);
+        //Task SaveOrUpdateAsync(Preference preference);
+        bool PreferenceExists(int id);
+        Preference GetPreference(int id);
+        void CreatePreference(Preference preference);
         void UpdatePreference(Preference preference);
-        void RemovePreference(int id);
+        void DeletePreference(int id);
 
         Task<Preference> GetPreferenceAsync(int userId);
         Task UpdatePreferenceAsync(Preference preference);

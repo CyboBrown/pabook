@@ -148,7 +148,8 @@ namespace ASI.Basecode.WebApp
             services.AddScoped<IRecurrenceTypeService, RecurrenceTypeService>();
             services.AddControllersWithViews();
             services.AddScoped<IBookingService, BookingService>();
-
+            services.AddScoped<IPreferenceRepository, PreferenceRepository>();
+            services.AddScoped<IPreferenceService, PreferenceService>();
         }
 
 

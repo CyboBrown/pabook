@@ -87,10 +87,6 @@
 
 </div>
 
-
-
-
-
 <script>
     
 
@@ -250,6 +246,7 @@
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
     @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
     body {
         margin: 0;
         font-family: 'Poppins', sans-serif;
@@ -268,16 +265,15 @@
         padding: 10px;
         border-radius: 15px;
         display: flex;
-        flex-direction: column-reverse;
         flex-direction: column;
         width: calc(100% - 265px);
-        height: calc(100%-40px);
+        height: calc(100% - 40px);
         top: 20px;
         right: 20px;
         bottom: 20px;
         margin-left: 100px;
         position: fixed;
-        z-index: 0;
+        z-index: 5;
     }
 
         .outer-container.expand {
@@ -293,12 +289,14 @@
         width: 100%;
         box-sizing: border-box;
         flex-grow: 1;
+        z-index: 5;
+        overflow-y: auto;
     }
 
         .main-content nav {
             position: relative;
             height: 100px;
-            width: calc(100%-300px);
+            width: calc(100% - 300px);
             padding-left: 20px;
             padding-right: 20px;
         }
@@ -335,18 +333,18 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
 
-    .card h3 {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        font-size: 1.5rem; 
-        font-weight: 700;
-        color: #1F2937;
-    }
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1F2937;
+        }
 
     .card-content {
         display: flex;
@@ -361,15 +359,15 @@
     }
 
     .label {
-        font-size: 0.875rem; 
-        color: #4B5563; 
+        font-size: 0.875rem;
+        color: #4B5563;
         font-weight: 500;
     }
 
     .value {
         font-size: 1.25rem;
         font-weight: 700;
-        color: #1F2937; 
+        color: #1F2937;
     }
 
     .card i {
@@ -382,13 +380,13 @@
     }
 
     .charts-section {
-    background-color: #185D62;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    align-items: center;
-    justify-content: center;
+        background-color: #185D62;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        align-items: center;
+        justify-content: center;
     }
 
     .chart {
@@ -408,10 +406,10 @@
         letter-spacing: 0.7px;
     }
 
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
 
     #generate-report-btn {
         display: block;
@@ -430,9 +428,11 @@
         0% {
             box-shadow: 0 0 0 0 rgba(114, 151, 98, 0.7);
         }
+
         70% {
             box-shadow: 0 0 0 7px rgba(52, 152, 219, 0);
         }
+
         100% {
             box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
         }
@@ -470,9 +470,9 @@
         transition: color 0.3s ease;
     }
 
-    .closeRA:hover {
-        color: #2c3e50;
-    }
+        .closeRA:hover {
+            color: #2c3e50;
+        }
 
     .report-options {
         display: flex;
@@ -554,7 +554,7 @@
         bottom: 20px;
         margin-left: 100px;
         position: fixed;
-        z-index: 0;
+        z-index: 2;
     }
 
         .outer-container.expand {

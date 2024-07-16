@@ -15,6 +15,10 @@ using System.IO;
 using System;
 using System.Threading.Tasks;
 using static ASI.Basecode.Resources.Constants.Enums;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -102,8 +106,87 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = "Invalid username or password.";
                 return View(model);
             }
+        }/*
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User user;
+            var loginResult = _userService.Authenticate(model.UserName, model.Password, out user);
+
+            if (loginResult == LoginResult.Success)
+            {
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim("UserId", user.Id.ToString()) // Add UserId claim based on user's ID
+        };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                _session.SetString("UserName", user.UserName);
+                _session.SetString("UserRole", user.UserRole.ToString()); // Store role as string
+                _session.SetString("FullName", $"{user.FirstName} {user.LastName}");
+                _session.SetString("Email", user.Email);
+                Console.WriteLine($"User authenticated: {user.UserName}, Role: {user.UserRole}");
+
+                if (user.UserRole == UserRole.Admin) // Assuming UserRole is an enum with Admin role
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                else // Regular user
+                {
+                    return RedirectToAction("Index", "Users");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                TempData["ErrorMessage"] = "Invalid username or password.";
+                return View(model);
+            }
+        }
+        */
+        /// <summary>
+        /// Gets the current authenticated user's ID.
+        /// </summary>
+        /// <returns>The user's ID as an integer, or null if not authenticated.</returns>
+        public int? GetCurrentUserId()
+        {
+            // Check if user is authenticated
+            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                // Retrieve UserId claim
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId");
+                if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return userId;
+                }
+            }
+
+            return null; // Return null if user is not authenticated or UserId claim is missing/unparseable
         }
 
+        
+        public async Task SignInAsync(User user)
+        {
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim("UserId", user.Id.ToString()) // Add UserId claim
+        };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+        }
         /// <summary>
         /// Displays the registration page.
         /// </summary>
