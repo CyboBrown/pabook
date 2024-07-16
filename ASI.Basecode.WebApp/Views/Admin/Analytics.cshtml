@@ -412,7 +412,7 @@
             },
         ],
         chart: {
-            type: 'area',
+            type: 'line', // Changed from 'area' to 'line'
             background: 'transparent',
             height: 250,
             stacked: false,
@@ -425,15 +425,9 @@
         dataLabels: {
             enabled: false,
         },
-        fill: {
-            gradient: {
-                opacityFrom: 0.4,
-                opacityTo: 0.1,
-                shadeIntensity: 1,
-                stops: [0, 100],
-                type: 'vertical',
-            },
-            type: 'gradient',
+        stroke: {
+            curve: 'smooth',
+            width: 2, // Added line width
         },
         grid: {
             borderColor: '#55596e',
@@ -459,9 +453,6 @@
             size: 4,
             strokeColors: '#1b2635',
             strokeWidth: 2,
-        },
-        stroke: {
-            curve: 'smooth',
         },
         xaxis: {
             axisBorder: {
