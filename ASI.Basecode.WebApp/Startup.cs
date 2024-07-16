@@ -150,6 +150,7 @@ namespace ASI.Basecode.WebApp
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<IPreferenceRepository, PreferenceRepository>();
             services.AddScoped<IPreferenceService, PreferenceService>();
+            services.AddScoped<IAnalyticsService, AnalyticsService>();
         }
 
 

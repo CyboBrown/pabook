@@ -14,11 +14,11 @@
                 <div class="card-content">
                     <div class="stat">
                         <span class="label">Total Bookings</span>
-                        <span class="value">1,000</span>
+                        <span id="total-bookings" class="value">Loading...</span>
                     </div>
                     <div class="stat">
                         <span class="label">Cancelled</span>
-                        <span class="value">249</span>
+                        <span id="cancelled-bookings" class="value">Loading...</span>
                     </div>
                 </div>
                 <i class="fas fa-calendar-check"></i>
@@ -29,11 +29,11 @@
                 <div class="card-content">
                     <div class="stat">
                         <span class="label">Total Users</span>
-                        <span class="value">500</span>
+                        <span id="total-users" class="value">Loading...</span>
                     </div>
                     <div class="stat">
                         <span class="label">Deleted</span>
-                        <span class="value">156</span>
+                        <span id="deleted-users" class="value">Loading...</span>
                     </div>
                 </div>
                 <i class="fas fa-user"></i>
@@ -44,11 +44,11 @@
                 <div class="card-content">
                     <div class="stat">
                         <span class="label">Most Booked</span>
-                        <span class="value">Room A</span>
+                        <span id="most-booked-room" class="value">Loading...</span>
                     </div>
                     <div class="stat">
                         <span class="label">Peak Time</span>
-                        <span class="value">2-4 PM</span>
+                        <span id="peak-time" class="value">Loading...</span>
                     </div>
                 </div>
                 <i class="fas fa-door-open"></i>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="charts-section">
-            <h2>Overall Bookings and Users</h2>
+            <h2>Overall Bookings and Room Usage</h2>
             <div id="area-chart" class="chart"></div>
         </div>
 
@@ -83,11 +83,186 @@
         </div>
 
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
-
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const generateBtn = document.getElementById('generate-report');
+        const downloadBtn = document.getElementById('download-pdf');
+        const reportTypeSelect = document.getElementById('report-type');
+        const reportPreview = document.getElementById('report-preview');
+
+        generateBtn.addEventListener('click', generateReport);
+        downloadBtn.addEventListener('click', downloadPDF);
+
+        async function generateReport() {
+            const reportType = reportTypeSelect.value;
+            let reportContent = '';
+
+            switch (reportType) {
+                case 'room-usage':
+                    reportContent = await generateRoomUsageReport();
+                    break;
+                case 'user-activity':
+                    reportContent = await generateUserActivityReport();
+                    break;
+                case 'booking-summary':
+                    reportContent = await generateBookingSummaryReport();
+                    break;
+            }
+
+            reportPreview.innerHTML = reportContent;
+        }
+
+        async function downloadPDF() {
+            const element = document.getElementById('report-preview');
+            const reportType = reportTypeSelect.options[reportTypeSelect.selectedIndex].text;
+            const currentDate = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+            }).replace(/\//g, '-');
+
+            const opt = {
+                margin: 10,
+                filename: `${reportType}_${currentDate}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save();
+        }
+
+        async function generateRoomUsageReport() {
+            try {
+                const response = await fetch('/api/analytics/monthly-data');
+                const data = await response.json();
+
+                let tableRows = '';
+                for (const [month, monthData] of Object.entries(data)) {
+                    tableRows += `
+                            <tr>
+                                <td>${month}</td>
+                                <td>${monthData.bookingSummary}</td>
+                                <td>${monthData.roomUsage}</td>
+                            </tr>
+                        `;
+                }
+
+                return `
+                        <h3>Room Usage Report</h3>
+                        <p>Generated on: ${new Date().toLocaleString()}</p>
+                        <table>
+                            <tr><th>Month</th><th>Total Bookings</th><th>Rooms Used</th></tr>
+                            ${tableRows}
+                        </table>
+                    `;
+            } catch (error) {
+                console.error('Error fetching room usage report:', error);
+                return '<p>Error fetching room usage report</p>';
+            }
+        }
+
+        async function generateUserActivityReport() {
+            try {
+                const response = await fetch('/api/analytics/dashboard');
+                const data = await response.json();
+
+                return `
+                        <h3>User Activity Report</h3>
+                        <p>Generated on: ${new Date().toLocaleString()}</p>
+                        <table>
+                            <tr><th>Metric</th><th>Value</th></tr>
+                            <tr><td>Total Users</td><td>${data.totalUsers}</td></tr>
+                            <tr><td>Total Bookings</td><td>${data.totalBookings}</td></tr>
+                            <tr><td>Cancelled Bookings</td><td>${data.totalCancelledBookings}</td></tr>
+                            <tr><td>Deleted Users</td><td>${data.totalDeletedUsers}</td></tr>
+                        </table>
+                    `;
+            } catch (error) {
+                console.error('Error fetching user activity report:', error);
+                return '<p>Error fetching user activity report</p>';
+            }
+        }
+
+        async function generateBookingSummaryReport() {
+            try {
+                const response = await fetch('/api/analytics/dashboard');
+                const data = await response.json();
+
+                return `
+                        <h3>Booking Summary Report</h3>
+                        <p>Generated on: ${new Date().toLocaleString()}</p>
+                        <table>
+                            <tr><th>Metric</th><th>Value</th></tr>
+                            <tr><td>Total Bookings</td><td>${data.totalBookings}</td></tr>
+                            <tr><td>Cancelled Bookings</td><td>${data.totalCancelledBookings}</td></tr>
+                            <tr><td>Most Booked Room</td><td>${data.mostBookedRoom}</td></tr>
+                            <tr><td>Peak Booking Time</td><td>${data.peakTime}</td></tr>
+                        </table>
+                    `;
+            } catch (error) {
+                console.error('Error fetching booking summary report:', error);
+                return '<p>Error fetching booking summary report</p>';
+            }
+        }
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchAnalyticsData();
+    });
+
+    function fetchAnalyticsData() {
+        fetch('/api/analytics/total-bookings')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total-bookings').textContent = data.totalBookings;
+            })
+            .catch(error => console.error('Error fetching total bookings:', error));
+
+        fetch('/api/analytics/cancelled-bookings')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('cancelled-bookings').textContent = data.cancelledBookings;
+            })
+            .catch(error => console.error('Error fetching cancelled bookings:', error));
+
+        fetch('/api/analytics/total-users')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total-users').textContent = data.totalUsers;
+            })
+            .catch(error => console.error('Error fetching total users:', error));
+
+        fetch('/api/analytics/deleted-users')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('deleted-users').textContent = data.deletedUsers;
+            })
+            .catch(error => console.error('Error fetching deleted users:', error));
+
+        fetch('/api/analytics/most-booked-room')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('most-booked-room').textContent = data.mostBookedRoom;
+            })
+            .catch(error => console.error('Error fetching most booked room:', error));
+
+        fetch('/api/analytics/peak-time')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('peak-time').textContent = data.peakTime;
+            })
+            .catch(error => console.error('Error fetching peak time:', error));
+    }
+</script>
+
+@* <script>
     
 
     // ---------- CHARTS ----------
@@ -220,7 +395,171 @@
     );
     areaChart.render();
 
+</script> *@
+
+
+<script>
+    // AREA CHART
+    const areaChartOptions = {
+        series: [
+            {
+                name: 'Booking Summary',
+                data: [],
+            },
+            {
+                name: 'Room Usage',
+                data: [],
+            },
+        ],
+        chart: {
+            type: 'area',
+            background: 'transparent',
+            height: 250,
+            stacked: false,
+            toolbar: {
+                show: false,
+            },
+        },
+        colors: ['#00ab57', '#d50000'],
+        labels: [],
+        dataLabels: {
+            enabled: false,
+        },
+        fill: {
+            gradient: {
+                opacityFrom: 0.4,
+                opacityTo: 0.1,
+                shadeIntensity: 1,
+                stops: [0, 100],
+                type: 'vertical',
+            },
+            type: 'gradient',
+        },
+        grid: {
+            borderColor: '#55596e',
+            yaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+            xaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+        },
+        legend: {
+            labels: {
+                colors: '#f5f7ff',
+            },
+            show: true,
+            position: 'top',
+        },
+        markers: {
+            size: 4,
+            strokeColors: '#1b2635',
+            strokeWidth: 2,
+        },
+        stroke: {
+            curve: 'smooth',
+        },
+        xaxis: {
+            axisBorder: {
+                color: '#55596e',
+                show: true,
+            },
+            axisTicks: {
+                color: '#55596e',
+                show: true,
+            },
+            labels: {
+                offsetY: 0,
+                style: {
+                    colors: '#f5f7ff',
+                    fontSize: '0.75rem'
+                },
+            },
+        },
+        yaxis: [
+            {
+                title: {
+                    text: 'Booking Summary',
+                    style: {
+                        color: '#f5f7ff',
+                        fontSize: '0.8rem'
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: ['#f5f7ff'],
+                        fontSize: '0.75rem'
+                    },
+                },
+            },
+            {
+                opposite: true,
+                title: {
+                    text: 'Room Usage',
+                    style: {
+                        color: '#f5f7ff',
+                        fontSize: '0.8rem'
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: ['#f5f7ff'],
+                        fontSize: '0.75rem'
+                    },
+                },
+            },
+        ],
+        tooltip: {
+            shared: true,
+            intersect: false,
+            theme: 'dark',
+        },
+    };
+
+    const areaChart = new ApexCharts(
+        document.querySelector('#area-chart'),
+        areaChartOptions
+    );
+    areaChart.render();
+
+    // Function to fetch and update chart data
+    function updateChartData() {
+        fetch('/api/Analytics/monthly-data')
+            .then(response => response.json())
+            .then(data => {
+                const months = Object.keys(data);
+                const bookingSummary = months.map(month => data[month].bookingSummary);
+                const roomUsage = months.map(month => data[month].roomUsage);
+
+                areaChart.updateOptions({
+                    labels: months,
+                    series: [
+                        {
+                            name: 'Booking Summary',
+                            data: bookingSummary,
+                        },
+                        {
+                            name: 'Room Usage',
+                            data: roomUsage,
+                        },
+                    ],
+                });
+            })
+            .catch(error => console.error('Error fetching monthly data:', error));
+    }
+
+    // Initial data load
+    updateChartData();
+
+    // Optional: Set up periodic updates (e.g., every 5 minutes)
+    setInterval(updateChartData, 5 * 60 * 1000);
 </script>
+
+
 
 <script>
     //paras modal ni
@@ -365,7 +704,7 @@
     }
 
     .value {
-        font-size: 1.25rem;
+        font-size: 1rem;
         font-weight: 700;
         color: #1F2937;
     }
@@ -524,6 +863,32 @@
             width: 100%;
         }
     }
+
+    .report-preview {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        color: black; 
+    }
+
+        .report-preview table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            color: black; 
+        }
+
+        .report-preview th, .report-preview td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            color: black; 
+        }
+
+        .report-preview th {
+            background-color: #f2f2f2;
+        }
 </style>
 
 @* <style>
