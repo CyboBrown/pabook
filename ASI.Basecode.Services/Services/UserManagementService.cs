@@ -87,9 +87,11 @@ namespace ASI.Basecode.Services.Services
 
             // Retrieve the maximum current Id value
             int maxId = _userRepository.GetMaxUserId();
+            
+            var user = new User();
+            _mapper.Map(model, user);
 
-            var user = _mapper.Map<User>(model);
-
+            user.Email = model.Email;
             user.Password = PasswordManager.EncryptPassword(model.Password);
             user.CreatedDate = DateTime.Now;
             user.UpdatedDate = DateTime.Now;
