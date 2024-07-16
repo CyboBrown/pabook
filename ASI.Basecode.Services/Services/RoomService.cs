@@ -173,11 +173,7 @@ namespace ASI.Basecode.Services.Services
 
         }
 
-        public void CancelRoom(int id)
-        {
-            _roomRepository.CancelRoom(id);
-        }
-        public void Delete(int id)
+        public void DeleteRoom(int id)
         {
             Console.WriteLine(" > RoomService: Delete");
             _roomRepository.DeleteRoom(id);

@@ -16,18 +16,30 @@ namespace ASI.Basecode.Data.Repositories
 
         }
 
+        /// <summary>
+        /// Gets all users.
+        /// </summary>
+        /// <returns>All users.</returns>
         public IQueryable<User> GetUsers()
         {
             Console.WriteLine(" > UserRepo: GetUsers");
             return this.GetDbSet<User>();
         }
 
+        /// <summary>
+        /// Checks if user exists.
+        /// </summary>
+        /// <param name="username">The username.</param>
         public bool UserExists(string username)
         {
             Console.WriteLine(" > UserRepo: UserExists");
             return this.GetDbSet<User>().Any(x => x.UserName == username);
         }
 
+        /// <summary>
+        /// Adds the user.
+        /// </summary>
+        /// <param name="user">The user.</param>
         public void AddUser(User user)
         {
             Console.WriteLine(" > UserRepo: AddUser");
@@ -37,12 +49,21 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Gets the user.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <returns>The user that match the username.</returns>
         public User GetUser(string username)
         {
             Console.WriteLine(" > UserRepo: GetUser");
             return this.GetDbSet<User>().FirstOrDefault(x => x.UserName == username);
         }
 
+        /// <summary>
+        /// Updates the user.
+        /// </summary>
+        /// <param name="user">The user.</param>
         public void UpdateUser(User user)
         {
             Console.WriteLine(" > UserRepo: UpdateUser");
@@ -50,6 +71,10 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Deletes the user.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         public void DeleteUser(int id)
         {
             Console.WriteLine(" > UserRepo: DeleteUser");
@@ -63,12 +88,20 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        /// <summary>
+        /// Gets the user by identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The user that match the id.</returns>
         public User GetUserById(int id)
         {
             Console.WriteLine(" > UserRepo: GetUserById");
             return this.GetDbSet<User>().FirstOrDefault(x => x.Id == id);
         }
 
+        /// <summary>
+        /// Gets the current maximum user identifier.
+        /// </summary>
         public int GetMaxUserId()
         {
             using (var context = new AsiBasecodeDbContext())

@@ -42,6 +42,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody id="bookingItems" class="divide-y divide-gray-200">
@@ -172,11 +173,13 @@
 
 <script>
     //fetching karon nga bookings
-    document.addEventListener('DOMContentLoaded', function () {
-        fetchTodaysBookings();
-        // Refreshes kada 1 sec
-        setInterval(fetchTodaysBookings, 1000);
-    });
+    //document.addEventListener('DOMContentLoaded', function () {
+    //    fetchTodaysBookings();
+    //    // Refreshes kada 1 sec
+    //    setInterval(fetchTodaysBookings, 100000);
+    //});
+    //fetchTodaysBookings();
+
 
     function fetchTodaysBookings() {
         fetch('/api/Booking/todaysBookings')
@@ -189,12 +192,18 @@
                 bookingItemsContainer.innerHTML = ''; // Clear existing items
 
                 data.forEach(booking => {
+                    //console.log("Today's Bookings ID No. " + booking.id);
                     const bookingItem = document.createElement('tr');
                     bookingItem.classList.add('booking-item');
                     bookingItem.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatTime(booking.startTime)}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.title}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <button class="details-btn text-green-600 hover:text-green-900" data-id="${booking.id}">
+                                <i class="fas fa-info-circle"></i>Details
+                            </button>
+                        </td>
                     `;
                     bookingItemsContainer.appendChild(bookingItem);
                 });
@@ -308,6 +317,7 @@
                     const tableBody = document.getElementById('bookingsTableBody');
                     tableBody.innerHTML = '';
                     data.forEach(booking => {
+                        console.log("My Bookings ID No. " + booking.id);
                         const row = document.createElement('tr');
                         row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
@@ -342,6 +352,7 @@
         }
 
         // i laod ang bookings
+        fetchTodaysBookings();
         loadBookings();
 
         // Form submission
@@ -424,6 +435,7 @@
                     console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
                     loadBookings(); // This will refresh the entire table
+                    fetchTodaysBookings();
                     bookingForm.reset();
 
                     // Reset form mode and submit button text

@@ -19,6 +19,16 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IRoomService _roomService;
         private readonly IRecurrenceTypeService _recurrenceTypeService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BookingController"/> class.
+        /// </summary>
+        /// <param name="bookingService">The booking service.</param>
+        /// <param name="roomService">The room service.</param>
+        /// <param name="recurrenceTypeService">The recurrence type service.</param>
+        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="mapper">The mapper.</param>
         public BookingController(
             IBookingService bookingService,
             IRoomService roomService,
@@ -34,6 +44,10 @@ namespace ASI.Basecode.WebApp.Controllers
             _recurrenceTypeService = recurrenceTypeService;
         }
 
+        /// <summary>
+        /// Gets the rooms.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("rooms")]
         public IActionResult GetRooms()
         {
@@ -41,6 +55,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(rooms);
         }
 
+        /// <summary>
+        /// Gets the recurrence types.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("recurrenceTypes")]
         public IActionResult GetRecurrenceTypes()
         {
@@ -50,6 +68,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(recurrenceTypes);
         }
 
+        /// <summary>
+        /// Gets the recurrence type by identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet("recurrence/{id}")]
         public IActionResult GetRecurrenceTypeById(int id)
         {
@@ -57,6 +80,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(recurrenceType.Name);
         }
 
+        /// <summary>
+        /// Creates the booking.
+        /// </summary>
+        /// <param name="booking">The booking.</param>
+        /// <returns></returns>
         [HttpPost("create")]
         public IActionResult CreateBooking([FromBody] BookingViewModel booking)
         {
@@ -68,6 +96,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return BadRequest(new { success = false, message = "Invalid booking data" });
         }
 
+        /// <summary>
+        /// Gets the bookings.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("bookings")]
         public IActionResult GetBookings()
         {
@@ -75,6 +107,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
+        /// <summary>
+        /// Gets the bookings by user.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("myBookings")]
         public IActionResult GetBookingsByUser()
         {
@@ -84,14 +120,19 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
+        /// <summary>
+        /// Gets the todays bookings.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("todaysBookings")]
         public IActionResult GetTodaysBookings()
         {
             var today = DateTime.Today;
             var bookings = _bookingService.GetUserBookings()
-                                          .Where(b => b.Date.Date == today)
+                                          .Where(b => b.Date.Date == today || b.Date.Date <= today && b.RecurrenceEndDate >= today)
                                           .Where(b => !b.Cancelled)
                                           .Select(b => new {
+                                              b.Id,
                                               b.StartTime,
                                               b.Title,
                                               b.RoomName
@@ -100,6 +141,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
+        /// <summary>
+        /// Gets the booking.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetBooking(int id)
         {
@@ -111,6 +157,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(booking);
         }
 
+        /// <summary>
+        /// Updates the booking.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="booking">The booking.</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public IActionResult UpdateBooking(int id, [FromBody] BookingViewModel booking)
         {
@@ -132,6 +184,11 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Cancels the booking.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult CancelBooking(int id)
         {

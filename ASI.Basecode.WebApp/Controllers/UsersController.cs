@@ -30,7 +30,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Returns Home View.
+        /// Displays the homepage.
         /// </summary>
         /// <returns> Users View </returns>
         [Authorize(Roles = "User")]
@@ -38,10 +38,20 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// Displays the calendar page.
+        /// </summary>
+        /// <returns>Calendar View</returns>
         public IActionResult Calendar()
         {
             return View();
         }
+
+        /// <summary>
+        /// Displays the settings page.
+        /// </summary>
+        /// <returns>User Settings View</returns>
         public IActionResult UserSettings()
         {
             return View();

@@ -41,10 +41,6 @@ namespace ASI.Basecode.WebApp.Controllers
             _userManagementService = userManagementService;
         }
 
-        /// <summary>
-        /// Indexes this instance.
-        /// </summary>
-        /// <returns></returns>
         /*public IActionResult Index()
         {
             Console.WriteLine("Passed Controller Index");
@@ -67,6 +63,11 @@ namespace ASI.Basecode.WebApp.Controllers
             var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
             return View(data);
         }*/
+
+        /// <summary>
+        /// Gets the users.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("users")]
         public IActionResult GetUsers()
         {
@@ -75,6 +76,11 @@ namespace ASI.Basecode.WebApp.Controllers
 
         }
 
+        /// <summary>
+        /// Detailses the specified identifier.
+        /// </summary>
+        /// <param name="Id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Details(int Id)
         {
@@ -82,6 +88,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(data);
         }
 
+        /// <summary>
+        /// Edits the specified identifier.
+        /// </summary>
+        /// <param name="Id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(int Id)
         {
@@ -93,6 +104,12 @@ namespace ASI.Basecode.WebApp.Controllers
         #endregion
 
         #region POST METHODS
+
+        /// <summary>
+        /// Adds the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpPost("add")]
         public IActionResult Add([FromBody] UserManagementViewModel model)
         {
@@ -116,6 +133,11 @@ namespace ASI.Basecode.WebApp.Controllers
             //return Ok(new { message = "User added successfully" });
         }
 
+        /// <summary>
+        /// Gets the user.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetUser(string id)
         {
@@ -127,6 +149,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Deletes the user.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
         {

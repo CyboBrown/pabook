@@ -17,12 +17,11 @@ namespace ASI.Basecode.Services.Interfaces
         RoomViewModel GetRoomById(int id);
         
         void UpdateRoom(RoomViewModel room);
-        void CancelRoom(int id);
         
         /*
         void Add(RoomViewModel model);
         void Update(RoomViewModel model);*/
-        void Delete(int id);
+        void DeleteRoom(int id);
         bool RequestAlreadyProcessed(string requestId);
         void MarkRequestAsProcessed(string requestId);
 
