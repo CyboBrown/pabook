@@ -10,6 +10,7 @@ namespace ASI.Basecode.Data.Interfaces
     public interface IBookingRepository
     {
         IQueryable<Booking> GetBookings();
+        IQueryable<Booking> GetAllBookingsIncludingCancelled();
         bool BookingExists(int id);
         Booking GetBooking(int id);
         void AddBooking(Booking booking);
