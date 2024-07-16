@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -61,12 +62,14 @@ namespace ASI.Basecode.Services.Services
 
         public int GetTotalBookings()
         {
-            return _bookingRepository.GetBookings().Count(b => !b.Deleted);
+            // Count all bookings, including cancelled ones
+            return _bookingRepository.GetAllBookingsIncludingCancelled().Count();
         }
 
         public int GetCancelledBookings()
         {
-            return _bookingRepository.GetBookings().Count(b => b.Cancelled && !b.Deleted);
+            // Count all bookings that are marked as cancelled but not deleted
+            return _bookingRepository.GetAllBookingsIncludingCancelled().Count(b => b.Cancelled && !b.Deleted);
         }
 
         public int GetTotalUsers()

@@ -93,6 +93,16 @@ namespace ASI.Basecode.Data.Repositories
         }
 
         /// <summary>
+        /// Gets all bookings.
+        /// </summary>
+        /// <returns>All bookings.</returns>
+        public IQueryable<Booking> GetAllBookingsIncludingCancelled()
+        {
+            Console.WriteLine(" > BookingRepo: GetAllBookingsIncludingCancelled");
+            return this.GetDbSet<Booking>(); 
+        }
+
+        /// <summary>
         /// Updates the booking.
         /// </summary>
         /// <param name="booking">The booking.</param>
