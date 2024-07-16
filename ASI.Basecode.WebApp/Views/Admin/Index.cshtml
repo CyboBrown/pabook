@@ -315,6 +315,19 @@
     </div>
 </div>
 
+@*User Details Modal*@
+<div id="userDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
+        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h3 class="text-xl font-semibold mb-4">User Details</h3>
+        <div id="userDetailsContent"></div>
+    </div>
+</div>
+
 @*Room Details Modal*@
 <div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
@@ -746,9 +759,9 @@
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
                                                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.userRole}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                  <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                                      <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
-                                                      <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
+                                                  <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
+                                                      <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
+                                                      <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
                                               </td>
                                           `;
                          tableBody.appendChild(row);
@@ -778,12 +791,14 @@
              }
 
              const formData = new FormData(this);
+             const userRoleSelect = document.getElementById('role');
+             const selectedValue = userRoleSelect.value;
              const data = {
-                userName: formData.get('userName'),
+                username: formData.get('username'),
                 lastName: formData.get('lastName'),
                 firstName: formData.get('firstName'),
                 email: formData.get('email'),
-                location: parseInt(formData.get('userRole')),
+                userRole: parseInt(selectedValue),
                 password: formData.get('password'),
              };
 
@@ -794,70 +809,80 @@
              submitButton.disabled = true;
              submitButton.textContent = 'Submitting...';
 
-             const url = this.dataset.mode === 'edit' ? `/api/UserManagement/${this.dataset.userId}` : '/api/UserMangement/add';
+             const url = this.dataset.mode === 'edit' ? `/api/UserManagement/${this.dataset.userId}` : '/api/UserManagement/add';
              const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
 
-             fetch(url, {
-                 method: method,
-                 headers: {
-                     'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify(data)
-             })
-                 .then(response => {
-                     if (!response.ok) {
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
                         return response.json().then(err => {
                             throw err;
                         });
-                     }
-                     return response.json();
-                 })
-                 .then(result => {
-                     console.log('User ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    console.log('User ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
                     userModal.style.display = "none";
-                     loadUsers();
-                     userForm.reset();
+                    loadUsers();
+                    userForm.reset();
 
-                     this.dataset.mode = 'add';
-                     delete this.dataset.userId;
-                     submitButton.textContent = 'Add User';
+                    this.dataset.mode = 'add';
+                    delete this.dataset.userId;
+                    submitButton.textContent = 'Add User';
 
                     //alert('User ' + (method === 'POST' ? 'created' : 'updated') + ' successfully!');
 
-                     if (method === 'POST') {
-                         alert('User created successfully!');
-                     } else {
+                    if (method === 'POST') { 
+                        alert('User created successfully!');
+                    } else {
                         alert('User updated successfully!');
-                     }
-                 })
-                 .catch(error => {
-                     let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the user. Please try again.';
+                    }
+                })
+                .catch(error => {
+                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the user. Please try again.';
 
-                     if (error.status) {
-                         errorMessage += '\n\nStatus Code: ' + error.status;
-                     }
+                    if (error.status) {
+                        errorMessage += '\n\nStatus Code: ' + error.status;
+                    }
 
-                     if (error.errors) {
-                         if (error.errors.id) {
+                    if (error.errors) {
+                        if (error.errors.id) {
                             errorMessage += '\n\nID Error: ' + error.errors.id[0];
-                         } else {
-                             errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
-                         }
-                     }
+                        } else {
+                            errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                        }
+                    }
 
-                     alert(errorMessage);
-                 })
-                 .finally(() => {
-                     submitButton.disabled = false;
-                     submitButton.textContent = this.dataset.mode === 'edit' ? 'Update User' : 'Add User';
-                 });
+                    alert(errorMessage);
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update User' : 'Add User';
+                });
          });
 
         function editUser(userId) {
-            fetch(`/api/UserManagement/${userId}`)
-                .then(response => response.json())
+            fetch(`/api/UserManagement/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
                 .then(user => {
-                    document.getElementById('userName').value = user.userName;
+                    document.getElementById('username').value = user.userName;
                     document.getElementById('lastName').value = user.lastName;
                     document.getElementById('firstName').value = user.firstName;
                     document.getElementById('email').value = user.email;
@@ -882,19 +907,19 @@
                     const modal = document.getElementById('userDetailsModal');
                     const content = document.getElementById('userDetailsContent');
                     content.innerHTML = `
-                                <p class="mb-2"><strong>userName:</strong> ${user.userName}< /p>
-                            < p class="mb-2" > <strong>lastName: </strong> ${user.lastName}</p >
-                                <p class="mb-2" > <strong>firstName: </strong> ${user.firstName}</p >
-                                    <p class="mb-2" > <strong>email: </strong> ${user.email}</p >
-                                        <p class="mb-2" > <strong>userRole: </strong> ${user.userRole}</p >
+                        <p class="mb-2"><strong>userName:</strong> ${user.userName}< /p>
+                        <p class="mb-2" > <strong>lastName: </strong> ${user.lastName}</p >
+                        <p class="mb-2" > <strong>firstName: </strong> ${user.firstName}</p >
+                        <p class="mb-2" > <strong>email: </strong> ${user.email}</p >
+                        <p class="mb-2" > <strong>userRole: </strong> ${user.userRole}</p >
                         `;
                     modal.classList.remove('hidden');
                 })
-                .catch(error => console.error('Error fetching room details:', error));
+                .catch(error => console.error('Error fetching user details:', error));
         }
 
-        function closeRoomDetailsModal() {
-            const modal = document.getElementById('roomDetailsModal');
+        function closeUserDetailsModal() {
+            const modal = document.getElementById('userDetailsModal');
             modal.classList.add('hidden');
         }
 
@@ -909,7 +934,7 @@
         });
 
 
-        //DELETE Room
+        //DELETE User
         function deleteUser(userId) {
             if (confirm('Are you sure you want to remove this User?')) {
                 fetch(`/api/UserManagement/${userId}`, { method: 'DELETE' })
@@ -917,14 +942,14 @@
                         if (response.ok) {
                             const row = document.querySelector(`button[data-id="${userId}"]`).closest('tr');
                             row.remove();
-                            alert('User cancelled successfully');
+                            alert('User removed successfully');
                         } else {
-                            throw new Error('Failed to cancel user');
+                            throw new Error('Failed to remove user');
                         }
                     })
                     .catch(error => {
-                        console.error('Error cancelling user:', error);
-                        alert('Failed to cancel user. Please try again.');
+                        console.error('Error removing user:', error);
+                        alert('Failed to remove user. Please try again.');
                     });
             }
         }

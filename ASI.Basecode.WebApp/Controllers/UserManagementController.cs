@@ -97,21 +97,29 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult Add([FromBody] UserManagementViewModel model)
         {
 
-            if (ModelState.IsValid)
+            /*if (ModelState.IsValid)
             {
                 _userManagementService.Add(model);
                 return Ok(new { success = true, message = "User created successfully" });
             }
-            return BadRequest(new { success = false, message = "Invalid booking data" });
+            return BadRequest(new { success = false, message = "Invalid booking data" });*/
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _userManagementService.Add(model);
+            return CreatedAtAction(nameof(GetUser), new { id = model.Id }, model);
             // Implementation to add a room
             // Ensure the method logic handles the POST request correctly
             //return Ok(new { message = "User added successfully" });
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetUser(UserManagementViewModel model)
+        public IActionResult GetUser(string id)
         {
-            var user = _userManagementService.GetUserById(model.Id.ToString());
+            var user = _userManagementService.GetUserById(id);
             if (user == null)
             {
                 return NotFound();
