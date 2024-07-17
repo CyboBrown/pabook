@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,23 @@ namespace ASI.Basecode.Services.Interfaces
 {
     public interface IPreferenceService
     {
-        //Task SaveOrUpdateAsync(Preference preference);
-        bool PreferenceExists(int id);
-        Preference GetPreference(int id);
-        void CreatePreference(Preference preference);
-        void UpdatePreference(Preference preference);
+        IEnumerable<PreferenceViewModel> GetAll(int? id = null, int? userId = null);
+        IEnumerable<PreferenceViewModel> GetAllPreferences();
+        IEnumerable<PreferenceViewModel> GetUserPreferences();      
+        PreferenceViewModel GetPreferenceById(int id);
+       
+
+
+
+        //bool PreferenceExists(int id);        
+        void CreatePreference(PreferenceViewModel preference);
+        void UpdatePreference(PreferenceViewModel preference);
         void DeletePreference(int id);
 
-        Task<Preference> GetPreferenceAsync(int userId);
+
+        Preference GetPreference(int id);
+        Task<Preference> GetPreferenceAsync(int id);
+        Task CreatePreferenceAsync(Preference preference);       
         Task UpdatePreferenceAsync(Preference preference);
     }
 }

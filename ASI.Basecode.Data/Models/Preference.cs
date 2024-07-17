@@ -9,6 +9,8 @@ namespace ASI.Basecode.Data.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [ForeignKey("UserId")]
         public int UserId { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
@@ -18,7 +20,9 @@ namespace ASI.Basecode.Data.Models
         public int TimeFormat { get; set; }
         public int DefaultBookingDuration { get; set; }
 
-        [ForeignKey("UserId")]
+        
+
+
         public virtual User User { get; set; }
         public Preference()
         {

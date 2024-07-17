@@ -110,7 +110,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Handle the case when the user is not authenticated
                 ModelState.AddModelError(string.Empty, "User is not authenticated.");
             }
-
+            
             // Return an empty view or an error view if necessary
             return View();
         }
@@ -134,7 +134,7 @@ namespace ASI.Basecode.WebApp.Controllers
                         EnableNotifications = model.EnableNotifications,
                         // Set other properties
                     };
-                    _preferenceService.CreatePreference(preference);
+                    _preferenceService.CreatePreference(model);
                 }
                 else
                 {

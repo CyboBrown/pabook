@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using Basecode.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,10 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) 
+        private readonly AsiBasecodeDbContext _context;
+        public UserRepository(AsiBasecodeDbContext context, IUnitOfWork unitOfWork) : base(unitOfWork) 
         {
-
+            _context = context;
         }
 
         /// <summary>
@@ -108,6 +110,12 @@ namespace ASI.Basecode.Data.Repositories
             {
                 return context.Users.Max(u => u.Id);
             }
+        }
+
+        public int GetCurrentUserId(string username)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.UserName == username);
+            return user?.Id ?? 0;
         }
     }
 }

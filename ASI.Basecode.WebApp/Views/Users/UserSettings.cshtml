@@ -1,225 +1,72 @@
 ﻿@{
-    ViewData["Title"] = "Admin Settings";
-}
-<div class="outer-container">
-    <div class="main-content">
-        <h1>Settings and Preferences</h1>
-        <div class="profile-section">
-            <div class="profile-pic"></div>
-            <div class="profile-info">
-                <span class="profile-name">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
-                <span class="profile-status">Active</span>
-            </div>
-        </div>
-        <div class="settings-section">
-            <div class="setting">
-                <span>Switch to darkmode</span>
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-            <div class="setting">
-                <span>Notification</span>
-                <span class="status">On</span>
-            </div>
-            <div class="setting">
-                <span>Default Time</span>
-                <select class="time-select">
-                    <option>24 - hour</option>
-                    <option>12 - hour</option>
-                </select>
-            </div>
-        </div>
-        <div class="action-buttons">
-            <button class="save-button">Save Changes</button>
-            <button class="cancel-button">Cancel</button>
-        </div>
-    </div>
-</div>
-
-@section Styles {
-    <style>
-
-         @* css code ni sa container, ayaw labti para uniform, scroll down naay space adto for manipulating styles *@
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            background-color: #000;
-        }
-
-        .outer-container {
-            box-sizing: border-box;
-            background-color: var(--light);
-            padding: 10px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column-reverse;
-            flex-direction: column;
-            width: calc(100% - 265px);
-            height: calc(100%-40px);
-            top: 20px;
-            right: 20px;
-            bottom: 20px;
-            margin-left: 100px;
-            position: fixed;
-            z-index: 0;
-        }
-
-        .main-content {
-            height: 85vh;
-            background-color: #185D62;
-            padding: 20px;
-            color: #fff;
-            border-radius: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            flex-grow: 1;
-        }
-
-        h1 {
-            font-size: 36px;
-            font-weight: 500;
-            margin-top: 0;
-            margin-bottom: 30px;
-            letter-spacing: 0.5px;
-        }
-        .profile-section {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .profile-pic {
-            width: 80px;
-            height: 80px;
-            background-color: #ccc;
-            border-radius: 10px;
-            margin-right: 20px;
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .profile-name {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .profile-status {
-            font-size: 16px;
-            color: #ccc;
-        }
-
-        .settings-section {
-            margin-top: 20px;
-        }
-
-        .setting {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .setting span {
-            font-size: 18px;
-        }
-
-        .status {
-            font-size: 18px;
-            color: #ccc;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 20px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 12px;
-            width: 12px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #4caf50;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-
-        .time-select {
-            font-size: 18px;
-            background-color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 30px;
-        }
-
-        .save-button,
-        .cancel-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .save-button {
-            background-color: #28a745;
-            color: white;
-            margin-right: 10px;
-        }
-
-        .cancel-button {
-            background-color: #6c757d;
-            color: white;
-        }
-
-    </style>
+    ViewData["Title"] = "User Settings";
 }
 
+<body class="@(@Model?.DarkMode ?? false ? "night" : "")">
+    <link rel="stylesheet" href="~/css/admin.css" />
+
+    <form asp-action="SavePreferences" method="post">
+        <div class="outer-container">
+            <div class="main-content">
+                <h1>Settings and Preferences</h1>
+                <div class="profile-section">
+                    <div class="profile-pic"></div>
+                    <div class="profile-info">
+                        <span class="profile-name">ADMIN USER</span>
+                        <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="setting">
+                        <span>Switch to light mode</span>
+                        <label id="dark-change" class="toggle-switch">
+                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting">
+                        <span>Notification</span>
+                        <select class="status" name="EnableNotifications">
+                            <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
+                            <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
+                        </select>
+                    </div>
+                    <div class="setting">
+                        <span>Default Time</span>
+                        <select class="time-select" name="TimeFormat">
+                            <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
+                            <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="save-button">Save Changes</button>
+                    <button type="button" class="cancel-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        var darkMode = document.getElementById('dark-change');
+        darkMode.addEventListener('change', function () {
+            document.body.classList.toggle('night', this.checked);
+            document.querySelector('.outer-container').classList.toggle('night', this.checked);
+            document.querySelector('.main-content').classList.toggle('night', this.checked);
+            document.querySelector('.profile-pic').classList.toggle('night', this.checked);
+            document.querySelector('.sidebar').classList.toggle('night', this.checked);
+            document.querySelectorAll('.sidebar-menu li a').forEach(function (link) {
+                link.classList.toggle('night', darkMode.checked);
+            });
+            document.querySelector('.user-details').classList.toggle('night', darkMode.checked);
+            document.querySelector('.notification-section').classList.toggle('night', darkMode.checked);
+            document.querySelector('.signout').classList.toggle('night', darkMode.checked);
+            document.querySelector('.logo-img').classList.toggle('night', darkMode.checked);
+
+
+        });
+    </script>
+</body>

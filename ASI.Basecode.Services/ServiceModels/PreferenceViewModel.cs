@@ -9,6 +9,7 @@ namespace ASI.Basecode.Services.ServiceModels
 {
     public class PreferenceViewModel
     {
+        public int Id { get; set; }
         public int UserId { get; set; }
         public bool DarkMode { get; set; }
         public int DefaultBookingDuration { get; set; }
