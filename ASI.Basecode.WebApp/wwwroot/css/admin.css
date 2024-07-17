@@ -431,14 +431,4 @@ input:checked + .slider {
 
 
 
-/*Label styles for switch pero makaaffect sya sa tanang label
-.dark-change.label {
-    border: 2px solid;
-    border-radius: 20px;
-    position: relative;
-    display: inline-block;
-    width: 46px;
-    height: 26px;
-}*/
-
 /*SETTINGS ENDREGION*/

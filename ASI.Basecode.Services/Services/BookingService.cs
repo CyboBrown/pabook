@@ -131,7 +131,6 @@ namespace ASI.Basecode.Services.Services
             booking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name; // placeholder pani, dapat user ni realtime
             booking.UpdatedDate = DateTime.Now;
             booking.Deleted = false;
-
             _bookingRepository.AddBooking(booking);
         }
 
@@ -211,6 +210,16 @@ namespace ASI.Basecode.Services.Services
         public void CancelBooking(int id)
         {
             _bookingRepository.CancelBooking(id);
+        }
+
+        public bool CheckBookingAvailability(BookingViewModel booking)
+        {
+            var conflicting_bookings = _bookingRepository.GetBookings()
+                                                            .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
+                                                            .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                                                                        (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
+                                                            .ToList();
+            return !conflicting_bookings.Any();
         }
     }
 }

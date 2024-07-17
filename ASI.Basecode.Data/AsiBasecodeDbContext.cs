@@ -108,11 +108,17 @@ namespace ASI.Basecode.Data
 
             modelBuilder.Entity<Preference>(entity =>
             {
-                entity.HasKey(e => e.UserId)
+                /*entity.HasKey(e => e.UserId)
                     .HasName("PK__Preferen__1788CC4C804D8E49");
 
-                entity.Property(e => e.UserId).ValueGeneratedNever();
+                entity.Property(e => e.UserId).ValueGeneratedNever();*/
+                entity.HasKey(e => e.Id)
+                      .HasName("PK_Preference");
 
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.UserId)
+                       .IsRequired();
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.User)
