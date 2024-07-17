@@ -29,7 +29,7 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
+                    <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
                         <button id="filterBookingsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
                             <i class="fas fa-filter text-gray-400"></i>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
-                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                        <table id="bookingsTable" class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Name</th>
@@ -70,7 +70,7 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
+                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div class="flex space-x-2">
                         <button id="filterUsersButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
                             <i class="fas fa-filter text-gray-400"></i>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
-                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                        <table id="userTable"class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
@@ -109,7 +109,7 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
+                    <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRoom()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
                         <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
                             <i class="fas fa-filter text-gray-400"></i>
@@ -124,7 +124,7 @@
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
-                        <table class="min-w-full max-w-full divide-y divide-gray-200">
+                        <table id="roomTable" class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room Name</th>
@@ -443,20 +443,20 @@
                     data.forEach(booking => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                    ${booking.recurring ? 'Yes' : 'No'}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
-                                <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
-                                <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
-                            </td>
-                        `;
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                                <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${booking.recurring ? 'Yes' : 'No'}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
+                                    <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
+                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                                </td>
+                            `;
                         tableBody.appendChild(row);
                     });
 
@@ -633,18 +633,18 @@
                     const modal = document.getElementById('bookingDetailsModal');
                     const content = document.getElementById('bookingDetailsContent');
                     content.innerHTML = `
-                        <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
-                            <p class="mb-2"><strong>Created by:</strong> ${booking.createdBy || 'Unknown'}</p>
-                        <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
-                        <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                        <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                        <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
-                        <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                        ${booking.recurring ? `
-                            <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
-                            <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                        ` : ''}
-                    `;
+                            <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                                <p class="mb-2"><strong>Created by:</strong> ${booking.createdBy || 'Unknown'}</p>
+                            <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
+                            <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                            <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                            <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
+                            <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                            ${booking.recurring ? `
+                                <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                                <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                            ` : ''}
+                        `;
                     modal.classList.remove('hidden');
                 })
                 .catch(error => console.error('Error fetching booking details:', error));
@@ -717,7 +717,7 @@
         });
 
         // get current user ID (to be implemented)
-        function getCurrentUserId() {            
+        function getCurrentUserId() {
             return 1; // Placeholder value for now
         }
     });
@@ -750,18 +750,18 @@
                      const tableBody = document.getElementById('usersTableBody');
                      tableBody.innerHTML = '';
                      data.forEach(user => {
-                        console.log("User data:", user);
+                         console.log("User data:", user);
                          const row = document.createElement('tr');
                          row.innerHTML = `
-                                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.userName}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.userName}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastName}</td>
-                                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
-                                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.userRole}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.userRole}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                   <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                                      <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
-                                                      <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
+                                                  <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
+                                                  <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
                                               </td>
                                           `;
                          tableBody.appendChild(row);
@@ -886,7 +886,7 @@
                     document.getElementById('lastName').value = user.lastName;
                     document.getElementById('firstName').value = user.firstName;
                     document.getElementById('email').value = user.email;
-                    document.getElementById('userRole').value = user.userRole;
+                    document.getElementById('role').value = user.userRole;
 
                     const form = document.getElementById('userForm');
                     form.dataset.mode = 'edit';
@@ -907,7 +907,7 @@
                     const modal = document.getElementById('userDetailsModal');
                     const content = document.getElementById('userDetailsContent');
                     content.innerHTML = `
-                        <p class="mb-2"><strong>userName:</strong> ${user.userName}< /p>
+                        <p class="mb-2"><strong>userName:</strong> ${user.username}< /p>
                         <p class="mb-2" > <strong>lastName: </strong> ${user.lastName}</p >
                         <p class="mb-2" > <strong>firstName: </strong> ${user.firstName}</p >
                         <p class="mb-2" > <strong>email: </strong> ${user.email}</p >
@@ -977,6 +977,46 @@
             userForm.reset();
         });
      });
+
+    function searchFilterUser() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchUserBar");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("userTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function searchFilterBookings() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchBookingsBar");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("bookingsTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
  </script>
 
 @*Room Script*@
@@ -1227,6 +1267,26 @@
             document.getElementById('recurrenceOptions').style.display = 'none';
         });
     });
+
+    function searchFilterRoom() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchRoomBar");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("roomTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
 </script>
 
 
@@ -1573,6 +1633,18 @@
             overflow-x: auto;
             overflow-y: auto;
             max-height: calc(76vh - 10rem);
+        }
+
+        #searchBookingsBar {
+            color:black;
+        }
+
+        #searchRoomBar {
+            color:black;
+        }
+
+        #searchUserBar {
+            color: black;
         }
 
     </style>
