@@ -196,7 +196,7 @@
                     const bookingItem = document.createElement('tr');
                     bookingItem.classList.add('booking-item');
                     bookingItem.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatTime(booking.startTime)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.title}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

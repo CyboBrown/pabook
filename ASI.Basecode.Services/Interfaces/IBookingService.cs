@@ -18,6 +18,6 @@ namespace ASI.Basecode.Services.Interfaces
         BookingViewModel GetBookingById(int id);
         void UpdateBooking(BookingViewModel booking);
         void CancelBooking(int id);
-
+        bool CheckBookingAvailability(BookingViewModel booking);
     }
 }
