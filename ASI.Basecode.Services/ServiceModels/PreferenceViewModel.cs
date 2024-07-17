@@ -15,7 +15,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public int DefaultBookingDuration { get; set; }
         public bool EnableNotifications { get; set; }
         public int TimeFormat { get; set; }
-
+        
         public PreferenceViewModel()
         {
             // Default constructor
@@ -23,11 +23,12 @@ namespace ASI.Basecode.Services.ServiceModels
 
         public PreferenceViewModel(Preference preference)
         {
+            Id = preference.Id;
             UserId = preference.UserId;
             DarkMode = preference.DarkMode;
+            TimeFormat = preference.TimeFormat;
             DefaultBookingDuration = preference.DefaultBookingDuration;
             EnableNotifications = preference.EnableNotifications;
-            // Map other properties as needed
         }
     }
 }

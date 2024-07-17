@@ -132,6 +132,7 @@ namespace ASI.Basecode.WebApp.Controllers
                         TimeFormat = model.TimeFormat,
                         UpdatedBy = GetCurrentUserName(),
                         EnableNotifications = model.EnableNotifications,
+                        DefaultBookingDuration = model.DefaultBookingDuration,
                         // Set other properties
                     };
                     _preferenceService.CreatePreference(model);
@@ -142,6 +143,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     preference.TimeFormat = model.TimeFormat;
                     preference.UpdatedBy = GetCurrentUserName();
                     preference.EnableNotifications = model.EnableNotifications;
+                    preference.DefaultBookingDuration = model.DefaultBookingDuration;
                     // Update other properties
 
                     await _preferenceService.UpdatePreferenceAsync(preference);
