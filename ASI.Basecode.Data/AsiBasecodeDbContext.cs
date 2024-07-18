@@ -18,6 +18,7 @@ namespace ASI.Basecode.Data
         }
 
         public virtual DbSet<Booking> Bookings { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Preference> Preferences { get; set; }
         public virtual DbSet<Recurrence> Recurrences { get; set; }
@@ -66,19 +67,30 @@ namespace ASI.Basecode.Data
                 entity.HasOne(d => d.RecurrenceType)
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.RecurrenceTypeId)
-                    .HasConstraintName("FK__Booking__Recurre__4316F928");
+                    .HasConstraintName("FK__Booking__Recurre__45F365D3");
 
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Booking__RoomId__4222D4EF");
+                    .HasConstraintName("FK__Booking__RoomId__44FF419A");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Booking__UserId__412EB0B6");
+                    .HasConstraintName("FK__Booking__UserId__440B1D61");
+            });
+
+            modelBuilder.Entity<Location>(entity =>
+            {
+                entity.ToTable("Location");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -103,35 +115,26 @@ namespace ASI.Basecode.Data
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__UserI__48CFD27E");
+                    .HasConstraintName("FK__Notificat__UserI__4BAC3F29");
             });
 
             modelBuilder.Entity<Preference>(entity =>
             {
-                /*entity.HasKey(e => e.UserId)
-                    .HasName("PK__Preferen__1788CC4C804D8E49");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.UserId).ValueGeneratedNever();*/
-                entity.HasKey(e => e.Id)
-                      .HasName("PK_Preference");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd();
-                entity.Property(e => e.UserId)
-                       .IsRequired();
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
-                entity.HasOne(d => d.User)
+                entity.HasOne(d => d.IdNavigation)
                     .WithOne(p => p.Preference)
-                    .HasForeignKey<Preference>(d => d.UserId)
+                    .HasForeignKey<Preference>(d => d.Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Preferenc__UserI__4BAC3F29");
+                    .HasConstraintName("FK__Preferences__Id__4E88ABD4");
             });
 
             modelBuilder.Entity<Recurrence>(entity =>
             {
                 entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AED67B643B1");
+                    .HasName("PK__Recurren__73951AEDEAE936BA");
 
                 entity.ToTable("Recurrence");
 
@@ -155,7 +158,7 @@ namespace ASI.Basecode.Data
                     .WithOne(p => p.Recurrence)
                     .HasForeignKey<Recurrence>(d => d.BookingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Recurrenc__Booki__45F365D3");
+                    .HasConstraintName("FK__Recurrenc__Booki__48CFD27E");
             });
 
             modelBuilder.Entity<RecurrenceType>(entity =>
@@ -206,10 +209,6 @@ namespace ASI.Basecode.Data
                     .IsRequired()
                     .HasMaxLength(512);
 
-                entity.Property(e => e.Location)
-                    .IsRequired()
-                    .HasMaxLength(256);
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(256);
@@ -219,6 +218,12 @@ namespace ASI.Basecode.Data
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LocationNavigation)
+                    .WithMany(p => p.Rooms)
+                    .HasForeignKey(d => d.Location)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Room__Location__3F466844");
             });
 
             modelBuilder.Entity<User>(entity =>

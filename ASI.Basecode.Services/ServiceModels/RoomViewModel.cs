@@ -19,7 +19,7 @@ namespace ASI.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "Facilities are required.")]
         public int Type { get; set; }
         [Required(ErrorMessage = "Locations are required.")]
-        public string Location { get; set; }
+        public int Location { get; set; }
         [Required(ErrorMessage = "Facilities are required.")]
         public string Facilities { get; set; }
         /*public int RoomId { get; set; }

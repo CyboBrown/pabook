@@ -60,7 +60,7 @@ namespace ASI.Basecode.Services.Services
             try
             {
                 var userId = GetCurrentUserId();
-                var preferences = _preferenceRepository.GetPreferences().Where(p => p.UserId == userId).ToList();
+                var preferences = _preferenceRepository.GetPreferences().Where(p => p.Id == userId).ToList();
                 var preferenceViewModels = _mapper.Map<List<PreferenceViewModel>>(preferences);
                 return preferenceViewModels;
             }
@@ -75,8 +75,7 @@ namespace ASI.Basecode.Services.Services
         public void CreatePreference(PreferenceViewModel model)
         {
             var preference = _mapper.Map<Preference>(model);
-            preference.UserId = GetCurrentUserId();
-            preference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+            preference.Id = GetCurrentUserId();
             preference.UpdatedDate = DateTime.Now;
 
             _preferenceRepository.AddOrUpdatePreference(preference);
@@ -99,7 +98,7 @@ namespace ASI.Basecode.Services.Services
             var data = _preferenceRepository.GetPreferences()
                 .Where(x => !x.Deleted
                             && (!id.HasValue || x.Id == id)
-                            && (!userId.HasValue || x.UserId == userId.Value))
+                            && (!userId.HasValue || x.Id == userId.Value))
                 .Select(s => _mapper.Map<PreferenceViewModel>(s));
             return data;
         }
@@ -108,7 +107,6 @@ namespace ASI.Basecode.Services.Services
         {
             var existingPreference = _preferenceRepository.GetPreference(preference.Id);
             _mapper.Map(preference, existingPreference);
-            existingPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             existingPreference.UpdatedDate = DateTime.Now;
 
             _preferenceRepository.UpdatePreference(existingPreference);

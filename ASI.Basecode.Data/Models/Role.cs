@@ -17,6 +17,7 @@ namespace ASI.Basecode.Data.Models
         public DateTime UpdatedDate { get; set; }
         public bool Deleted { get; set; }
         public string Name { get; set; }
+        public int RoleId { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
     }

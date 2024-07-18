@@ -124,10 +124,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     preference = new Preference
                     {
-                        UserId = userId,
+                        Id = userId,
                         DarkMode = model.DarkMode,
                         TimeFormat = model.TimeFormat,
-                        UpdatedBy = GetCurrentUserName(),
                         EnableNotifications = model.EnableNotifications,
                         DefaultBookingDuration = model.DefaultBookingDuration,
                         // Set other properties
@@ -138,7 +137,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     preference.DarkMode = model.DarkMode;
                     preference.TimeFormat = model.TimeFormat;
-                    preference.UpdatedBy = GetCurrentUserName();
                     preference.EnableNotifications = model.EnableNotifications;
                     preference.DefaultBookingDuration = model.DefaultBookingDuration;
                     // Update other properties
