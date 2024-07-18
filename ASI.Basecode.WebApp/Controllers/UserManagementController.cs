@@ -150,6 +150,33 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
+        /// Updates the room.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="room">The room.</param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] UserManagementViewModel user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest(new { success = false, message = "User ID mismatch." });
+            }
+
+            try
+            {
+                _userManagementService.Update(user);
+                return Ok(new { success = true, message = "User updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error updating room");
+                return BadRequest(new { success = false, message = "An error occurred while updating the room. Please try again.", error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Deletes the user.
         /// </summary>
         /// <param name="id">The identifier.</param>

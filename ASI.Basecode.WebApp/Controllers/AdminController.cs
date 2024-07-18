@@ -110,7 +110,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Handle the case when the user is not authenticated
                 ModelState.AddModelError(string.Empty, "User is not authenticated.");
             }
-
+            
             // Return an empty view or an error view if necessary
             return View();
         }
@@ -132,9 +132,10 @@ namespace ASI.Basecode.WebApp.Controllers
                         TimeFormat = model.TimeFormat,
                         UpdatedBy = GetCurrentUserName(),
                         EnableNotifications = model.EnableNotifications,
+                        DefaultBookingDuration = model.DefaultBookingDuration,
                         // Set other properties
                     };
-                    _preferenceService.CreatePreference(preference);
+                    _preferenceService.CreatePreference(model);
                 }
                 else
                 {
@@ -142,6 +143,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     preference.TimeFormat = model.TimeFormat;
                     preference.UpdatedBy = GetCurrentUserName();
                     preference.EnableNotifications = model.EnableNotifications;
+                    preference.DefaultBookingDuration = model.DefaultBookingDuration;
                     // Update other properties
 
                     await _preferenceService.UpdatePreferenceAsync(preference);

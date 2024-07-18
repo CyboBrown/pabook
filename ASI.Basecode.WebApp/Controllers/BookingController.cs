@@ -90,8 +90,12 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _bookingService.AddBooking(booking);
-                return Ok(new { success = true, message = "Booking created successfully" });
+                if(_bookingService.CheckBookingAvailability(booking))
+                {
+                    _bookingService.AddBooking(booking);
+                    return Ok(new { success = true, message = "Booking created successfully" });
+                }
+                return BadRequest(new { success = false, message = "Your booking conflicts with another booking" });
             }
             return BadRequest(new { success = false, message = "Invalid booking data" });
         }
@@ -134,6 +138,7 @@ namespace ASI.Basecode.WebApp.Controllers
                                           .Select(b => new {
                                               b.Id,
                                               b.StartTime,
+                                              b.EndTime,
                                               b.Title,
                                               b.RoomName
                                           })
@@ -171,17 +176,22 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(new { success = false, message = "Booking ID mismatch." });
             }
 
-            try
+            if (_bookingService.CheckBookingAvailability(booking))
             {
-                _bookingService.UpdateBooking(booking);
-                return Ok(new { success = true, message = "Booking updated successfully" });
+                try
+                {
+                    _bookingService.UpdateBooking(booking);
+                    return Ok(new { success = true, message = "Booking updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception
+                    _logger.LogError(ex, "Error updating booking");
+                    return BadRequest(new { success = false, message = "An error occurred while updating the booking. Please try again.", error = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "Error updating booking");
-                return BadRequest(new { success = false, message = "An error occurred while updating the booking. Please try again.", error = ex.Message });
-            }
+            return BadRequest(new { success = false, message = "Your booking conflicts with another booking" });
+            
         }
 
         /// <summary>

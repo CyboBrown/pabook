@@ -46,6 +46,11 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Users}/{action=Index}/{id?}");
+
+
+    endpoints.MapControllerRoute(
+        name: "admin",
+        pattern: "Admin/{controller=Preference}/{action=SavePreferences}/{id?}");
 });
 
 
