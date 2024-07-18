@@ -115,13 +115,32 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Gets the bookings by user.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("myBookings")]
+        /*[HttpGet("myBookings")]
         public IActionResult GetBookingsByUser()
         {
             var bookings = _bookingService.GetUserBookings()
                                                  .Where(b => !b.Cancelled)
                                                  .ToList();
             return Ok(bookings);
+        }*/
+        [HttpGet("myBookings")]
+        public IActionResult GetBookingsByUser()
+        {
+            try
+            {
+                var bookings = _bookingService.GetUserBookings()
+                                             .Where(b => !b.Cancelled)
+                                             .ToList();
+
+                Console.WriteLine($"Returning {bookings.Count} bookings"); // Debugging
+
+                return Ok(bookings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetBookingsByUser: {ex.Message}");
+                return StatusCode(500, "An error occurred while fetching bookings");
+            }
         }
 
         /// <summary>
