@@ -19,9 +19,10 @@ namespace ASI.Basecode.Data.Models
         public string Name { get; set; }
         public int Capacity { get; set; }
         public int Type { get; set; }
-        public string Location { get; set; }
+        public int Location { get; set; }
         public string Facilities { get; set; }
 
+        public virtual Location LocationNavigation { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
     }
 }
