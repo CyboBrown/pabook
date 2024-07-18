@@ -200,7 +200,16 @@ namespace ASI.Basecode.Services.Services
                 throw new Exception("Booking not found");
             }
 
+            // Preserve the original CreatedBy and CreatedDate
+            var createdBy = existingBooking.CreatedBy;
+            var createdDate = existingBooking.CreatedDate;
+
             _mapper.Map(booking, existingBooking);
+
+            // Restore the original CreatedBy and CreatedDate
+            existingBooking.CreatedBy = createdBy;
+            existingBooking.CreatedDate = createdDate;
+
             existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             existingBooking.UpdatedDate = DateTime.Now;
 

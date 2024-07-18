@@ -375,7 +375,40 @@
     //});
     //fetchTodaysBookings();
 
-    function fetchTodaysBookings() {
+        //this is the function for 'view'
+        function showBookingDetails(bookingId) {
+            function getRecurrenceTypeName(recurrenceId) {
+                result = "Error";
+                fetch(`/api/Booking/recurrence/${recurrenceId}`)
+                    .then(response => response.json())
+                    .then(data => result = data)
+                    .catch(error => console.error('Error getting recurrence type name:', error));
+                return result;
+            }
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    const modal = document.getElementById('bookingDetailsModal');
+                    const content = document.getElementById('bookingDetailsContent');
+                    content.innerHTML = `
+                            <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                            <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
+                            <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                            <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                            <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
+                            <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                            ${booking.recurring ? `
+                                        <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
+                                <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                            ` : ''}
+                        `;
+                    modal.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+        
+        //this is for fetching today's bookings
+       function fetchTodaysBookings() {
         fetch('/api/Booking/todaysBookings')
             .then(response => response.json())
             .then(data => {
@@ -386,7 +419,6 @@
                 bookingItemsContainer.innerHTML = ''; // Clear existing items
 
                 data.forEach(booking => {
-                    //console.log("Today's Bookings ID No. " + booking.id);
                     const bookingItem = document.createElement('tr');
                     bookingItem.classList.add('booking-item');
                     bookingItem.innerHTML = `
@@ -400,6 +432,13 @@
                         </td>
                     `;
                     bookingItemsContainer.appendChild(bookingItem);
+                });
+
+                // Add event listeners to the new buttons
+                document.querySelectorAll('#bookingItems .details-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        showBookingDetails(this.dataset.id);
+                    });
                 });
             })
             .catch(error => console.error('Error fetching bookings:', error));
@@ -595,30 +634,22 @@
             }
 
             const data = {
+                id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
                 description: formData.get('description'),
                 date: formData.get('date'),
                 roomId: parseInt(formData.get('room')),
-                startTime: formatTimeToTimeSpan(startTime),
-                endTime: formatTimeToTimeSpan(endTime),
+                startTime: formatTimeToTimeSpan(formData.get('startTime')),
+                endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
                 userId: getCurrentUserId()
             };
 
-            if (this.dataset.mode === 'edit') {
-                data.id = parseInt(this.dataset.bookingId); // Ensure the id is included and correctly parsed
-            }
-
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-
-            const url = this.dataset.mode === 'edit'
-                ? `/api/Booking/${this.dataset.bookingId}`
-                : '/api/Booking/create';
-            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+            const isEdit = this.dataset.mode === 'edit';
+            const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
+            const method = isEdit ? 'PUT' : 'POST';
 
             fetch(url, {
                 method: method,
@@ -634,7 +665,7 @@
                     return response.json();
                 })
                 .then(result => {
-                    console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    console.log('Booking ' + (isEdit ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
                     loadBookings(); // This will refresh the entire table
                     fetchTodaysBookings();
@@ -651,16 +682,12 @@
                         fetchTodaysBookings();
                     }
 
-                    // Add success alert only for new bookings
-                    if (method === 'POST') {
-                        alert('Booking created successfully!');
-                    } else {
-                        alert('Booking updated successfully!');
-                    }
+                    // Add success alert with correct message
+                    alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
                 })
                 .catch(error => {
-                    console.error('Error ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' booking:', error);
-                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the booking. Please try again.';
+                    console.error('Error ' + (isEdit ? 'updating' : 'creating') + ' booking:', error);
+                    let errorMessage = 'An error occurred while ' + (isEdit ? 'updating' : 'creating') + ' the booking. Please try again.';
                     if (error.errors) {
                         errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
                     }
@@ -668,7 +695,7 @@
                 })
                 .finally(() => {
                     submitButton.disabled = false;
-                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
+                    submitButton.textContent = isEdit ? 'Update Booking' : 'Create Booking';
                 });
         });
 
@@ -775,7 +802,6 @@
             }
         }
 
-        // Function to edit booking
         function editBooking(bookingId) {
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
@@ -795,6 +821,11 @@
                         document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
                     }
 
+                    // Set initial values for start and end time
+                    const startTime = new Date(`2000-01-01T${booking.startTime}`);
+                    const endTime = new Date(startTime.getTime() + 15 * 60000);
+                    document.getElementById('endTime').value = endTime.toTimeString().substring(0, 5);
+
                     // Change form submission to update instead of create
                     const form = document.getElementById('bookingForm');
                     form.dataset.mode = 'edit';
@@ -810,36 +841,7 @@
                 .catch(error => console.error('Error fetching booking details:', error));
         }
 
-        function showBookingDetails(bookingId) {
-            function getRecurrenceTypeName(recurrenceId) {
-                result = "Error";
-                fetch(`/api/Booking/recurrence/${recurrenceId}`)
-                    .then(response => response.json())
-                    .then(data => result = data)
-                    .catch(error => console.error('Error getting recurrence type name:', error));
-                return result;
-            }
-            fetch(`/api/Booking/${bookingId}`)
-                .then(response => response.json())
-                .then(booking => {
-                    const modal = document.getElementById('bookingDetailsModal');
-                    const content = document.getElementById('bookingDetailsContent');
-                    content.innerHTML = `
-                    <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
-                    <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
-                    <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                    <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                    <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
-                    <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                    ${booking.recurring ? `
-                                <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
-                        <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                    ` : ''}
-                `;
-                    modal.classList.remove('hidden');
-                })
-                .catch(error => console.error('Error fetching booking details:', error));
-        }
+       
 
         function closeBookingDetailsModal() {
             const modal = document.getElementById('bookingDetailsModal');
@@ -861,9 +863,18 @@
                 fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
                     .then(response => {
                         if (response.ok) {
-                            // Remove the row from the table
-                            const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
-                            row.remove();
+                            // Remove the row from My Bookings table
+                            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+                            if (myBookingsRow) {
+                                myBookingsRow.remove();
+                            }
+
+                            // Remove the row from Today's Bookings list
+                            const todaysBookingsRow = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`).closest('tr');
+                            if (todaysBookingsRow) {
+                                todaysBookingsRow.remove();
+                            }
+
                             alert('Booking cancelled successfully');
                         } else {
                             throw new Error('Failed to cancel booking');
@@ -873,6 +884,27 @@
                         console.error('Error cancelling booking:', error);
                         alert('Failed to cancel booking. Please try again.');
                     });
+            }
+        }
+
+        function removeBookingFromTables(bookingId) {
+            // Remove from My Bookings table
+            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+            if (myBookingsRow) {
+                myBookingsRow.remove();
+            }
+
+            // Remove from Today's Bookings table
+            const todaysBookingsRow = document.querySelector(`#todaysBookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+            if (todaysBookingsRow) {
+                todaysBookingsRow.remove();
+            }
+
+            // If the booking was the last one in Today's Bookings, update the display
+            const todaysBookingsTable = document.getElementById('todaysBookingsTableBody');
+            if (todaysBookingsTable && todaysBookingsTable.children.length === 0) {
+                document.getElementById('todaysBookingsSection').style.display = 'none';
+                document.getElementById('noBookingsMessage').style.display = 'block';
             }
         }
 
