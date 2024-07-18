@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Entity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Drawing.Drawing2D;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -35,26 +36,12 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var preferences = _preferenceRepository.GetPreferences()
-                                                 .ToList();
+                var preferences = _preferenceRepository.GetPreferences().ToList();
                 var preferenceViewModels = new List<PreferenceViewModel>();
 
                 foreach (var preference in preferences)
                 {
-                    
-
-                    var user = _userRepository.GetUser(preference.UserId.ToString());
-
-                    var preferenceViewModel = new PreferenceViewModel
-                    {
-                        Id = preference.Id,
-                        UserId = preference.UserId,
-                        DarkMode = preference.DarkMode,
-                        EnableNotifications = preference.EnableNotifications,
-                        DefaultBookingDuration = preference.DefaultBookingDuration,
-                        TimeFormat = preference.TimeFormat,                                               
-                    };
-
+                    var preferenceViewModel = _mapper.Map<PreferenceViewModel>(preference);
                     preferenceViewModels.Add(preferenceViewModel);
                 }
 
@@ -62,7 +49,7 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
+                Console.WriteLine($"Error in GetAllPreferences: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<PreferenceViewModel>();
             }
@@ -72,38 +59,14 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var preferences = _preferenceRepository.GetPreferences()
-                                                 .Where(b => b.UpdatedBy == _contextAccessor.HttpContext.User.Identity.Name)
-                                                 .ToList();
-                var preferenceViewModels = new List<PreferenceViewModel>();
-
-                foreach (var preference in preferences)
-                {
-                    if (preference == null)
-                    {
-                        Console.WriteLine("Encountered a null booking object");
-                        continue;
-                    }
-
-                    var user = _userRepository.GetUser(preference.UserId.ToString());
-
-                    var preferenceViewModel = new PreferenceViewModel
-                    {
-                        Id = preference.Id,
-                        UserId = preference.UserId,
-                        DarkMode = preference.DarkMode,
-                        EnableNotifications = preference.EnableNotifications,
-                        DefaultBookingDuration = preference.DefaultBookingDuration,
-                        TimeFormat = preference.TimeFormat,
-                    };
-
-                    preferenceViewModels.Add(preferenceViewModel);
-                }
+                var userId = GetCurrentUserId();
+                var preferences = _preferenceRepository.GetPreferences().Where(p => p.UserId == userId).ToList();
+                var preferenceViewModels = _mapper.Map<List<PreferenceViewModel>>(preferences);
                 return preferenceViewModels;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
+                Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<PreferenceViewModel>();
             }
@@ -111,70 +74,44 @@ namespace ASI.Basecode.Services.Services
 
         public void CreatePreference(PreferenceViewModel model)
         {
-            var preference = new Preference();
-            _mapper.Map(model, preference);
-
-            var userId = GetCurrentUserId(); // Retrieve the current user's ID
-            preference.UserId = userId;
-
-            preference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name; // placeholder pani, dapat user ni realtime
+            var preference = _mapper.Map<Preference>(model);
+            preference.UserId = GetCurrentUserId();
+            preference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             preference.UpdatedDate = DateTime.Now;
+
             _preferenceRepository.AddOrUpdatePreference(preference);
         }
         private int GetCurrentUserId()
         {
-            // Assuming you have a method to get the current logged-in user's ID
             var userId = _userRepository.GetCurrentUserId(_contextAccessor.HttpContext.User.Identity.Name);
             return userId;
         }
         public PreferenceViewModel GetPreferenceById(int id)
         {
             var preference = _preferenceRepository.GetPreference(id);
-            if (preference == null)
-            {
-                return null;
-            }
+            if (preference == null) return null;
 
-            var user = _userRepository.GetUser(preference.UserId.ToString());
-            return new PreferenceViewModel
-            {
-                Id = preference.Id,
-                UserId = preference.UserId,
-                DarkMode = preference.DarkMode,
-                EnableNotifications = preference.EnableNotifications,
-                DefaultBookingDuration = preference.DefaultBookingDuration,
-                TimeFormat = preference.TimeFormat,
-            };
+            return _mapper.Map<PreferenceViewModel>(preference);
         }       
 
         public IEnumerable<PreferenceViewModel> GetAll(int? id = null, int? userId = null)
         {
             var data = _preferenceRepository.GetPreferences()
-            .Where(
-                x => x.Deleted == false
-                && (!id.HasValue || x.Id == id)
-                && (string.IsNullOrEmpty(userId.ToString()) || x.User.FirstName.Contains(userId.ToString()))
-            )
-            .Select(s => new PreferenceViewModel
-            {
-                Id = s.Id,
-                UserId = s.UserId,
-                DarkMode = s.DarkMode,
-                EnableNotifications = s.EnableNotifications,
-                DefaultBookingDuration = s.DefaultBookingDuration,
-                TimeFormat = s.TimeFormat,
-            });
+                .Where(x => !x.Deleted
+                            && (!id.HasValue || x.Id == id)
+                            && (!userId.HasValue || x.UserId == userId.Value))
+                .Select(s => _mapper.Map<PreferenceViewModel>(s));
             return data;
         }
 
         public void UpdatePreference(PreferenceViewModel preference)
-        {            
-            var existingPreferene = _preferenceRepository.GetPreference(preference.Id);            
-            _mapper.Map(preference, existingPreferene);
-            existingPreferene.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            existingPreferene.UpdatedDate = DateTime.Now;
+        {
+            var existingPreference = _preferenceRepository.GetPreference(preference.Id);
+            _mapper.Map(preference, existingPreference);
+            existingPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+            existingPreference.UpdatedDate = DateTime.Now;
 
-            _preferenceRepository.UpdatePreference(existingPreferene);
+            _preferenceRepository.UpdatePreference(existingPreference);
         }
 
         public Preference GetPreference(int userId)
