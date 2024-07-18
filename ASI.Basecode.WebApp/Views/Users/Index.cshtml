@@ -107,6 +107,7 @@
             <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" required>
+                <div id="dateError" class="error-message"></div>
             </div>
 
             <div class="form-group">
@@ -319,6 +320,7 @@
                     <option value="23:30">11:30 PM</option>
                     <option value="23:45">11:45 PM</option>
                 </select>
+                <div id="endTimeError" class="error-message"></div>
             </div>
 
             <div class="form-group full-width">
@@ -562,26 +564,33 @@
             const date = formData.get('date');
 
             // Validate date is not before the current date
-            const currentDate = new Date().toISOString().split('T')[0];
-            if (date < currentDate) {
-                alert('Selected date cannot be in the past.');
+            const currentDate = new Date();
+            const selectedDate = new Date(date);
+            currentDate.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                document.getElementById('dateError').textContent = 'Selected date cannot be in the past.';
+                document.getElementById('dateError').style.display = 'block';
                 return;
             }
 
             // Validate start time is not before the current time if booking is for today
             const currentDateTime = new Date();
             const selectedDateTime = new Date(`${date}T${startTime}`);
-            if (selectedDateTime < currentDateTime) {
+            if (selectedDate.getTime() === currentDate.getTime() && selectedDateTime < currentDateTime) {
                 document.getElementById('startTimeError').textContent = 'Start time cannot be in the past.';
                 document.getElementById('startTimeError').style.display = 'block';
                 return;
             }
 
-            // Validate duration is at least 15 minutes
-            const startTimeInMinutes = convertTimeToMinutes(startTime);
-            const endTimeInMinutes = convertTimeToMinutes(endTime);
-            if (endTimeInMinutes - startTimeInMinutes < 15) {
-                alert('The duration between start time and end time must be at least 15 minutes.');
+            // Validate end time is at least 15 minutes after start time
+            const startTimeDate = new Date(`2000-01-01T${startTime}`);
+            const endTimeDate = new Date(`2000-01-01T${endTime}`);
+            const timeDifference = (endTimeDate - startTimeDate) / (1000 * 60); // difference in minutes
+            if (timeDifference < 15) {
+                document.getElementById('endTimeError').textContent = 'End time must be at least 15 minutes after start time.';
+                document.getElementById('endTimeError').style.display = 'block';
                 return;
             }
 
@@ -690,9 +699,15 @@
             }
         });
 
-        //start time validation
-        document.getElementById('startTime').addEventListener('change', validateStartTime);
-        document.getElementById('date').addEventListener('change', validateStartTime);
+        //start time and end time validation
+        document.getElementById('startTime').addEventListener('change', validateTimes);
+        document.getElementById('endTime').addEventListener('change', validateTimes);
+        document.getElementById('date').addEventListener('change', validateTimes);
+
+        function validateTimes() {
+            validateStartTime();
+            validateEndTime();
+        }
 
         function validateStartTime() {
             const startTimeSelect = document.getElementById('startTime');
@@ -712,6 +727,51 @@
                 errorElement.textContent = '';
                 errorElement.style.display = 'none';
                 startTimeSelect.setCustomValidity('');
+            }
+        }
+
+        function validateEndTime() {
+            const startTimeSelect = document.getElementById('startTime');
+            const endTimeSelect = document.getElementById('endTime');
+            const errorElement = document.getElementById('endTimeError');
+
+            const startTime = new Date(`2000-01-01T${startTimeSelect.value}`);
+            const endTime = new Date(`2000-01-01T${endTimeSelect.value}`);
+
+            const timeDifference = (endTime - startTime) / (1000 * 60); // difference in minutes
+
+            if (timeDifference < 15) {
+                errorElement.textContent = 'End time must be at least 15 minutes after start time.';
+                errorElement.style.display = 'block';
+                endTimeSelect.setCustomValidity('Invalid end time');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                endTimeSelect.setCustomValidity('');
+            }
+        }
+
+        //date validation
+        document.getElementById('date').addEventListener('change', validateDate);
+
+        function validateDate() {
+            const dateInput = document.getElementById('date');
+            const errorElement = document.getElementById('dateError');
+            const selectedDate = new Date(dateInput.value);
+            const currentDate = new Date();
+
+            // Set both dates to midnight for accurate comparison
+            selectedDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                errorElement.textContent = 'Selected date cannot be in the past.';
+                errorElement.style.display = 'block';
+                dateInput.setCustomValidity('Invalid date');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                dateInput.setCustomValidity('');
             }
         }
 
