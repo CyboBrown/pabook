@@ -22,7 +22,7 @@ namespace ASI.Basecode.Services.Interfaces
         void CreatePreference(PreferenceViewModel preference);
         void UpdatePreference(PreferenceViewModel preference);
         void DeletePreference(int id);
-
+        void SavePreference(PreferenceViewModel preference);
 
         Preference GetPreference(int id);
         Task<Preference> GetPreferenceAsync(int id);

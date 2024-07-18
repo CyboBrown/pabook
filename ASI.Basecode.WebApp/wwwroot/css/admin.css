@@ -356,7 +356,7 @@ h1 {
 
 
 
-/* Dark Mode */
+/* Dark Mode 
 body.night {
     background-color: var(--light-bg);
     color: #000;
@@ -409,8 +409,114 @@ body.night {
     background: #5da8ae;
     border-radius: 10px;
     margin-right: 20px;
+}*/
+/*Light*/
+body.light {
+    background-color: var(--light-bg);
+    color: #000;
 }
 
+.outer-container.light {
+    background-color: var(--light-outer);
+}
+
+.main-content.light {
+    background-color: var(--light-main);
+    color: #185D62;
+}
+
+.sidebar.light {
+    background-color: var(--light-bg);
+    color: #000;
+    transition: background-color 0.4s ease;
+}
+
+.sidebar-menu li a.light {
+    color: #000;
+}
+
+.logo-img.light {
+    width: 200px;
+    height: auto;
+}
+
+.notification-section a.light {
+    color: #000;
+}
+
+.signtout a.light {
+    color: #000;
+}
+
+
+.user-details.light .user-name,
+.user-details.light .user-email,
+.notification-section.light a,
+.signout.light a {
+    color: #000;
+}
+
+.profile-pic.light {
+    width: 80px;
+    height: 80px;
+    background: #5da8ae;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+
+body.dark {
+    background-color: var(--dark-bg);
+    color: #fff;
+}
+
+.outer-container.dark {
+    background-color: var(--dark-outer);
+}
+
+.main-content.dark {
+    background-color: var(--dark-main);
+    color: #fff;
+}
+
+.sidebar.dark {
+    background-color: var(--dark-bg);
+    color: #fff;
+    transition: background-color 0.4s ease;
+}
+
+.sidebar-menu li a.dark {
+    color: #fff;
+}
+
+.logo-img.dark {
+    width: 200px;
+    height: auto;
+}
+
+.notification-section a.dark {
+    color: #fff;
+}
+
+.signtout a.dark {
+    color: #fff;
+}
+
+
+.user-details.dark .user-name,
+.user-details.dark .user-email,
+.notification-section.dark a,
+.signout.black a {
+    color: #fff;
+}
+
+.profile-pic.dark {
+    width: 80px;
+    height: 80px;
+    background: #5da8ae;
+    border-radius: 10px;
+    margin-right: 20px;
+}
 /* Toggle Switch */
 .toggle-switch {
     position: relative;

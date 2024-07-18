@@ -137,5 +137,39 @@ namespace ASI.Basecode.Services.Services
         {
             await _preferenceRepository.AddOrUpdatePreferenceAsync(preference);
         }
+        public void SavePreference(PreferenceViewModel preference)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                var existingPreference = _preferenceRepository.GetPreferences().FirstOrDefault(p => p.UserId == userId);
+
+                if (existingPreference != null)
+                {
+                    // Update existing preference
+                    _mapper.Map(preference, existingPreference);
+                    existingPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                    existingPreference.UpdatedDate = DateTime.Now;
+                    _preferenceRepository.UpdatePreference(existingPreference);
+                }
+                else
+                {
+                    // Insert new preference
+                    var newPreference = _mapper.Map<Preference>(preference);
+                    newPreference.UserId = userId;
+                    newPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                    newPreference.UpdatedDate = DateTime.Now;
+                    _preferenceRepository.AddOrUpdatePreference(newPreference);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SavePreference: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // Re-throw the exception to be caught by the controller
+            }
+        }
+
+
     }
 }

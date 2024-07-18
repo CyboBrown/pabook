@@ -19,7 +19,9 @@ using Serilog.Core;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
-    [Authorize]
+    
+    [ApiController]
+    [Route("api/[controller]")]
     public class PreferenceController : ControllerBase<PreferenceController>
     {
         private readonly IPreferenceService _preferenceService;
@@ -44,60 +46,76 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-        /*
-        [HttpPost]
-        public async Task<IActionResult> SavePreferences(PreferenceViewModel model)
+
+        [HttpGet("preferences")]
+        public IActionResult GetPreferences()
         {
-            if (ModelState.IsValid)
-            {
-                var userId = GetCurrentUserId();
-                if (userId.HasValue)
-                {
-                    var preference = await _preferenceService.GetPreferenceAsync(userId.Value);
-                    if (preference == null)
-                    {
-                        preference = _mapper.Map<Preference>(model);
-                        preference.UserId = userId.Value;
-                        preference.UpdatedBy = GetCurrentUserName();
-                        await _preferenceService.CreatePreferenceAsync(preference);
-                    }
-                    else
-                    {
-                        preference.DarkMode = model.DarkMode;
-                        preference.TimeFormat = model.TimeFormat;
-                        preference.UpdatedBy = GetCurrentUserName();
-                        preference.EnableNotifications = model.EnableNotifications;
-                        // Update other properties as needed
-                        await _preferenceService.UpdatePreferenceAsync(preference);
-                    }
-
-                    // Toggle light mode for the entire page
-                    HttpContext.Session.Set("IsDarkMode", BitConverter.GetBytes(model.DarkMode));
-
-                    return RedirectToAction(nameof(Index), "Preference");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "User ID not found or invalid.");
-                }
-            }
-
-            return View("Index", model);
+            var preferences = _preferenceService.GetAllPreferences().ToList();
+            return Ok(preferences);
         }
 
-        private int? GetCurrentUserId()
+        [HttpGet("myPreferences")]
+        public IActionResult GetPreferencesByUser()
         {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
-            if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return null;
+            var preferences = _preferenceService.GetUserPreferences().ToList();
+            return Ok(preferences);
         }
 
-        private string GetCurrentUserName()
+        [HttpGet("{id}")]
+        public IActionResult GetPreference(int id)
         {
-            return HttpContext.User.Identity.Name;
-        }*/
+            var preference = _preferenceService.GetPreferenceById(id);
+            if (preference == null)
+            {
+                return NotFound();
+            }
+            return Ok(preference);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdatePreference(int id, [FromBody] PreferenceViewModel preference)
+        {
+            if (id != preference.Id)
+            {
+                return BadRequest(new { success = false, message = "Preference ID mismatch." });
+            }
+
+            try
+            {
+                _preferenceService.UpdatePreference(preference);
+                return Ok(new { success = true, message = "Settings updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error updating setting");
+                return BadRequest(new { success = false, message = "An error occurred while updating. Please try again.", error = ex.Message });
+            }
+        }
+
+        [HttpPost("save")]
+        public IActionResult SavePreferences([FromBody] PreferenceViewModel preference)
+        {
+            if (preference == null)
+            {
+                _logger.LogWarning("SavePreferences called with null preference.");
+                return BadRequest(new { success = false, message = "Invalid preference data." });
+            }
+
+            try
+            {
+                _logger.LogInformation("Saving preferences for user: {UserId}", preference.UserId);
+                _preferenceService.SavePreference(preference);
+                _logger.LogInformation("Preferences saved successfully for user: {UserId}", preference.UserId);
+                return Ok(new { success = true, message = "Preferences saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving preferences for user: {UserId}", preference.UserId);
+                return BadRequest(new { success = false, message = "An error occurred while saving preferences. Please try again.", error = ex.Message });
+            }
+        }
+
+
     }
 }
