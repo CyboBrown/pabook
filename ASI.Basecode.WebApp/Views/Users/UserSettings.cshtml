@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
+@{
     ViewData["Title"] = "User Settings";
 }
 
@@ -28,7 +29,7 @@
 
                     <div class="setting">
                         <span>Notification</span>
-                        <select class="status" name="EnableNotifications">
+                        <select class="time-select" name="EnableNotifications">
                             <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
                             <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
                         </select>
@@ -43,15 +44,14 @@
                     <div class="setting">
                         <span>Default Booking Duration</span>
                         <select class="time-select" name="DefaultBookingDuration">
-                            <option value="30 mins" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
-                            <option value="60 mins" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
-                            <option value="90 mins" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
+                            <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
+                            <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
+                            <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
                         </select>
                     </div>
                 </div>
                 <div class="action-buttons">
                     <button type="submit" class="save-button">Save Changes</button>
-                    <button type="button" class="cancel-button">Cancel</button>
                 </div>
             </div>
         </div>
@@ -71,7 +71,6 @@
             document.querySelector('.user-details').classList.toggle('night', darkMode.checked);
             document.querySelector('.notification-section').classList.toggle('night', darkMode.checked);
             document.querySelector('.signout').classList.toggle('night', darkMode.checked);
-            document.querySelector('.logo-img').classList.toggle('night', darkMode.checked);
 
 
         });

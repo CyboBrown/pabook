@@ -298,7 +298,41 @@ h1 {
     border-radius: 5px;
     color: #fff;
 }
+/*
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    border-radius: 25px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #fff;
+    margin-top: 100px;
+}
 
+
+
+.save-button {
+    display: block;
+    background-color: #4D869C;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    z-index: 100;
+    border-radius: 20px;
+}
+.pulse {
+    animation: pulse 1.5s infinite;
+}
+
+.action-buttons:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}*/
 .action-buttons {
     display: flex;
     justify-content: flex-end;
@@ -320,10 +354,6 @@ h1 {
     margin-right: 10px;
 }
 
-.cancel-button {
-    background-color: #6c757d;
-    color: white;
-}
 
 
 /* Dark Mode */

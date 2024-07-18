@@ -102,7 +102,7 @@
 
                     <div class="setting">
                         <span>Notification</span>
-                        <select class="status" name="EnableNotifications">
+                        <select class="time-select" name="EnableNotifications">
                             <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
                             <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
                         </select>
@@ -124,8 +124,8 @@
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <button type="submit" class="save-button">Save Changes</button>
-                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit"  class="save-button">Save Changes</button>
+                    
                 </div>
             </div>
         </div>

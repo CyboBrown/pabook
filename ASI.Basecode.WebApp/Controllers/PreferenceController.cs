@@ -44,7 +44,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-
+        /*
         [HttpPost]
         public async Task<IActionResult> SavePreferences(PreferenceViewModel model)
         {
@@ -98,6 +98,6 @@ namespace ASI.Basecode.WebApp.Controllers
         private string GetCurrentUserName()
         {
             return HttpContext.User.Identity.Name;
-        }
+        }*/
     }
 }
