@@ -24,7 +24,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public PreferenceViewModel(Preference preference)
         {
             Id = preference.Id;
-            UserId = preference.UserId;
+            UserId = preference.Id;
             DarkMode = preference.DarkMode;
             TimeFormat = preference.TimeFormat;
             DefaultBookingDuration = preference.DefaultBookingDuration;
