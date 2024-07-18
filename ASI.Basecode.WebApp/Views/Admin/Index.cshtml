@@ -71,10 +71,16 @@
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
-                    <div class="flex space-x-2">
-                        <button id="filterUsersButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                    <div id="dropdown" class="flex space-x-2">
+                        <button id="filterUsersButton" class="px-4 py-2 text-white rounded-md flex items-center justify-center transition duration-300 ease-in-out" onclick="toggleDropdown()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
+                        <div id="roleDropdown" class="dropdown-content">
+                            <a onclick="filterByRole(0)">Admins</a>
+                            <a onclick="filterByRole(1)">Managers</a>
+                            <a onclick="filterByRole(2)">Users</a>
+                            <a onclick="showAll()">Show All</a>
+                        </div>
                         <button id="addUserButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
                         </button>
@@ -998,24 +1004,35 @@
         }
     }
 
-    function searchFilterBookings() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("searchBookingsBar");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("bookingsTable");
-        tr = table.getElementsByTagName("tr");
+    function toggleDropdown() {
+        document.getElementById('roleDropdown').classList.toggle('show');
+    }
 
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
+    function filterByRole(role) {
+        const filter = role.toString();
+        const table = document.getElementById('userTable');
+        const tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName('td')[4];
             if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
+                const txtValue = td.textContent || td.innerText;
+                if (txtValue === filter) {
+                    tr[i].style.display = '';
                 } else {
-                    tr[i].style.display = "none";
+                    tr[i].style.display = 'none';
                 }
             }
         }
+        document.getElementById('roleDropdown').classList.remove('show');
+    }
+
+    function showAll() {
+        const table = document.getElementById('userTable');
+        const tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            tr[i].style.display = '';
+        }
+        document.getElementById('roleDropdown').classList.remove('show');
     }
  </script>
 
@@ -1645,6 +1662,35 @@
 
         #searchUserBar {
             color: black;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                cursor: pointer;
+            }
+
+                .dropdown-content a:hover {
+                    background-color: #f1f1f1;
+                }
+
+        .show {
+            display: block;
+        }
+
+        #roleDropdown {
+            color:black;
         }
 
     </style>
