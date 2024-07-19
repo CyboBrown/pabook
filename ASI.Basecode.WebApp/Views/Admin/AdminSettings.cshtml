@@ -199,6 +199,8 @@
         }
     </script>
 </body>*@
+
+
 @model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
 @{
     ViewData["Title"] = "Admin Settings";
@@ -247,31 +249,7 @@
                                 <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
                             </select>
                         </div>
-                    </div>
-                    @*
-                    <div class="setting">
-                        <span>Notification</span>
-                        <select class="time-select" name="EnableNotifications">
-                            <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
-                            <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
-                        </select>
-                    </div>
-                    <div class="setting">
-                        <span>Default Time</span>
-                        <select class="time-select" name="TimeFormat">
-                            <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
-                            <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
-                        </select>
-                    </div>
-                    <div class="setting">
-                        <span>Default Booking Duration</span>
-                        <select class="time-select" name="DefaultBookingDuration">
-                            <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
-                            <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
-                            <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
-                        </select>
-                    </div>
-                    *@
+                    </div>                   
                 </div>
                 <div class="action-buttons">
                     <button type="submit" class="save-button">Save Changes</button>
@@ -413,7 +391,7 @@
         function savePreferences() {
             const preferences = {
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
-                enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
+                //enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
                 timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
                 defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
@@ -446,21 +424,7 @@
             sessionStorage.setItem('userPreferences', JSON.stringify([preferences]));
 
             console.log('Preferences updated in UI and session storage:', preferences);
-        }
-        /*
-        document.addEventListener("DOMContentLoaded", function () {
-            function adjustFontSize() {
-                const zoomLevel = Math.round(window.devicePixelRatio * 100);
-                const rootFontSize = 16 * window.devicePixelRatio;
-                document.documentElement.style.fontSize = `${rootFontSize}px`;
-
-                const weight = zoomLevel > 100 ? "bold" : "normal";
-                document.body.style.fontWeight = weight;
-            }
-
-            window.addEventListener("resize", adjustFontSize);
-            adjustFontSize(); // Initial call
-        });*/
+        }        
         document.addEventListener("DOMContentLoaded", function () {
             function adjustFontSize() {
                 const zoomLevel = Math.round(window.devicePixelRatio * 100);
@@ -484,4 +448,6 @@
 
     </script>
 </body>
+
+
 
