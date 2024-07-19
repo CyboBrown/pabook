@@ -936,6 +936,7 @@
         }
 
         function showBookingDetails(bookingId) {
+            recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
@@ -950,7 +951,7 @@
                             <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
                             <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
                             ${booking.recurring ? `
-                                <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                                <p class="mb-2"><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
                                 <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
                             ` : ''}
                         `;

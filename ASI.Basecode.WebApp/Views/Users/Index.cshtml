@@ -377,14 +377,7 @@
 
         //this is the function for 'view'
         function showBookingDetails(bookingId) {
-            function getRecurrenceTypeName(recurrenceId) {
-                result = "Error";
-                fetch(`/api/Booking/recurrence/${recurrenceId}`)
-                    .then(response => response.json())
-                    .then(data => result = data)
-                    .catch(error => console.error('Error getting recurrence type name:', error));
-                return result;
-            }
+            recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
@@ -398,7 +391,7 @@
                             <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
                             <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
                             ${booking.recurring ? `
-                                        <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
+                                        <p class="mb-2"><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
                                 <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
                             ` : ''}
                         `;
