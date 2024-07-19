@@ -1,0 +1,149 @@
+﻿:root {
+    --dark-bg: #000;
+    --dark-main: #185D62;
+    --dark-outer: #fff;
+    --dark-text: #fff;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+    transition: background-color 0.4s ease;
+}
+
+.outer-container {
+    background-color: var(--dark-outer);
+    color: var(--dark-text);
+    transition: background-color 0.4s ease;
+}
+
+.main-content {
+    background-color: var(--dark-main);
+    color: var(--dark-text);
+    transition: background-color 0.4s ease;
+}
+
+.sidebar {
+    transition: background-color 0.4s ease;
+    background-color: #000;
+    color: #fff;
+}
+
+.sidebar-menu li a {
+    color: #fff;
+}
+
+    .sidebar-menu li a:hover,
+    .sidebar-menu li.active a {
+        background-color: #333;
+    }
+
+.sidebar-menu li.active a {
+    background-color: #1BC7D2;
+    color: #000;
+    font-weight: bold;
+}
+
+.user-details .user-name {
+    color: #fff;
+}
+
+.user-details .user-email {
+    color: #bbb;
+}
+
+.notification-section a {
+    color: #fff;
+}
+
+    .notification-section a:hover {
+        color: blue;
+    }
+
+.signout a {
+    color: #fff;
+}
+
+    .signout a:hover {
+        color: red;
+    }
+
+.save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.profile-pic {
+    background: #fff;
+}
+
+.setting {
+    border-bottom: 1px solid #ccc;
+}
+
+.time-select {
+    color: #fff;
+}
+
+ /*Additional dark mode styles can be added here */
+
+
+/*Dark Mode
+body.dark {
+    background-color: var(--dark-bg);
+    color: #fff;
+}
+
+.outer-container.dark {
+    background-color: var(--dark-outer);
+}
+
+.main-content.dark {
+    background-color: var(--dark-main);
+    color: #fff;
+}
+
+.sidebar.dark {
+    background-color: var(--dark-bg);
+    color: #fff;
+    transition: background-color 0.4s ease;
+}
+
+.sidebar-menu li a.dark {
+    color: #fff;
+}
+
+.logo-img.dark {
+    width: 200px;
+    height: auto;
+}
+
+.notification-section a.dark {
+    color: #fff;
+}
+
+.signtout a.dark {
+    color: #fff;
+}
+
+
+.user-details.dark .user-name,
+.user-details.dark .user-email,
+.notification-section.dark a,
+.signout.dark a {
+    color: #fff;
+}
+
+.profile-pic.dark {
+    width: 80px;
+    height: 80px;
+    background: #5da8ae;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+   /* */

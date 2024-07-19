@@ -1,83 +1,11 @@
-﻿@*
-@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
-@{
-    ViewData["Title"] = "Admin Settings";
-}
-<link rel="stylesheet" href="~/css/admin.css" />
-
-<form asp-action="SavePreferences" method="post">
-    <div class="outer-container">
-        <div class="main-content">
-            <h1>Settings and Preferences</h1>
-            <div class="profile-section">
-                <div class="profile-pic"></div>
-                <div class="profile-info">
-                    <span class="profile-name">ADMIN USER</span>
-                    <span class="profile-status">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <div class="setting">
-                    <span>Switch to lightmode</span>
-                    <label id="dark-change" class="toggle-switch">
-                        <input type="checkbox" name="DarkMode" value="true">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <div class="setting">
-                    <span>Notification</span>
-                    <span class="status">On</span>
-                </div>
-                <div class="setting">
-                    <span>Default Time</span>
-                    <select class="time-select" name="TimeFormat">
-                        <option value="24">24 - hour</option>
-                        <option value="12">12 - hour</option>
-                    </select>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <button type="submit" class="save-button">Save Changes</button>
-                <button type="button" class="cancel-button">Cancel</button>
-            </div>
-        </div>
-    </div>
-</form>
-
-<script>
-    var darkMode = document.getElementById('dark-change');
-    darkMode.addEventListener('change', function () {
-        document.body.classList.toggle('night', this.checked);
-        document.querySelector('.outer-container').classList.toggle('night', this.checked);
-        document.querySelector('.main-content').classList.toggle('night', this.checked);
-        document.querySelector('.profile-pic').classList.toggle('night', this.checked);
-        document.querySelector('.sidebar').classList.toggle('night', this.checked);
-        document.querySelectorAll('.sidebar-menu li a').forEach(function (link) {
-            link.classList.toggle('night', darkMode.checked);
-        });
-        document.querySelector('.user-details').classList.toggle('night', darkMode.checked);
-        document.querySelector('.notification-section').classList.toggle('night', darkMode.checked);
-        document.querySelector('.signout').classList.toggle('night', darkMode.checked);
-        document.querySelector('.logo-img').classList.toggle('night', darkMode.checked);
-
-        // Toggle logo
-        if (content.classList.contains('night')) {
-            logoImg.src = '/img/logo-light-horizontal.png';
-        } else {
-            logoImg.src = '/img/logo-dark-horizontal.png';
-        }
-    });
-</script>*@
-
-@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
+﻿@*@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
 @{
     ViewData["Title"] = "Admin Settings";
 }
 
-<body class="@(@Model?.DarkMode ?? false ? "dark" : "light")">
-    <link rel="stylesheet" href="~/css/admin.css" id="theme-style" />
+<body class="@((Model != null && Model.DarkMode) ? "dark" : "light")">
+    <link rel="stylesheet" href="~/css/admin.css"/>
+    <link rel="stylesheet" href="~/css/admindark.css" id="theme-style" />
 
     <form id="preferencesForm" method="post">
         <div class="outer-container">
@@ -95,7 +23,7 @@
                     <div class="setting">
                         <span>Switch to light mode</span>
                         <label id="dark-change" class="toggle-switch">
-                            <input type="checkbox" name="DarkMode" value="true">
+                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -103,25 +31,26 @@
                     <div class="setting">
                         <span>Notification</span>
                         <select class="time-select" name="EnableNotifications">
-                            <option value="true">On</option>
-                            <option value="false">Off</option>
+                            <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
+                            <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
                         </select>
                     </div>
                     <div class="setting">
                         <span>Default Time</span>
                         <select class="time-select" name="TimeFormat">
-                            <option value="24">24 - hour</option>
-                            <option value="12">12 - hour</option>
+                            <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
+                            <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
                         </select>
                     </div>
                     <div class="setting">
                         <span>Default Booking Duration</span>
                         <select class="time-select" name="DefaultBookingDuration">
-                            <option value="30">30 - minutes</option>
-                            <option value="60">60 - minutes</option>
-                            <option value="90">90 - minutes</option>
+                            <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
+                            <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
+                            <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
                         </select>
                     </div>
+
                 </div>
                 <div class="action-buttons">
                     <button type="submit" class="save-button">Save Changes</button>
@@ -132,31 +61,89 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const preferences = JSON.parse(sessionStorage.getItem('userPreferences'));
+            if (preferences) {
+                const theme = preferences.darkMode ? 'admindark.css' : 'admin.css';
+                loadTheme(theme);
+            } else {
+                fetchPreferences();
+            }
+        });
+
+        
+        function fetchPreferences() {
             fetch('/api/Preference/myPreferences')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    if (data) {
+                    console.log('Fetched preferences data:', data);
+
+                    if (Array.isArray(data) && data.length === 0) {
+                        console.log('No preferences found. Setting default values or handling empty state.');
+                        
+                    } else if (typeof data === 'object') {
                         // Update UI based on fetched preferences
                         document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
-                        document.querySelector('select[name="EnableNotifications"]').value = data.enableNotifications;
-                        document.querySelector('select[name="TimeFormat"]').value = data.timeFormat;
-                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration;
-
-                        // Apply theme
-                        const body = document.body;
-                        if (data.darkMode) {
-                            body.classList.add('dark');
-                            body.classList.remove('light');
-                            loadTheme('admin.css');
-                        } else {
-                            body.classList.add('light');
-                            body.classList.remove('dark');
-                            loadTheme('admin.css');
-                        }
+                        document.querySelector('select[name="EnableNotifications"]').checked = data.enableNotifications;
+                        document.querySelector('select[name="TimeFormat"]').checked = data.timeFormat;
+                        document.querySelector('select[name="DefaultBookingDuration"]').checked = data.defaultBookingDuration;
+                        
+                        // Store preferences in session storage
+                        sessionStorage.setItem('userPreferences', JSON.stringify(data));
+                        
+                        // Apply theme based on preferences
+                        applyTheme(data.darkMode);
+                    } else {
+                        console.error('Unexpected data format:', data);
                     }
                 })
                 .catch(error => console.error('Error fetching preferences:', error));
-        });
+        }
+        function applyTheme(isDarkMode) {
+            const body = document.body;
+            if (isDarkMode) {
+                body.classList.add('dark');
+                body.classList.remove('light');
+                loadTheme('admindark.css'); // Assuming you have a separate CSS file for dark mode
+            } else {
+                body.classList.add('light');
+                body.classList.remove('dark');
+                loadTheme('adminlight.css'); // Assuming you have a separate CSS file for light mode
+            }
+        }
+
+        function updateUIFromPreferences(preferences) {
+            console.log('Updating UI with preferences:', preferences);
+
+            // Assuming preferences is an array and we are interested in the first element
+            const preference = preferences[0];
+
+            const darkModeInput = document.querySelector('input[name="DarkMode"]');
+            if (darkModeInput) {
+                darkModeInput.checked = preferences.darkMode;
+            }
+
+            const enableNotificationsSelect = document.querySelector('select[name="EnableNotifications"]');
+            if (enableNotificationsSelect) {
+                enableNotificationsSelect.checked = preferences.enableNotifications;
+            }
+
+            const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
+            if (timeFormatSelect) {
+                timeFormatSelect.checked = preferences.timeFormat;
+            }
+
+            const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
+            if (defaultBookingDurationSelect) {
+                defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
+            }
+
+            applyTheme(preferences.darkMode);
+        }
 
         function loadTheme(themeName) {
             const themeStyle = document.getElementById('theme-style');
@@ -167,12 +154,18 @@
             }
         }
 
+        // Function to handle form submission
+        document.getElementById('preferencesForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            savePreferences(); // Call the function to save preferences
+        });
+
         function savePreferences() {
             const preferences = {
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
-                enableNotifications: document.querySelector('select[name="EnableNotifications"]').value,
-                timeFormat: document.querySelector('select[name="TimeFormat"]').value,
-                defaultBookingDuration: document.querySelector('select[name="DefaultBookingDuration"]').value
+                enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
+                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
+                defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
 
             fetch('/api/Preference/save', {
@@ -186,6 +179,7 @@
                 .then(data => {
                     if (data.success) {
                         console.log('Preferences saved successfully.');
+                        applyTheme(preferences.darkMode);
                     } else {
                         console.error('Failed to save preferences:', data.message);
                     }
@@ -193,27 +187,248 @@
                 .catch(error => console.error('Error saving preferences:', error));
         }
 
-        const toggleSwitch = document.querySelector('.toggle-switch input[type="checkbox"]');
-        toggleSwitch.addEventListener('change', function () {
-            const isChecked = this.checked;
-            const body = document.body;
+        function updateUIAndSessionFromPreferences(preferences) {
+            // Update UI based on preferences
+            updateUIFromPreferences([preferences]);
 
-            if (isChecked) {
+            // Store preferences in session storage
+            sessionStorage.setItem('userPreferences', JSON.stringify([preferences]));
+
+            console.log('Preferences updated in UI and session storage:', preferences);
+        }
+    </script>
+</body>*@
+@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
+@{
+    ViewData["Title"] = "Admin Settings";
+}
+
+<body class="@((Model != null && Model.DarkMode) ? "light" : "dark")">
+    <link rel="stylesheet" href="~/css/admin.css"/>
+    <link rel="stylesheet" href="~/css/admindark.css" id="theme-style" />
+
+    <form id="preferencesForm" method="post">
+        <div class="message-container" id="messageContainer"></div> <!-- Message container -->
+        <div class="outer-container">
+            <div class="main-content">
+                <h1>Account Settings</h1>
+                <div class="profile-section">
+                    <div class="profile-pic"></div>
+                    <div class="profile-info">
+                        <span class="profile-name">ADMIN USER</span>
+                        <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="setting-group">
+                        <h2>Preferences</h2>
+                        <div class="setting">
+                            <span>Switch to light mode</span>
+                            <label id="dark-change" class="toggle-switch">
+                                <input type="checkbox" name="DarkMode" value="false" @(Model?.DarkMode ?? true ? "checked" : "")>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <h2>Notifications</h2>
+                        <div class="setting">
+                            <span>Notification</span>
+                            <select class="time-select" name="EnableNotifications">
+                                <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
+                                <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h2>Booking Duration</h2>
+                        <div class="setting">
+                            <span>Default Time</span>
+                            <select class="time-select" name="TimeFormat">
+                                <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
+                                <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
+                            </select>
+                        </div>
+                        <div class="setting">
+                            <span>Default Booking Duration</span>
+                            <select class="time-select" name="DefaultBookingDuration">
+                                <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
+                                <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
+                                <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
+                            </select>
+                        </div>
+                    </div>
+                    @*
+                    <div class="setting">
+                        <span>Notification</span>
+                        <select class="time-select" name="EnableNotifications">
+                            <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
+                            <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
+                        </select>
+                    </div>
+                    <div class="setting">
+                        <span>Default Time</span>
+                        <select class="time-select" name="TimeFormat">
+                            <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
+                            <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
+                        </select>
+                    </div>
+                    <div class="setting">
+                        <span>Default Booking Duration</span>
+                        <select class="time-select" name="DefaultBookingDuration">
+                            <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
+                            <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
+                            <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
+                        </select>
+                    </div>
+                    *@
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="save-button">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        //Fetch and preference sa user from the db
+        document.addEventListener('DOMContentLoaded', function () {
+            const preferences = JSON.parse(sessionStorage.getItem('userPreferences'));
+            if (preferences) {
+                const theme = preferences.darkMode ? 'light' : 'dark';
+                document.body.classList.add(theme);
+                loadTheme(theme);
+            } else {
+                fetchPreferences();
+            }
+        });
+        
+        function fetchPreferences() {
+            fetch('/api/Preference/myPreferences')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fetched preferences data:', data);
+
+                    if (Array.isArray(data) && data.length === 0) {
+                        console.log('No preferences found. Setting default values or handling empty state.');
+                        
+                    } else if (typeof data === 'object') {
+                        // Update UI based on fetched preferences
+                        document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
+                        document.querySelector('select[name="EnableNotifications"]').checked = data.enableNotifications;
+                        document.querySelector('select[name="TimeFormat"]').checked = data.timeFormat;
+                        document.querySelector('select[name="DefaultBookingDuration"]').checked = data.defaultBookingDuration;
+                        document.body.classList.add(theme);
+                        // Store preferences in session storage
+                        sessionStorage.setItem('userPreferences', JSON.stringify(data));
+                        
+                        // Apply theme based on preferences
+                        applyTheme(data.darkMode);
+                    } else {
+                        console.error('Unexpected data format:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching preferences:', error));
+        }
+        
+        const darkModeToggle = document.querySelector('#dark-change input');
+        darkModeToggle.addEventListener('change', function () {
+            const theme = this.checked ? 'light' : 'dark';
+            document.body.className = theme;
+            const preferences = JSON.parse(sessionStorage.getItem('userPreferences')) || {};
+            preferences.darkMode = this.checked;
+            sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
+            // Update server-side preference as well
+            fetch('/api/Preference/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preferences)
+            });
+        });
+        //DarkMode and LightMode
+        function applyTheme(isDarkMode) {
+            const body = document.body;
+            if (isDarkMode) {
                 body.classList.add('light');
                 body.classList.remove('dark');
-                loadTheme('admin.css');
+                loadTheme('adminlight.css'); //CSS file for light mode 
             } else {
                 body.classList.add('dark');
                 body.classList.remove('light');
-                loadTheme('admin.css');
+                loadTheme('admin.css'); //CSS file for light mode
+            }
+        }
+
+        function loadTheme(themeName) {
+            const themeStyle = document.getElementById('theme-style');
+            if (themeStyle) {
+                themeStyle.setAttribute('href', `/css/${themeName}`);
+            } else {
+                console.error('Theme style link element not found');
+            }
+        }
+
+        function displaySuccessMessage() {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.textContent = 'Changes Saved!';
+            messageContainer.style.display = 'block';
+
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateUIFromPreferences(preferences) {
+            console.log('Updating UI with preferences:', preferences);
+
+            // Assuming preferences is an array and we are interested in the first element
+            const preference = preferences[0];
+
+            const darkModeInput = document.querySelector('input[name="DarkMode"]');
+            if (darkModeInput) {
+                darkModeInput.checked = preferences.darkMode;
             }
 
-            updatePreference('DarkMode', isChecked);
-        });
+            const enableNotificationsSelect = document.querySelector('select[name="EnableNotifications"]');
+            if (enableNotificationsSelect) {
+                enableNotificationsSelect.checked = preferences.enableNotifications;
+            }
 
-        function updatePreference(preferenceName, value) {
-            const preferences = {};
-            preferences[preferenceName] = value;
+            const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
+            if (timeFormatSelect) {
+                timeFormatSelect.checked = preferences.timeFormat;
+            }
+
+            const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
+            if (defaultBookingDurationSelect) {
+                defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
+            }
+
+            applyTheme(preferences.darkMode);
+        }
+       
+        // Function to handle form submission
+        document.getElementById('preferencesForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            savePreferences(); 
+        });
+        //Save Changes Button nga function
+        function savePreferences() {
+            const preferences = {
+                darkMode: document.querySelector('input[name="DarkMode"]').checked,
+                enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
+                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
+                defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
+            };
 
             fetch('/api/Preference/save', {
                 method: 'POST',
@@ -225,34 +440,60 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log(`Preference ${preferenceName} updated successfully.`);
+                        console.log('Preferences saved successfully.');
+                        applyTheme(preferences.darkMode);
+                        displaySuccessMessage();
                     } else {
-                        console.error(`Failed to update preference ${preferenceName}.`);
+                        console.error('Failed to save preferences:', data.message);
                     }
                 })
-                .catch(error => console.error('Error updating preference:', error));
+                .catch(error => console.error('Error saving preferences:', error));
         }
-        const payload = {
-            userId: currentUser.id, // Ensure this is correctly set
-            darkMode: true // Or other preference properties
-        };
 
-        fetch('https://localhost:63706/api/Preference/save', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Preferences saved successfully');
-                } else {
-                    console.error('Failed to save preferences:', data.message);
+        function updateUIAndSessionFromPreferences(preferences) {
+            // Update UI based on preferences
+            updateUIFromPreferences([preferences]);
+
+            // Store preferences in session storage
+            sessionStorage.setItem('userPreferences', JSON.stringify([preferences]));
+
+            console.log('Preferences updated in UI and session storage:', preferences);
+        }
+        /*
+        document.addEventListener("DOMContentLoaded", function () {
+            function adjustFontSize() {
+                const zoomLevel = Math.round(window.devicePixelRatio * 100);
+                const rootFontSize = 16 * window.devicePixelRatio;
+                document.documentElement.style.fontSize = `${rootFontSize}px`;
+
+                const weight = zoomLevel > 100 ? "bold" : "normal";
+                document.body.style.fontWeight = weight;
+            }
+
+            window.addEventListener("resize", adjustFontSize);
+            adjustFontSize(); // Initial call
+        });*/
+        document.addEventListener("DOMContentLoaded", function () {
+            function adjustFontSize() {
+                const zoomLevel = Math.round(window.devicePixelRatio * 100);
+                const rootFontSize = 16 * window.devicePixelRatio;
+                document.documentElement.style.fontSize = `${rootFontSize}px`;
+
+                const weight = zoomLevel > 100 ? "bold" : "normal";
+                document.body.style.fontWeight = weight;
+
+                // Exclude sidebar from being resizable
+                const sidebar = document.querySelector(".sidebar");
+                if (sidebar) {
+                    sidebar.style.width = "265px"; // Ensure the sidebar width stays fixed
+                    sidebar.style.fontSize = "initial"; // Reset sidebar font size
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            }
+
+            window.addEventListener("resize", adjustFontSize);
+            adjustFontSize(); // Initial call
+        });
 
     </script>
 </body>
+

@@ -76,3 +76,188 @@
         });
     </script>
 </body>
+
+@*@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
+@{
+    ViewData["Title"] = "Admin Settings";
+}
+
+<body class="@(@Model?.DarkMode ?? false ? "dark" : "light")">
+    <link rel="stylesheet" href="~/css/admin.css" id="theme-style" />
+
+    <form id="preferencesForm" method="post">
+        <div class="outer-container">
+            <div class="main-content">
+                <h1>Settings and Preferences</h1>
+                <div class="profile-section">
+                    <div class="profile-pic"></div>
+                    <div class="profile-info">
+                        <span class="profile-name">ADMIN USER</span>
+                        <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="setting">
+                        <span>Switch to light mode</span>
+                        <label id="dark-change" class="toggle-switch">
+                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting">
+                        <span>Notification</span>
+                        <select class="time-select" name="EnableNotifications">
+                            <option value="true" selected="@(Model?.EnableNotifications == true ? "selected" : null)">On</option>
+                            <option value="false" selected="@(Model?.EnableNotifications == false ? "selected" : null)">Off</option>
+                        </select>
+                    </div>
+                    <div class="setting">
+                        <span>Default Time</span>
+                        <select class="time-select" name="TimeFormat">
+                            <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
+                            <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
+                        </select>
+                    </div>
+                    <div class="setting">
+                        <span>Default Booking Duration</span>
+                        <select class="time-select" name="DefaultBookingDuration">
+                            <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
+                            <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
+                            <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="save-button">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchPreferences();
+            /*fetch('/api/Preference/myPreferences')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fetched preferences data:', data);
+
+                    if (Array.isArray(data) && data.length === 0) {
+                        console.log('No preferences found. Setting default values or handling empty state.');
+                        // Handle the case where no preferences are found
+                        // For example, set default values or notify the user
+                    } else if (typeof data === 'object') {
+                        // Update UI based on fetched preferences
+                        document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
+                        document.querySelector('select[name="EnableNotifications"]').value = data.enableNotifications.toString();
+                        document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString();
+                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString();
+
+                        const body = document.body;
+                        if (data.darkMode) {
+                            body.classList.add('dark');
+                            body.classList.remove('light');
+                            loadTheme('admin.css');
+                        } else {
+                            body.classList.add('light');
+                            body.classList.remove('dark');
+                            loadTheme('admin.css');
+                        }
+                    } else {
+                        console.error('Unexpected data format:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching preferences:', error));
+
+        });*/
+            // Function to fetch preferences
+            function fetchPreferences() {
+                fetch('/api/Preference/myPreferences')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Fetched preferences data:', data);
+
+                        if (Array.isArray(data) && data.length === 0) {
+                            console.log('No preferences found. Setting default values or handling empty state.');
+                            // Handle the case where no preferences are found
+                            // For example, set default values or notify the user
+                        } else if (typeof data === 'object') {
+                            // Update UI based on fetched preferences
+                            document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
+                            document.querySelector('select[name="EnableNotifications"]').value = data.enableNotifications.toString();
+                            document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString();
+                            document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString();
+
+                            const body = document.body;
+                            if (data.darkMode) {
+                                body.classList.add('dark');
+                                body.classList.remove('light');
+                                loadTheme('admin.css');
+                            } else {
+                                body.classList.add('light');
+                                body.classList.remove('dark');
+                                loadTheme('admin.css');
+                            }
+                        } else {
+                            console.error('Unexpected data format:', data);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching preferences:', error));
+            }
+
+        function loadTheme(themeName) {
+            const themeStyle = document.getElementById('theme-style');
+            if (themeStyle) {
+                themeStyle.setAttribute('href', `/css/${themeName}`);
+            } else {
+                console.error('Theme style link element not found');
+            }
+        }
+
+        // Function to handle form submission
+        document.getElementById('preferencesForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            savePreferences(); // Call the function to save preferences
+        });
+
+        function savePreferences() {
+            const preferences = {
+                darkMode: document.querySelector('input[name="DarkMode"]').checked,
+                enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
+                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
+                defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
+            };
+
+            fetch('/api/Preference/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preferences)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Preferences saved successfully.');
+                    } else {
+                        console.error('Failed to save preferences:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error saving preferences:', error));
+        }
+    </script>
+</body> TARUNG NANI DI LANG MUFETCH
+*@

@@ -14,8 +14,10 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class PreferenceRepository : BaseRepository, IPreferenceRepository
     {
-        public PreferenceRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly AsiBasecodeDbContext _context;
+        public PreferenceRepository(AsiBasecodeDbContext context, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
+            _context = context; 
         }
 
         public void AddOrUpdatePreference(Preference preference)
@@ -79,6 +81,19 @@ namespace ASI.Basecode.Data.Repositories
             return await GetDbSet<Preference>().FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public void CreatePreference(Preference preference)
+        {
+            _context.Preferences.Add(preference);
+            UnitOfWork.SaveChanges();
+        }
+
+
+        public async Task<bool> PreferenceExistsAsync(int id)
+        {
+            return await _context.Preferences
+                                 .AnyAsync(p => p.Id == id && !p.Deleted);
+        }
+
         public async Task UpdatePreferenceAsync(Preference preference)
         {
             if (preference == null)
@@ -87,9 +102,9 @@ namespace ASI.Basecode.Data.Repositories
             SetEntityState(preference, EntityState.Modified);
             await UnitOfWork.SaveChangesAsync();
         }
-        public Preference GetPreferenceByUserId(int userId)
+        public Preference GetPreferenceByUserId(int id)
         {
-            return GetDbSet<Preference>().FirstOrDefault(p => p.Id == userId);
+            return GetDbSet<Preference>().FirstOrDefault(p => p.Id == id);
         }
         public async Task<Preference> GetPreferenceByUserIdAsync(int userId)
         {

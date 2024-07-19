@@ -59,8 +59,8 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var userId = GetCurrentUserId();
-                var preferences = _preferenceRepository.GetPreferences().Where(p => p.Id == userId).ToList();
+                var id = GetCurrentUserId();
+                var preferences = _preferenceRepository.GetPreferences().Where(p => p.Id == id).ToList();
                 var preferenceViewModels = _mapper.Map<List<PreferenceViewModel>>(preferences);
                 return preferenceViewModels;
             }
@@ -78,7 +78,11 @@ namespace ASI.Basecode.Services.Services
             preference.Id = GetCurrentUserId();
             preference.UpdatedDate = DateTime.Now;
 
-            _preferenceRepository.AddOrUpdatePreference(preference);
+            _preferenceRepository.CreatePreference(preference);
+        }
+        public async Task<bool> PreferenceExistsAsync(int userId)
+        {
+            return await _preferenceRepository.PreferenceExistsAsync(userId);
         }
         private int GetCurrentUserId()
         {
@@ -93,13 +97,11 @@ namespace ASI.Basecode.Services.Services
             return _mapper.Map<PreferenceViewModel>(preference);
         }       
 
-        public IEnumerable<PreferenceViewModel> GetAll(int? id = null, int? userId = null)
+        public IEnumerable<PreferenceViewModel> GetAll(int? id = null)
         {
             var data = _preferenceRepository.GetPreferences()
                 .Where(x => !x.Deleted
-                            && (!id.HasValue || x.Id == id)
-                            && (!userId.HasValue || x.Id == userId.Value))
-                .Select(s => _mapper.Map<PreferenceViewModel>(s));
+                            && (!id.HasValue || x.Id == id)) .Select(s => _mapper.Map<PreferenceViewModel>(s));
             return data;
         }
 
@@ -116,14 +118,11 @@ namespace ASI.Basecode.Services.Services
         {
             return _preferenceRepository.GetPreference(userId);
         }
-        public void DeletePreference(int userId)
-        {
-            _preferenceRepository.RemovePreference(userId);
-        }
+        
 
-        public async Task<Preference> GetPreferenceAsync(int userId)
+        public async Task<Preference> GetPreferenceAsync(int id)
         {
-            return await _preferenceRepository.GetPreferenceAsync(userId);
+            return await _preferenceRepository.GetPreferenceAsync(id);
         }
 
         public async Task UpdatePreferenceAsync(Preference preference)
@@ -139,14 +138,14 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var userId = GetCurrentUserId();
-                var existingPreference = _preferenceRepository.GetPreferences().FirstOrDefault(p => p.UserId == userId);
+                var id = GetCurrentUserId();
+                var existingPreference = _preferenceRepository.GetPreferences().FirstOrDefault(p => p.Id == id);
 
                 if (existingPreference != null)
                 {
                     // Update existing preference
                     _mapper.Map(preference, existingPreference);
-                    existingPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                    //existingPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
                     existingPreference.UpdatedDate = DateTime.Now;
                     _preferenceRepository.UpdatePreference(existingPreference);
                 }
@@ -154,8 +153,8 @@ namespace ASI.Basecode.Services.Services
                 {
                     // Insert new preference
                     var newPreference = _mapper.Map<Preference>(preference);
-                    newPreference.UserId = userId;
-                    newPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                    newPreference.Id = id;
+                    //newPreference.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
                     newPreference.UpdatedDate = DateTime.Now;
                     _preferenceRepository.AddOrUpdatePreference(newPreference);
                 }
@@ -165,6 +164,27 @@ namespace ASI.Basecode.Services.Services
                 Console.WriteLine($"Error in SavePreference: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 throw; // Re-throw the exception to be caught by the controller
+            }
+        }
+        public PreferenceViewModel GetUserPreferences(int id)
+        {
+            try
+            {
+                var preference = _preferenceRepository.GetPreferenceByUserId(id);
+
+                if (preference == null)
+                {
+                    return null; // Or handle as appropriate for your application
+                }
+
+                var preferenceViewModel = _mapper.Map<PreferenceViewModel>(preference);
+                return preferenceViewModel;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return null;
             }
         }
 

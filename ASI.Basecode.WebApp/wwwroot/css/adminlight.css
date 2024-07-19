@@ -1,0 +1,97 @@
+﻿
+
+
+/*WALA RANI NAGAMIT
+    :root {
+    --light-bg: #fff;
+    --light-main: #ADC5CF;
+    --light-outer: #A4C1CD;
+    --light-text: #000;
+}
+
+body {
+    transition: background-color 0.4s ease;
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+.outer-container {
+    transition: background-color 0.4s ease;
+    background-color: var(--light-outer);
+    color: var(--light-text);
+}
+
+.main-content {
+    transition: background-color 0.4s ease;
+    background-color: var(--light-main);
+    color: var(--light-text);
+}
+
+.sidebar {
+    transition: background-color 0.4s ease;
+    background-color: #f8f9fa;
+    color: #000;
+}
+
+.sidebar-menu li a {
+    color: #000;
+}
+
+    .sidebar-menu li a:hover,
+    .sidebar-menu li.active a {
+        background-color: #e2e6ea;
+    }
+
+.sidebar-menu li.active a {
+    background-color: #1BC7D2;
+    color: #000;
+    font-weight: bold;
+}
+
+.user-details .user-name {
+    color: #000;
+}
+
+.user-details .user-email {
+    color: #555;
+}
+
+.notification-section a {
+    color: #000;
+}
+
+    .notification-section a:hover {
+        color: blue;
+    }
+
+.signout a {
+    color: #000;
+}
+
+    .signout a:hover {
+        color: red;
+    }
+
+.save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.profile-pic {
+    background: #fff;
+}
+
+.setting {
+    border-bottom: 1px solid #ccc;
+}
+
+.time-select {
+    color: #000;
+}
+
+/* Additional light mode styles can be added here */

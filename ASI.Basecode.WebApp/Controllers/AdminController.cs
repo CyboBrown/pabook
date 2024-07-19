@@ -80,7 +80,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// </summary>
         /// <returns> Admin Settings Screen </returns>
         public IActionResult AdminSettings()
-        {
+        {/*
             if (User.Identity.IsAuthenticated)
             {
                 var userIdClaim = User.FindFirst("UserId")?.Value;
@@ -110,11 +110,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Handle the case when the user is not authenticated
                 ModelState.AddModelError(string.Empty, "User is not authenticated.");
             }
-            
+            */
             // Return an empty view or an error view if necessary
             return View();
         }
-        
+        /*
         [HttpPost]
         public async Task<IActionResult> SavePreferences(PreferenceViewModel model)
         {
@@ -156,6 +156,6 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             
             return HttpContext.User.Identity.Name;
-        }
+        }*/
     }
 }
