@@ -367,6 +367,7 @@
 </div>
 
 <script>
+       recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     //fetching karon nga bookings
     //document.addEventListener('DOMContentLoaded', function () {
     //    fetchTodaysBookings();
@@ -377,7 +378,6 @@
 
         //this is the function for 'view'
         function showBookingDetails(bookingId) {
-            recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
@@ -551,7 +551,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${booking.recurring ? 'Yes' : 'No'}
+                                ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

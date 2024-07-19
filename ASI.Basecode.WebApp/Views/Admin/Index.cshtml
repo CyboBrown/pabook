@@ -430,7 +430,15 @@
 
             <div class="form-group full-width">
                 <label for="type">Room Type:</label>
-                <input type="number" id="type" name="type" required>
+                <select id="type" name="type">
+                    <option value="1">Board Room</option>
+                    <option value="2">Conference Room</option>
+                    <option value="3">Meeting Room</option>
+                    <option value="4">Multipurpose Room</option>
+                    <option value="5">Recruitment Room</option>
+                    <option value="6">Training Room</option>
+                    <option value="0">Unassigned</option>
+                </select>
             </div>
 
             <div class="form-group full-width">
@@ -653,7 +661,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                                 <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                        ${booking.recurring ? 'Yes' : 'No'}
+                                            ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -938,7 +946,6 @@
         }
 
         function showBookingDetails(bookingId) {
-            recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
@@ -1052,7 +1059,8 @@
  </script>
 
  @*User Script*@
- <script>
+<script>
+     roles = ['Admin', 'Manager', 'User'];
      document.addEventListener("DOMContentLoaded", function () {
          function validateForm() {
              const requiredFields = userForm.querySelectorAll('[required]');
@@ -1085,7 +1093,11 @@
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastName}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.userRole}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.userRole != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                        ${roles[user.userRole]}
+                                                  </span>
+                                              </td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                   <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
                                                   <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
@@ -1360,6 +1372,8 @@
 
 @*Room Script*@
 <script>
+    roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"]
+
     document.addEventListener("DOMContentLoaded", function () {
         function validateForm() {
             const requiredFields = roomForm.querySelectorAll('[required]');
@@ -1388,7 +1402,11 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.type}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${roomTypes[room.type]}
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.location}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
