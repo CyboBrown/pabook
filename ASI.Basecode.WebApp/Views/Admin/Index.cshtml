@@ -578,6 +578,7 @@
 
 @*Booking Script*@
 <script>
+    recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
@@ -1372,9 +1373,35 @@
 
 @*Room Script*@
 <script>
-    roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"]
+    roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"];
+    locations = [];
 
     document.addEventListener("DOMContentLoaded", function () {
+        //For fetching locations
+        function populateLocations() {
+            $.ajax({
+                url: '/api/Room/locations',
+                type: 'GET',
+                success: function (data) {
+                    var dropdown = $('#location');
+                    dropdown.empty();
+                    dropdown.append($('<option></option>').val('').text('Select Location'));
+                    $.each(data, function (i, item) {
+                        locations.push(item.name);
+                        dropdown.append($('<option></option>').val(item.id).text(item.name));
+                    });
+                },
+                error: function (error) {
+                    console.log('Error fetching locations:', error);
+                }
+            });
+        }
+
+        // Call this function when the page loads
+        $(document).ready(function () {
+            populateLocations();
+        });
+
         function validateForm() {
             const requiredFields = roomForm.querySelectorAll('[required]');
             let isValid = true;
@@ -1403,12 +1430,16 @@
                         row.innerHTML = `
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                                         ${roomTypes[room.type]}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.location}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.location != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${locations[room.location]}
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
@@ -1519,30 +1550,6 @@
                     submitButton.disabled = false;
                     submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Room' : 'Add Room';
                 });
-        });
-
-        //For fetching locations
-        function populateLocationTypes() {
-            $.ajax({
-                url: '/api/Room/locations',
-                type: 'GET',
-                success: function (data) {
-                    var dropdown = $('#location');
-                    dropdown.empty();
-                    dropdown.append($('<option></option>').val('').text('Select Location'));
-                    $.each(data, function (i, item) {
-                        dropdown.append($('<option></option>').val(item.id).text(item.name));
-                    });
-                },
-                error: function (error) {
-                    console.log('Error fetching locations:', error);
-                }
-            });
-        }
-
-        // Call this function when the page loads
-        $(document).ready(function () {
-            populateLocationTypes();
         });
 
         //EDIT or UPDATE the room
