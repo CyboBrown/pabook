@@ -22,16 +22,20 @@ namespace ASI.Basecode.WebApp.Controllers
     public class RoomController : ControllerBase<RoomController>
     {
         private readonly IRoomService _roomService;
+        private readonly ILocationService _locationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RoomController"/> class.
         /// </summary>
-        /// <param name="httpContextAccessor">HTTP context accessor</param>
-        /// <param name="loggerFactory">Logger factory</param>
-        /// <param name="configuration">Configuration</param>
-        /// <param name="mapper">Mapper</param>
+        /// <param name="roomService">The room service.</param>
+        /// <param name="locationService">The location service.</param>
+        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="mapper">The mapper.</param>
         public RoomController(
             IRoomService roomService,
+            ILocationService locationService,
             IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
             IConfiguration configuration,
@@ -39,6 +43,7 @@ namespace ASI.Basecode.WebApp.Controllers
         ) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _roomService = roomService;
+            _locationService = locationService;
         }
 
         /// <summary>
@@ -166,6 +171,19 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
+        }
+
+        /// <summary>
+        /// Gets all locations.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("locations")]
+        public IActionResult GetLocations()
+        {
+            var locations = _locationService.GetAllLocations()
+                .Select(l => new { id = l.Id, name = l.Name })
+                .ToList();
+            return Ok(locations);
         }
     }
 }

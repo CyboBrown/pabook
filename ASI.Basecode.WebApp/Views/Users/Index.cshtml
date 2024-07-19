@@ -107,6 +107,7 @@
             <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" required>
+                <div id="dateError" class="error-message"></div>
             </div>
 
             <div class="form-group">
@@ -319,6 +320,7 @@
                     <option value="23:30">11:30 PM</option>
                     <option value="23:45">11:45 PM</option>
                 </select>
+                <div id="endTimeError" class="error-message"></div>
             </div>
 
             <div class="form-group full-width">
@@ -365,6 +367,7 @@
 </div>
 
 <script>
+       recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     //fetching karon nga bookings
     //document.addEventListener('DOMContentLoaded', function () {
     //    fetchTodaysBookings();
@@ -373,7 +376,32 @@
     //});
     //fetchTodaysBookings();
 
-    function fetchTodaysBookings() {
+        //this is the function for 'view'
+        function showBookingDetails(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    const modal = document.getElementById('bookingDetailsModal');
+                    const content = document.getElementById('bookingDetailsContent');
+                    content.innerHTML = `
+                            <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
+                            <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
+                            <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                            <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                            <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
+                            <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                            ${booking.recurring ? `
+                                        <p class="mb-2"><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
+                                <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                            ` : ''}
+                        `;
+                    modal.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+        
+        //this is for fetching today's bookings
+       function fetchTodaysBookings() {
         fetch('/api/Booking/todaysBookings')
             .then(response => response.json())
             .then(data => {
@@ -384,7 +412,6 @@
                 bookingItemsContainer.innerHTML = ''; // Clear existing items
 
                 data.forEach(booking => {
-                    //console.log("Today's Bookings ID No. " + booking.id);
                     const bookingItem = document.createElement('tr');
                     bookingItem.classList.add('booking-item');
                     bookingItem.innerHTML = `
@@ -398,6 +425,13 @@
                         </td>
                     `;
                     bookingItemsContainer.appendChild(bookingItem);
+                });
+
+                // Add event listeners to the new buttons
+                document.querySelectorAll('#bookingItems .details-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        showBookingDetails(this.dataset.id);
+                    });
                 });
             })
             .catch(error => console.error('Error fetching bookings:', error));
@@ -517,7 +551,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${booking.recurring ? 'Yes' : 'No'}
+                                ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -562,54 +596,53 @@
             const date = formData.get('date');
 
             // Validate date is not before the current date
-            const currentDate = new Date().toISOString().split('T')[0];
-            if (date < currentDate) {
-                alert('Selected date cannot be in the past.');
+            const currentDate = new Date();
+            const selectedDate = new Date(date);
+            currentDate.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                document.getElementById('dateError').textContent = 'Selected date cannot be in the past.';
+                document.getElementById('dateError').style.display = 'block';
                 return;
             }
 
             // Validate start time is not before the current time if booking is for today
             const currentDateTime = new Date();
             const selectedDateTime = new Date(`${date}T${startTime}`);
-            if (selectedDateTime < currentDateTime) {
+            if (selectedDate.getTime() === currentDate.getTime() && selectedDateTime < currentDateTime) {
                 document.getElementById('startTimeError').textContent = 'Start time cannot be in the past.';
                 document.getElementById('startTimeError').style.display = 'block';
                 return;
             }
 
-            // Validate duration is at least 15 minutes
-            const startTimeInMinutes = convertTimeToMinutes(startTime);
-            const endTimeInMinutes = convertTimeToMinutes(endTime);
-            if (endTimeInMinutes - startTimeInMinutes < 15) {
-                alert('The duration between start time and end time must be at least 15 minutes.');
+            // Validate end time is at least 15 minutes after start time
+            const startTimeDate = new Date(`2000-01-01T${startTime}`);
+            const endTimeDate = new Date(`2000-01-01T${endTime}`);
+            const timeDifference = (endTimeDate - startTimeDate) / (1000 * 60); // difference in minutes
+            if (timeDifference < 15) {
+                document.getElementById('endTimeError').textContent = 'End time must be at least 15 minutes after start time.';
+                document.getElementById('endTimeError').style.display = 'block';
                 return;
             }
 
             const data = {
+                id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
                 description: formData.get('description'),
                 date: formData.get('date'),
                 roomId: parseInt(formData.get('room')),
-                startTime: formatTimeToTimeSpan(startTime),
-                endTime: formatTimeToTimeSpan(endTime),
+                startTime: formatTimeToTimeSpan(formData.get('startTime')),
+                endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
                 userId: getCurrentUserId()
             };
 
-            if (this.dataset.mode === 'edit') {
-                data.id = parseInt(this.dataset.bookingId); // Ensure the id is included and correctly parsed
-            }
-
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-
-            const url = this.dataset.mode === 'edit'
-                ? `/api/Booking/${this.dataset.bookingId}`
-                : '/api/Booking/create';
-            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+            const isEdit = this.dataset.mode === 'edit';
+            const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
+            const method = isEdit ? 'PUT' : 'POST';
 
             fetch(url, {
                 method: method,
@@ -625,7 +658,7 @@
                     return response.json();
                 })
                 .then(result => {
-                    console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    console.log('Booking ' + (isEdit ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
                     loadBookings(); // This will refresh the entire table
                     fetchTodaysBookings();
@@ -642,16 +675,12 @@
                         fetchTodaysBookings();
                     }
 
-                    // Add success alert only for new bookings
-                    if (method === 'POST') {
-                        alert('Booking created successfully!');
-                    } else {
-                        alert('Booking updated successfully!');
-                    }
+                    // Add success alert with correct message
+                    alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
                 })
                 .catch(error => {
-                    console.error('Error ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' booking:', error);
-                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the booking. Please try again.';
+                    console.error('Error ' + (isEdit ? 'updating' : 'creating') + ' booking:', error);
+                    let errorMessage = 'An error occurred while ' + (isEdit ? 'updating' : 'creating') + ' the booking. Please try again.';
                     if (error.errors) {
                         errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
                     }
@@ -659,7 +688,7 @@
                 })
                 .finally(() => {
                     submitButton.disabled = false;
-                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
+                    submitButton.textContent = isEdit ? 'Update Booking' : 'Create Booking';
                 });
         });
 
@@ -690,9 +719,15 @@
             }
         });
 
-        //start time validation
-        document.getElementById('startTime').addEventListener('change', validateStartTime);
-        document.getElementById('date').addEventListener('change', validateStartTime);
+        //start time and end time validation
+        document.getElementById('startTime').addEventListener('change', validateTimes);
+        document.getElementById('endTime').addEventListener('change', validateTimes);
+        document.getElementById('date').addEventListener('change', validateTimes);
+
+        function validateTimes() {
+            validateStartTime();
+            validateEndTime();
+        }
 
         function validateStartTime() {
             const startTimeSelect = document.getElementById('startTime');
@@ -715,7 +750,51 @@
             }
         }
 
-        // Function to edit booking
+        function validateEndTime() {
+            const startTimeSelect = document.getElementById('startTime');
+            const endTimeSelect = document.getElementById('endTime');
+            const errorElement = document.getElementById('endTimeError');
+
+            const startTime = new Date(`2000-01-01T${startTimeSelect.value}`);
+            const endTime = new Date(`2000-01-01T${endTimeSelect.value}`);
+
+            const timeDifference = (endTime - startTime) / (1000 * 60); // difference in minutes
+
+            if (timeDifference < 15) {
+                errorElement.textContent = 'End time must be at least 15 minutes after start time.';
+                errorElement.style.display = 'block';
+                endTimeSelect.setCustomValidity('Invalid end time');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                endTimeSelect.setCustomValidity('');
+            }
+        }
+
+        //date validation
+        document.getElementById('date').addEventListener('change', validateDate);
+
+        function validateDate() {
+            const dateInput = document.getElementById('date');
+            const errorElement = document.getElementById('dateError');
+            const selectedDate = new Date(dateInput.value);
+            const currentDate = new Date();
+
+            // Set both dates to midnight for accurate comparison
+            selectedDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                errorElement.textContent = 'Selected date cannot be in the past.';
+                errorElement.style.display = 'block';
+                dateInput.setCustomValidity('Invalid date');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                dateInput.setCustomValidity('');
+            }
+        }
+
         function editBooking(bookingId) {
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
@@ -735,6 +814,11 @@
                         document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
                     }
 
+                    // Set initial values for start and end time
+                    const startTime = new Date(`2000-01-01T${booking.startTime}`);
+                    const endTime = new Date(startTime.getTime() + 15 * 60000);
+                    document.getElementById('endTime').value = endTime.toTimeString().substring(0, 5);
+
                     // Change form submission to update instead of create
                     const form = document.getElementById('bookingForm');
                     form.dataset.mode = 'edit';
@@ -750,36 +834,7 @@
                 .catch(error => console.error('Error fetching booking details:', error));
         }
 
-        function showBookingDetails(bookingId) {
-            function getRecurrenceTypeName(recurrenceId) {
-                result = "Error";
-                fetch(`/api/Booking/recurrence/${recurrenceId}`)
-                    .then(response => response.json())
-                    .then(data => result = data)
-                    .catch(error => console.error('Error getting recurrence type name:', error));
-                return result;
-            }
-            fetch(`/api/Booking/${bookingId}`)
-                .then(response => response.json())
-                .then(booking => {
-                    const modal = document.getElementById('bookingDetailsModal');
-                    const content = document.getElementById('bookingDetailsContent');
-                    content.innerHTML = `
-                    <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
-                    <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
-                    <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                    <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                    <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
-                    <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                    ${booking.recurring ? `
-                                <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
-                        <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                    ` : ''}
-                `;
-                    modal.classList.remove('hidden');
-                })
-                .catch(error => console.error('Error fetching booking details:', error));
-        }
+       
 
         function closeBookingDetailsModal() {
             const modal = document.getElementById('bookingDetailsModal');
@@ -801,9 +856,18 @@
                 fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
                     .then(response => {
                         if (response.ok) {
-                            // Remove the row from the table
-                            const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
-                            row.remove();
+                            // Remove the row from My Bookings table
+                            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+                            if (myBookingsRow) {
+                                myBookingsRow.remove();
+                            }
+
+                            // Remove the row from Today's Bookings list
+                            const todaysBookingsRow = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`).closest('tr');
+                            if (todaysBookingsRow) {
+                                todaysBookingsRow.remove();
+                            }
+
                             alert('Booking cancelled successfully');
                         } else {
                             throw new Error('Failed to cancel booking');
@@ -813,6 +877,27 @@
                         console.error('Error cancelling booking:', error);
                         alert('Failed to cancel booking. Please try again.');
                     });
+            }
+        }
+
+        function removeBookingFromTables(bookingId) {
+            // Remove from My Bookings table
+            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+            if (myBookingsRow) {
+                myBookingsRow.remove();
+            }
+
+            // Remove from Today's Bookings table
+            const todaysBookingsRow = document.querySelector(`#todaysBookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+            if (todaysBookingsRow) {
+                todaysBookingsRow.remove();
+            }
+
+            // If the booking was the last one in Today's Bookings, update the display
+            const todaysBookingsTable = document.getElementById('todaysBookingsTableBody');
+            if (todaysBookingsTable && todaysBookingsTable.children.length === 0) {
+                document.getElementById('todaysBookingsSection').style.display = 'none';
+                document.getElementById('noBookingsMessage').style.display = 'block';
             }
         }
 

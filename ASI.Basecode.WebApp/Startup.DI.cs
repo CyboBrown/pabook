@@ -39,6 +39,9 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IUserService, UserService>();
             this._services.AddScoped<IRoomService, RoomService>();
             this._services.AddScoped<IBookingService, BookingService>();
+            this._services.AddScoped<ILocationService, LocationService>();
+            this._services.AddScoped<IPreferenceService, PreferenceService>();
+            this._services.AddScoped<IRecurrenceTypeService, RecurrenceTypeService>();
             //this._services.AddScoped<IAdminService, AdminService>();
 
 
@@ -46,6 +49,10 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IUserRepository, UserRepository>();
             this._services.AddScoped<IRoomRepository, RoomRepository>();
             this._services.AddScoped<IBookingRepository, BookingRepository>();
+            this._services.AddScoped<ILocationRepository, LocationRepository>();
+            this._services.AddScoped<IPreferenceRepository, PreferenceRepository>();
+            this._services.AddScoped<IRecurrenceTypeRepository, RecurrenceTypeRepository>();
+            this._services.AddScoped<IRoleRepository, RoleRepository>();
             //this._services.AddScoped<IAdminRepository, AdminRepository>();
 
             // Manager Class
