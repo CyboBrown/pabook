@@ -15,7 +15,11 @@ namespace ASI.Basecode.Data.Repositories
         {
 
         }
-
+        public User GetByUsername(string username)
+        {
+            return GetDbSet<User>()
+                .FirstOrDefault(u => u.UserName == username);
+        }
         /// <summary>
         /// Gets all users.
         /// </summary>

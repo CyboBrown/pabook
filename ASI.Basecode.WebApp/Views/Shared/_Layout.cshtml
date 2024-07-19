@@ -54,10 +54,18 @@
     <script>
         // Configure Toastr options
         toastr.options = {
-            positionClass: "toast-top-center", // Set the notification position to center
-            timeOut: 3000,
-            closeButton: true,
-            progressBar: true
+            positionClass: "toast-top-right",
+            timeOut: 5000,
+            closeButton: false,
+            progressBar: true,
+            preventDuplicates: true,
+            toastClass: 'custom-toastr',
+            newestOnTop: true,
+            showMethod: 'fadeIn',
+            hideMethod: 'fadeOut',
+            showDuration: 300,
+            hideDuration: 300,
+            extendedTimeOut: 1000,
         };
     </script>
     @await RenderSectionAsync("Scripts", required: false)

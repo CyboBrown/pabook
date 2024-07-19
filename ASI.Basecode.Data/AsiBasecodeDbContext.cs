@@ -31,7 +31,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Addr=localhost;database=AsiBasecodeDb;Integrated Security=False;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Server=192.0.0.2;Database=AsiBasecodeDb;User Id=sa;Password=DB_Password;TrustServerCertificate=True;");
             }
         }
 
@@ -109,7 +109,7 @@ namespace ASI.Basecode.Data
             modelBuilder.Entity<Preference>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Preferen__1788CC4C804D8E49");
+                    .HasName("PK__Preferen__1788CC4C6FDA3C9A");
 
                 entity.Property(e => e.UserId).ValueGeneratedNever();
 
@@ -125,7 +125,7 @@ namespace ASI.Basecode.Data
             modelBuilder.Entity<Recurrence>(entity =>
             {
                 entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AED67B643B1");
+                    .HasName("PK__Recurren__73951AED99CEF8A1");
 
                 entity.ToTable("Recurrence");
 

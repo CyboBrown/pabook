@@ -6,6 +6,25 @@
     ViewData["Title"] = "Admin Home Page";
 }
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            positionClass: "toast-top-right",
+            timeOut: 5000,
+            closeButton: false,
+            progressBar: true,
+            preventDuplicates: true,
+            toastClass: 'custom-toastr',
+            newestOnTop: true,
+            showMethod: 'fadeIn',
+            hideMethod: 'fadeOut',
+            showDuration: 300,
+            hideDuration: 300,
+            extendedTimeOut: 1000,
+        };
+    </script>
+}
 @*Home Page*@
 <div class="outer-container">
     <div class="main-content">
@@ -482,7 +501,7 @@
             e.preventDefault();
 
             if (!validateForm()) {
-                alert('Please fill in all required fields.');
+                toastr.error('Please fill in all required fields.');
                 return;
             }
 
@@ -556,25 +575,17 @@
                 .then(result => {
                     console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
-                    loadBookings(); // This will refresh the entire table
+                    loadBookings();
                     bookingForm.reset();
 
-                    // Reset form mode and submit button text
                     this.dataset.mode = 'create';
                     delete this.dataset.bookingId;
                     submitButton.textContent = 'Create Booking';
 
-                    // Check if the booking is for today
-                    const today = new Date().toISOString().split('T')[0];
-                    if (data.date === today) {
-                        fetchTodaysBookings();
-                    }
+                    toastr.success(result.message);
 
-                    // Add success alert only for new bookings
-                    if (method === 'POST') {
-                        alert('Booking created successfully!');
-                    } else {
-                        alert('Booking updated successfully!');
+                    if (data.date === new Date().toISOString().split('T')[0]) {
+                        checkUpcomingBookings();
                     }
                 })
                 .catch(error => {
@@ -583,14 +594,13 @@
                     if (error.errors) {
                         errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
                     }
-                    alert(errorMessage);
+                    toastr.error(errorMessage);
                 })
                 .finally(() => {
                     submitButton.disabled = false;
                     submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
                 });
         });
-
         // Function to edit booking
         function editBooking(bookingId) {
             fetch(`/api/Booking/${bookingId}`)
@@ -668,19 +678,19 @@
         function cancelBooking(bookingId) {
             if (confirm('Are you sure you want to cancel this booking?')) {
                 fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            // Remove the row from the table
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
                             const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
                             row.remove();
-                            alert('Booking cancelled successfully');
+                            toastr.success(result.message);
                         } else {
-                            throw new Error('Failed to cancel booking');
+                            toastr.error(result.message);
                         }
                     })
                     .catch(error => {
                         console.error('Error cancelling booking:', error);
-                        alert('Failed to cancel booking. Please try again.');
+                        toastr.error('Failed to cancel booking. Please try again.');
                     });
             }
         }
@@ -721,6 +731,36 @@
             return 1; // Placeholder value for now
         }
     });
+    // This is a new function, so there's no "before" code.
+    function checkUpcomingBookings() {
+        fetch('/api/Booking/todaysBookings')
+            .then(response => response.json())
+            .then(bookings => {
+                const now = new Date();
+                bookings.forEach(booking => {
+                    const bookingTime = new Date(booking.startTime);
+                    const timeDiff = bookingTime - now;
+                    const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+
+                    if (minutesDiff === 15 || minutesDiff === 60 || minutesDiff === 720 || minutesDiff === 1440) {
+                        let message = `Upcoming booking: "${booking.title}" in ${booking.roomName}`;
+                        if (minutesDiff === 15) message += " in 15 minutes";
+                        else if (minutesDiff === 60) message += " in 1 hour";
+                        else if (minutesDiff === 720) message += " in 12 hours";
+                        else if (minutesDiff === 1440) message += " in 24 hours";
+
+                        toastr.info(message);
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching bookings:', error));
+    }
+
+    // Check for upcoming bookings every minute
+    setInterval(checkUpcomingBookings, 60000);
+
+    // Initial check when the page loads
+    checkUpcomingBookings();
  </script>
 
  @*User Script*@

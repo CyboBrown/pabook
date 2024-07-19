@@ -1,5 +1,9 @@
-﻿
+﻿@* Views/Shared/_AdminSidebar.cshtml *@
+
 <link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 <div class="sidebar">
     <div class="logo">
         <img id="logo-img" src="/img/logo-dark-horizontal.png" alt="Logo" />
@@ -32,19 +36,132 @@
     </ul>
 
     <div class="user-details">
-        <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
-        @*<span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>*@
+        <span class="user-name ml-2 overflow-hidden">@Context.Session.GetString("FullName")</span>
     </div>
     <div class="notification-section">
-        <a href="#" id="notificationToggle">
+        <button id="notificationToggle" class="btn btn-primary">
             <i class="fas fa-bell"></i>
-            <span class="notification-text">Notification</span>
-        </a>
+            <span>Notifications</span>
+        </button>
     </div>
     <div class="signout">
         <a asp-action="SignOutAdmin" asp-controller="Account">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Logout, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            <span>Logout, @Context.Session.GetString("UserName")</span>
         </a>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const notificationToggle = document.getElementById('notificationToggle');
+        let notificationsMuted = localStorage.getItem('notificationsMuted') === 'true';
+
+        // Configure Toastr
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        // Custom CSS for Toastr
+        $("<style>")
+            .prop("type", "text/css")
+            .html(`
+            .toast-success {
+                background-color: #28a745 !important;
+                color: white !important;
+            }
+            .notification-section {
+                padding: 10px;
+            }
+            #notificationToggle {
+                width: 100%;
+                text-align: left;
+            }
+            #notificationToggle i {
+                margin-right: 5px;
+            }
+            `)
+            .appendTo("head");
+
+        function updateNotificationButtonState() {
+            if (notificationsMuted) {
+                notificationToggle.classList.add('btn-secondary');
+                notificationToggle.classList.remove('btn-primary');
+                notificationToggle.innerHTML = '<i class="fas fa-bell-slash"></i> Notifications (Muted)';
+            } else {
+                notificationToggle.classList.add('btn-primary');
+                notificationToggle.classList.remove('btn-secondary');
+                notificationToggle.innerHTML = '<i class="fas fa-bell"></i> Notifications';
+            }
+        }
+
+        function loadNotifications() {
+            if (notificationsMuted) return;
+
+            fetch('/Admin/GetNotifications')
+                .then(response => response.json())
+                .then(data => {
+                    data.notifications.forEach(notification => {
+                        if (!notification.seen) {
+                            toastr.success(notification.description, notification.title, {
+                                onclick: function () { markAsSeen(notification.id); }
+                            });
+                        }
+                    });
+                });
+        }
+
+        function markAsSeen(notificationId) {
+            fetch('/Admin/MarkAsSeen', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ notificationId }),
+            }).then(() => loadNotifications());
+        }
+
+        notificationToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            notificationsMuted = !notificationsMuted;
+            localStorage.setItem('notificationsMuted', notificationsMuted);
+            updateNotificationButtonState();
+            if (!notificationsMuted) {
+                loadNotifications();
+            }
+        });
+
+        // Handle keypress to toggle notifications
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'n' || e.key === 'N') {
+                notificationToggle.click();
+            }
+        });
+
+        // Initial state
+        updateNotificationButtonState();
+
+        // Initial load
+        loadNotifications();
+
+        // Set up the interval timer (adjust as needed)
+        setInterval(loadNotifications, 60000);
+    });
+</script>

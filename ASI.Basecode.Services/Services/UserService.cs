@@ -112,5 +112,9 @@ namespace ASI.Basecode.Services.Services
             Console.WriteLine(" > UserService: GetUserById");
             return _userRepository.GetUserById(id);
         }
+        public User GetUserByUsername(string username)
+        {
+            return _userRepository.GetByUsername(username);
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.WebApp.Mvc;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,35 +18,20 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IRoomService _roomService;
         private readonly IRecurrenceTypeService _recurrenceTypeService;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BookingController"/> class.
-        /// </summary>
-        /// <param name="bookingService">The booking service.</param>
-        /// <param name="roomService">The room service.</param>
-        /// <param name="recurrenceTypeService">The recurrence type service.</param>
-        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="mapper">The mapper.</param>
         public BookingController(
             IBookingService bookingService,
             IRoomService roomService,
             IRecurrenceTypeService recurrenceTypeService,
             IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
-            IConfiguration configuration,
-            IMapper mapper = null
-        ) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+            IConfiguration configuration
+        ) : base(httpContextAccessor, loggerFactory, configuration)
         {
             _bookingService = bookingService;
             _roomService = roomService;
             _recurrenceTypeService = recurrenceTypeService;
         }
 
-        /// <summary>
-        /// Gets the rooms.
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("rooms")]
         public IActionResult GetRooms()
         {
@@ -55,10 +39,6 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(rooms);
         }
 
-        /// <summary>
-        /// Gets the recurrence types.
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("recurrenceTypes")]
         public IActionResult GetRecurrenceTypes()
         {
@@ -68,11 +48,6 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(recurrenceTypes);
         }
 
-        /// <summary>
-        /// Gets the recurrence type by identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns></returns>
         [HttpGet("recurrence/{id}")]
         public IActionResult GetRecurrenceTypeById(int id)
         {
@@ -80,26 +55,28 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(recurrenceType.Name);
         }
 
-        /// <summary>
-        /// Creates the booking.
-        /// </summary>
-        /// <param name="booking">The booking.</param>
-        /// <returns></returns>
         [HttpPost("create")]
         public IActionResult CreateBooking([FromBody] BookingViewModel booking)
         {
             if (ModelState.IsValid)
             {
-                _bookingService.AddBooking(booking);
-                return Ok(new { success = true, message = "Booking created successfully" });
+                try
+                {
+                    _logger.LogInformation("Attempting to create a booking");
+                    _bookingService.AddBooking(booking);
+                    _logger.LogInformation("Booking created successfully");
+                    return Ok(new { success = true, message = "Booking created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred while creating the booking");
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+                }
             }
-            return BadRequest(new { success = false, message = "Invalid booking data" });
+            _logger.LogWarning("Invalid booking data: {Errors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            return BadRequest(new { success = false, message = "Invalid booking data", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
         }
 
-        /// <summary>
-        /// Gets the bookings.
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("bookings")]
         public IActionResult GetBookings()
         {
@@ -107,10 +84,6 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
-        /// <summary>
-        /// Gets the bookings by user.
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("myBookings")]
         public IActionResult GetBookingsByUser()
         {
@@ -120,10 +93,6 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
-        /// <summary>
-        /// Gets the todays bookings.
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("todaysBookings")]
         public IActionResult GetTodaysBookings()
         {
@@ -141,11 +110,6 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(bookings);
         }
 
-        /// <summary>
-        /// Gets the booking.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetBooking(int id)
         {
@@ -157,12 +121,6 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(booking);
         }
 
-        /// <summary>
-        /// Updates the booking.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="booking">The booking.</param>
-        /// <returns></returns>
         [HttpPut("{id}")]
         public IActionResult UpdateBooking(int id, [FromBody] BookingViewModel booking)
         {
@@ -171,35 +129,39 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(new { success = false, message = "Booking ID mismatch." });
             }
 
-            try
+            if (ModelState.IsValid)
             {
-                _bookingService.UpdateBooking(booking);
-                return Ok(new { success = true, message = "Booking updated successfully" });
+                try
+                {
+                    _logger.LogInformation("Attempting to update booking with ID: {BookingId}", id);
+                    _bookingService.UpdateBooking(booking);
+                    _logger.LogInformation("Booking with ID: {BookingId} updated successfully", id);
+                    return Ok(new { success = true, message = "Booking updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred while updating booking with ID: {BookingId}", id);
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "Error updating booking");
-                return BadRequest(new { success = false, message = "An error occurred while updating the booking. Please try again.", error = ex.Message });
-            }
+            _logger.LogWarning("Invalid booking data for update: {Errors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            return BadRequest(new { success = false, message = "Invalid booking data", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
         }
 
-        /// <summary>
-        /// Cancels the booking.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult CancelBooking(int id)
         {
             try
             {
+                _logger.LogInformation("Attempting to cancel booking with ID: {BookingId}", id);
                 _bookingService.CancelBooking(id);
+                _logger.LogInformation("Booking with ID: {BookingId} cancelled successfully", id);
                 return Ok(new { success = true, message = "Booking cancelled successfully" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = ex.Message });
+                _logger.LogError(ex, "Error occurred while cancelling booking with ID: {BookingId}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
             }
         }
     }

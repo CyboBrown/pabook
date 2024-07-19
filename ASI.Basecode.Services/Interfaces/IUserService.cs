@@ -13,5 +13,6 @@ namespace ASI.Basecode.Services.Interfaces
         void Update(UserViewModel model);
         void Delete(int id);
         User GetUserById(int id);
+        User GetUserByUsername(string username);
     }
 }
