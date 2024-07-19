@@ -100,7 +100,7 @@ namespace ASI.Basecode.Services.Manager
                 string decryptedPassword = DecryptPassword(storedPassword);
                 return inputPassword == decryptedPassword;
             }
-            catch (FormatException)
+            catch (Exception) // Used to be Format Exception (Temporary Solution)
             {
                 // If decryption fails, compare the input directly with the stored password
                 return inputPassword == storedPassword;
