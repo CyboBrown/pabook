@@ -13,12 +13,12 @@
                 <h1 style="font-size: 2.5rem;">Booking Form</h1>
                 <form id="bookingForm">
                     <div class="form-group full-width">
-                        <label for="title">Title:</label>
+                        <label for="title">Meeting Title:</label>
                         <input type="text" id="title" name="title" required>
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="description">Description:</label>
+                        <label for="description">Meeting Description:</label>
                         <input type="text" id="description" name="description">
                     </div>
 
@@ -74,6 +74,17 @@
             </div>
         </div>
 
+        <div id="bookingDetailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h1 style="font-size: 2.5rem;">Booking Details</h1>
+                <div id="bookingDetailsContent" class="white-container"></div>
+                <div class="modal-buttons">
+                    <button id="editBookingButton" class="edit-button">Edit Booking</button>
+                    <button id="cancelBookingButton" class="cancel-button">Cancel Booking</button>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
@@ -130,9 +141,83 @@
 @section Scripts {
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
     <script>
+        let calendar;
+
+        function resetBookingForm() {
+            const form = document.getElementById('bookingForm');
+            form.reset();
+            form.dataset.mode = 'create';
+            form.dataset.bookingId = '';
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.textContent = 'Create Booking';
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        }
+
+        function showBookingDetails(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    const modal = document.getElementById('bookingDetailsModal');
+                    const content = document.getElementById('bookingDetailsContent');
+                    content.innerHTML = `
+                        <p><strong>Meeting Title:</strong> ${booking.title}</p>
+                        <p><strong>Meeting Description:</strong> ${booking.description}</p>
+                        <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                        <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                        <p><strong>Room:</strong> ${booking.roomName}</p>
+                        <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                        ${booking.recurring ? `
+                            <p><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                            <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                        ` : ''}
+                    `;
+                    document.getElementById('editBookingButton').dataset.bookingId = bookingId;
+                    document.getElementById('cancelBookingButton').onclick = () => cancelBooking(bookingId);
+                    modal.style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+
+        function editBooking(bookingId) {
+            fetch(`/api/Booking/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    // Populate the form with booking details
+                    document.getElementById('title').value = booking.title;
+                    document.getElementById('description').value = booking.description;
+                    document.getElementById('date').value = booking.date.split('T')[0];
+                    document.getElementById('room').value = booking.roomId;
+                    document.getElementById('startTime').value = booking.startTime;
+                    document.getElementById('endTime').value = booking.endTime;
+                    document.getElementById('recurring').value = booking.recurring ? 'true' : 'false';
+
+                    if (booking.recurring) {
+                        document.getElementById('recurrenceOptions').style.display = 'block';
+                        document.getElementById('RecurrenceTypeId').value = booking.recurrenceTypeId;
+                        document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
+                    } else {
+                        document.getElementById('recurrenceOptions').style.display = 'none';
+                    }
+
+                    // Change form submission to update instead of create
+                    const form = document.getElementById('bookingForm');
+                    form.dataset.mode = 'edit';
+                    form.dataset.bookingId = bookingId;
+
+                    // Change submit button text to 'Update Booking'
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.textContent = 'Update Booking';
+
+                    // Close the booking details modal and show the edit modal
+                    document.getElementById('bookingDetailsModal').style.display = 'none';
+                    document.getElementById('addMeetingModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching booking details:', error));
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next today',
@@ -143,7 +228,7 @@
                     addEventButton: {
                         text: '+',
                         click: function () {
-                            // Open the modal
+                            resetBookingForm();
                             var modal = document.getElementById('addMeetingModal');
                             modal.style.display = 'block';
                         }
@@ -182,7 +267,7 @@
                         });
                 },
                 eventClick: function (info) {
-                    alert('Event: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
+                    showBookingDetails(info.event.id);
                 },
                 dayMaxEvents: true,
                 eventTimeFormat: {
@@ -201,12 +286,6 @@
             });
             calendar.render();
 
-            function formatTimeToTimeSpan(timeString) {
-                const [hours, minutes] = timeString.split(':');
-                return `${hours.padStart(2, '0')}:${minutes}:00`;
-            }
-
-            // Handle form submission
             document.getElementById('bookingForm').addEventListener('submit', function (e) {
                 e.preventDefault();
 
@@ -217,6 +296,7 @@
 
                 const formData = new FormData(this);
                 const bookingData = {
+                    id: this.dataset.bookingId ? parseInt(this.dataset.bookingId) : 0,
                     title: formData.get('title'),
                     description: formData.get('description'),
                     date: formData.get('date'),
@@ -225,50 +305,124 @@
                     roomId: parseInt(formData.get('room')),
                     recurring: formData.get('recurring') === 'true',
                     recurrenceTypeId: formData.get('RecurrenceTypeId') ? parseInt(formData.get('RecurrenceTypeId')) : null,
-                    recurrenceEndDate: formData.get('recurrenceEndDate') || null
+                    recurrenceEndDate: formData.get('recurrenceEndDate') || null,
+                    userId: 1
                 };
 
-                // Send the booking data to the server
-                fetch('/api/Booking/create', {
-                    method: 'POST',
+                console.log('Booking Data:', bookingData); 
+
+                const url = this.dataset.mode === 'edit' ? `/api/Booking/${bookingData.id}` : '/api/Booking/create';
+                const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+
+                fetch(url, {
+                    method: method,
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(bookingData)
                 })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw new Error(err.message); });
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
-                            // Close the modal and reset the form
                             document.getElementById('addMeetingModal').style.display = 'none';
                             this.reset();
-
                             alert(data.message);
-                            calendar.refetchEvents(); // Refresh the calendar to show the new event
+                            if (calendar && typeof calendar.refetchEvents === 'function') {
+                                calendar.refetchEvents();
+                            } else {
+                                console.error('Calendar or refetchEvents is not available');
+                            }
                         } else {
                             alert(data.message);
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('An error occurred while creating the booking.');
+                        alert('An error occurred while processing the booking.');
                     });
             });
 
-            // Close modal on close button click
             document.querySelector('.close').addEventListener('click', function () {
                 document.getElementById('addMeetingModal').style.display = 'none';
+                resetBookingForm();
             });
+
+            document.getElementById('editBookingButton').onclick = function () {
+                const bookingId = this.dataset.bookingId;
+                if (bookingId) {
+                    editBooking(bookingId);
+                } else {
+                    console.error('No booking ID available for editing');
+                }
+            };
         });
 
+        function validateForm() {
+            const requiredFields = ['title', 'date', 'room', 'startTime', 'endTime'];
+            for (let field of requiredFields) {
+                if (!document.getElementById(field).value) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
         function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
                 color += letters[Math.floor(Math.random() * 16)];
             }
             return color;
         }
+
+        function formatTimeToTimeSpan(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            return `${hours.padStart(2, '0')}:${minutes}:00`;
+        }
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch(`/api/Booking/${bookingId}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        alert('Booking cancelled successfully');
+                        document.getElementById('bookingDetailsModal').style.display = 'none';
+                        calendar.refetchEvents();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while cancelling the booking: ' + error.message);
+                    });
+            }
+        }
+
+        // Close modal on close button click
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', function () {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
 
         function validateForm() {
             const formData = new FormData(document.getElementById('bookingForm'));
@@ -385,6 +539,10 @@
             width: 100%;
             height: 100%;
             font-family: 'Roboto', sans-serif;
+        }
+
+        .popover-header {
+            background-color: #07282C;
         }
 
         .fc-header-toolbar {
@@ -586,6 +744,59 @@
         .form-group:last-child {
             margin-bottom: 0;
         }
+
+        /* for booking details modal */
+        #bookingDetailsModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+            #bookingDetailsModal .modal-content {
+                background-color: #185D62;
+                margin: 10% auto;
+                padding: 20px;
+                border: 1px solid #185D62;
+                width: 80%;
+                max-width: 600px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                font-family: 'Poppins', sans-serif;
+                color: white;
+                position: relative;
+            }
+
+                #bookingDetailsModal .modal-content h1 {
+                    text-align: center;
+                    color: #ecf0f1;
+                    margin-bottom: 20px;
+                    font-size: 2.5rem;
+                    font-weight: 600;
+                }
+
+        .white-container {
+            background-color: white;
+            color: #185D62;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+            .white-container p {
+                margin-bottom: 10px;
+                line-height: 1.6;
+                font-size: 1em;
+            }
+
+            .white-container strong {
+                font-weight: 600;
+            }
     </style>
 }
 

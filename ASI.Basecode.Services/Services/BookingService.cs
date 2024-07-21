@@ -200,7 +200,16 @@ namespace ASI.Basecode.Services.Services
                 throw new Exception("Booking not found");
             }
 
+            // Preserve the original CreatedBy and CreatedDate
+            var createdBy = existingBooking.CreatedBy;
+            var createdDate = existingBooking.CreatedDate;
+
             _mapper.Map(booking, existingBooking);
+
+            // Restore the original CreatedBy and CreatedDate
+            existingBooking.CreatedBy = createdBy;
+            existingBooking.CreatedDate = createdDate;
+
             existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             existingBooking.UpdatedDate = DateTime.Now;
 
@@ -212,13 +221,23 @@ namespace ASI.Basecode.Services.Services
             _bookingRepository.CancelBooking(id);
         }
 
-        public bool CheckBookingAvailability(BookingViewModel booking)
+        /*public bool CheckBookingAvailability(BookingViewModel booking)
         {
             var conflicting_bookings = _bookingRepository.GetBookings()
                                                             .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
                                                             .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
                                                                         (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
                                                             .ToList();
+            return !conflicting_bookings.Any();
+        }*/
+        public bool CheckBookingAvailability(BookingViewModel booking)
+        {
+            var conflicting_bookings = _bookingRepository.GetBookings()
+                .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
+                .Where(b => b.Id != booking.Id) // giadd ni kay sometimes, if mu update booking bisan available ang day kay dli sya musugot
+                .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                            (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
+                .ToList();
             return !conflicting_bookings.Any();
         }
     }

@@ -10,15 +10,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.IO;
+using Serilog.Core;
+using System.Security.Claims;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
     /// <summary>
     /// Home Controller
     /// </summary>
+    [Authorize(Roles = "User")]
     public class UsersController : ControllerBase<UsersController>
     {
         private readonly IPreferenceService _preferenceService;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        private readonly ILogger<AdminController> _logger;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -27,19 +37,21 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="configuration"></param>
         /// <param name="localizer"></param>
         /// <param name="mapper"></param>
-        public UsersController(IPreferenceService preferenceService, IHttpContextAccessor httpContextAccessor,
-                              ILoggerFactory loggerFactory,
+        public UsersController(IPreferenceService preferenceService, IUserService userService, IHttpContextAccessor httpContextAccessor,
+                              ILoggerFactory loggerFactory, ILogger<AdminController> logger,
                               IConfiguration configuration,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _preferenceService = preferenceService;
+            _userService = userService;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
         /// Displays the homepage.
         /// </summary>
         /// <returns> Users View </returns>
-        [Authorize(Roles = "User")]
         public IActionResult Index()
         {
             return View();
@@ -58,11 +70,43 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Displays the settings page.
         /// </summary>
         /// <returns>User Settings View</returns>
+        [HttpGet]
         public IActionResult UserSettings()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userIdClaim = User.FindFirst("UserId")?.Value;
+                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
+                {
+                    var preference = _preferenceService.GetPreference(userId);
+
+                    if (preference != null)
+                    {
+                        var model = new PreferenceViewModel(preference);
+                        return View(model);
+                    }
+                    else
+                    {
+                        // Handle the case when the preference is not found
+                        ModelState.AddModelError(string.Empty, "Preferences not found for the user.");
+                    }
+                }
+                else
+                {
+                    // Handle the case when the userId is not a valid integer or claim is missing
+                    ModelState.AddModelError(string.Empty, "Invalid or missing user ID.");
+                }
+            }
+            else
+            {
+                // Handle the case when the user is not authenticated
+                ModelState.AddModelError(string.Empty, "User is not authenticated.");
+            }
+
+            // Return an empty view or an error view if necessary
             return View();
         }
-        
+
         /// <summary>
         /// Saves user preferences.
         /// </summary>
@@ -73,20 +117,19 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = model.UserId; // Implement this method to get the current user's ID
+                var userId = model.UserId;  // This should be retrieved from the session or context
 
                 var preference = await _preferenceService.GetPreferenceAsync(userId);
                 if (preference == null)
                 {
                     preference = new Preference
                     {
-                        UserId = userId,
+                        Id = userId,
                         DarkMode = model.DarkMode,
                         TimeFormat = model.TimeFormat,
-                        UpdatedBy = GetCurrentUserName(), // Implement this method to get the current user's name
                         EnableNotifications = model.EnableNotifications,
                         DefaultBookingDuration = model.DefaultBookingDuration,
-                        // Set other properties as needed
+                        // Set other properties
                     };
                     _preferenceService.CreatePreference(model);
                 }
@@ -94,23 +137,24 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     preference.DarkMode = model.DarkMode;
                     preference.TimeFormat = model.TimeFormat;
-                    preference.UpdatedBy = GetCurrentUserName(); // Implement this method to get the current user's name
                     preference.EnableNotifications = model.EnableNotifications;
                     preference.DefaultBookingDuration = model.DefaultBookingDuration;
-                    // Update other properties as needed
+                    // Update other properties
 
                     await _preferenceService.UpdatePreferenceAsync(preference);
                 }
 
                 return RedirectToAction("UserSettings"); // Redirect to settings page
             }
+            return View("UserSettings", model); // Return to the view with validation er
+        }
 
-            // If model state is not valid, return to the view with validation errors
-            return View("UserSettings", model);
+        private int GetCurrentUserId()
+        {
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
         private string GetCurrentUserName()
         {
-
             return HttpContext.User.Identity.Name;
         }
     }

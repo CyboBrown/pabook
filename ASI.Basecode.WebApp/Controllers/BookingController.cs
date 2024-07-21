@@ -56,7 +56,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the recurrence types.
+        /// Gets all recurrence types.
         /// </summary>
         /// <returns></returns>
         [HttpGet("recurrenceTypes")]
@@ -214,3 +214,5 @@ namespace ASI.Basecode.WebApp.Controllers
         }
     }
 }
+
+

@@ -10,23 +10,21 @@ namespace ASI.Basecode.Services.Interfaces
 {
     public interface IPreferenceService
     {
-        IEnumerable<PreferenceViewModel> GetAll(int? id = null, int? userId = null);
+        IEnumerable<PreferenceViewModel> GetAll(int? id = null);
         IEnumerable<PreferenceViewModel> GetAllPreferences();
         IEnumerable<PreferenceViewModel> GetUserPreferences();      
         PreferenceViewModel GetPreferenceById(int id);
-       
+        PreferenceViewModel GetUserPreferences(int id);
 
-
-
-        //bool PreferenceExists(int id);        
+     
         void CreatePreference(PreferenceViewModel preference);
         void UpdatePreference(PreferenceViewModel preference);
-        void DeletePreference(int id);
-
+        void SavePreference(PreferenceViewModel preference);
 
         Preference GetPreference(int id);
         Task<Preference> GetPreferenceAsync(int id);
         Task CreatePreferenceAsync(Preference preference);       
         Task UpdatePreferenceAsync(Preference preference);
+        Task<bool> PreferenceExistsAsync(int id);
     }
 }

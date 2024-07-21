@@ -3,11 +3,13 @@
     --light-bg: #fff;
     --light-main: #ADC5CF;
     --light-outer: #A4C1CD;
+    --light-text: #185D62;
 
     /*Dark Mode Colors*/
     --dark-bg: #000;
     --dark-main: #185D62;
     --dark-outer: #fff;
+    --dark-text: #fff;
 }
 
 body {
@@ -16,21 +18,21 @@ body {
     width: 100%;
     height: 100vh;
     display: flex;
-    justify-content: flex-start; 
-    align-items: flex-start; 
+    justify-content: flex-start;
+    align-items: flex-start;
     overflow: hidden;
     background-color: var(--dark-bg);
     transition: background-color 0.4s ease;
+    
 }
 
 .outer-container {
-    
     margin-left: 265px;
     position: fixed;
     z-index: 2;
     box-sizing: border-box;
     background-color: var(--dark-outer);
-    padding: 10px;
+    padding: 10px 10px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
@@ -41,6 +43,7 @@ body {
     right: 20px;
     bottom: 20px;
     transition: background-color 0.4s ease;
+    transition: margin-left 0.3s ease;
 }
 
 .outer-container.expand {
@@ -66,12 +69,33 @@ body {
     padding-right: 20px;
 }
 
+html {
+    font-size: 16px; /* Set a base font size */
+}
 h1 {
     font-size: 36px;
     font-weight: bold;
     margin-top: 0;
     margin-bottom: 30px;
     letter-spacing: 0.5px;
+    font-size: 1.5rem;
+}
+h2 {
+    font-size: 1.5rem; /* This will be 24px */
+}
+.message-container {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #565656; 
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 1000; 
+    font-size: 16px;
+
 }
 
 
@@ -79,7 +103,7 @@ h1 {
 .sidebar {
     width: 265px;
     height: 100vh;
-    background-color: #000;    
+    background-color: #000;
     position: fixed;
     top: 0;
     left: 0;
@@ -88,7 +112,8 @@ h1 {
     align-items: center;
     padding-top: 20px;
     z-index: 1;
-    transition: background-color 0.4s ease;    
+    transition: background-color 0.4s ease;
+    transition: width 0.3s ease;
 }
 
 .logo img {
@@ -140,6 +165,7 @@ h1 {
     text-align: start;
     border-bottom: 1px solid #444;
     margin-top: auto;
+    color: #fff;
 }
 
 .user-name {
@@ -151,12 +177,13 @@ h1 {
 
 .user-email {
     font-size: 0.9em;
-    color: #bbb;
+    color: #fff;
 }
 
 .notification-section {
     width: 100%;
     padding: 0px 0px;
+    color: #ccc;
 }
 
 .notification-section a {
@@ -200,6 +227,8 @@ h1 {
     color: red;
 }
 
+    
+  
 .signout i {
     margin-right: 10px;
 }
@@ -207,6 +236,32 @@ h1 {
 .fas {
     width: 25px;
 }
+.user-details .user-name,
+.user-details .user-email,
+.notification-section a,
+.signout a {
+    color: #fff;
+}
+
+
+.notification-section a {
+    color: #fff;
+}
+
+.signtout a {
+    color: #fff;
+}
+
+
+.user-name,
+.user-email,
+.notification-section a,
+.signout a {
+    color: #fff;
+}
+
+
+
 /*SIDEBAR ENDREGION*/
 
 
@@ -260,27 +315,52 @@ h1 {
 .profile-name {
     font-size: 24px;
     font-weight: bold;
+    font-size: 1.125rem;
 }
 
 .profile-status {
     font-size: 16px;
     color: #1ab498;
+    font-size: 0.875rem;
 }
 
 .settings-section {
     margin-top: 20px;
+    margin-left: 100px; /* Margin from main container */
+    margin-right: 100px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #185D62;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s ease;
 }
+body.light .settings-section {
+    background-color: var(--light-main);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.setting-group {
+    margin-bottom: 0;
 
+}
+.setting-group h2 {
+    font-weight: 200;
+    font-size: 20px;
+    margin-bottom: 2px;
+    color: #9f9f9f;
+    font-size: 1rem;
+}
 .setting {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    font-size: 1rem;
 }
 
 .setting span {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .status {
@@ -288,97 +368,26 @@ h1 {
     color: #ccc;
 }
 
-
-
 .time-select {
-    font-size: 18px;
+    font-size: 14px;
     background-color: transparent;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     color: #fff;
 }
-
-.action-buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 30px;
-}
-
-.save-button,
-.cancel-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.save-button {
-    background-color: #28a745;
-    color: white;
-    margin-right: 10px;
-}
-
-.cancel-button {
-    background-color: #6c757d;
-    color: white;
-}
-
-
-/* Dark Mode */
-body.night {
-    background-color: var(--light-bg);
-    color: #000;
-}
-
-.outer-container.night {
-    background-color: var(--light-outer);
-    color: #000;
-}
-
-.main-content.night {
-    background-color: var(--light-main);
-    color: #185D62;
-}
-
-.sidebar.night {
-    background-color: var(--light-bg);
-    color: #000;
-    transition: background-color 0.4s ease;
-}
-
-.sidebar-menu li a.night {
-    color: #000;
-}
-
-.logo-img.night {
-    width: 200px;
-    height: auto;
-}
-
-.notification-section a.night {
-    color: #000;
-}
-
-.signtout a.night {
-    color: #000;
-}
-
-
-.user-details.night .user-name,
-.user-details.night .user-email,
-.notification-section.night a,
-.signout.night a {
-    color: #000;
-}
-
-.profile-pic.night {
-    width: 80px;
-    height: 80px;
-    background: #5da8ae;
-    border-radius: 10px;
-    margin-right: 20px;
+@media (max-width: 768px) {
+    body {
+        margin-left: 0;
+        
+    }
+    .sidebar {
+        width: 70px; /* Narrow width for sidebar on smaller screens */
+    }
+    .outer-container {
+        padding: 10px 10px; 
+        
+    }
 }
 
 /* Toggle Switch */
@@ -425,10 +434,167 @@ input:checked + .slider {
     background-color: var(--dark-main);
 }
 
-    input:checked + .slider:before {
-        transform: translateX(20px);
-    }
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+/*
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    border-radius: 25px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #fff;
+    margin-top: 100px;
+}
+.save-button {
+    display: block;
+    background-color: #4D869C;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    z-index: 100;
+    border-radius: 20px;
+}
+.pulse {
+    animation: pulse 1.5s infinite;
+}
+
+.action-buttons:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}*/
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.save-button {
+    padding: 10px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 100px;
+    background-color: #4D869C;
+    color: #fff;
+    font-size: 0.5rem;
+}
+.save-button:hover {
+    background-color: #10515b;
+}
 
 
+
+/*Light Mode*/
+body.light {
+    background-color: var(--light-bg);
+    color: #000;
+}
+body.light .outer-container {
+    background-color: var(--light-outer);
+}
+
+.main-content.light {
+    background-color: var(--light-main);
+    color: #185D62;
+}
+body.light .main-content {
+    background-color: var(--light-main);
+    color: #185D62;
+}
+
+body.light .sidebar {
+    background-color: var(--light-bg);
+    color: #000;
+    transition: background-color 0.4s ease;
+}
+.sidebar.light {
+    background-color: var(--light-bg);
+    color: #000;
+    transition: background-color 0.4s ease;
+}
+
+body.light .sidebar-menu li a {
+    color: #000;
+}
+.sidebar-menu li a.light {
+    color: #000;
+}
+
+body.light .logo-img {
+    width: 200px;
+    height: auto;
+}
+
+.logo-img.light {
+    width: 200px;
+    height: auto;
+}
+
+body.light .user-name {
+    color: var(--light-text);
+}
+
+body.light .user-email {
+    color: var(--light-text);
+}
+body.light .notification-section a {
+    color: var(--light-text);
+}
+
+.notification-section a.light {
+    color: var(--light-text);
+}
+
+body.light .signout a {
+    color: var(--light-text);
+}
+.signout a.light {
+    color: var(--light-text);
+}
+body.light .signout a:hover {
+    color: red;
+}
+
+
+body.light .user-details.light .user-name,
+.user-details.light .user-email,
+.notification-section.light a,
+.signout.light a {
+    color: #000;
+}
+.user-details.light .user-name,
+.user-details.light .user-email,
+.notification-section.light a,
+.signout.light a {
+    color: #000;
+}
+
+body.light .profile-pic {
+    width: 80px;
+    height: 80px;
+    background: #5da8ae;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+.profile-pic.light {
+    width: 80px;
+    height: 80px;
+    background: #5da8ae;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+body.light .setting-group h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: var(--light-text);
+}
 
 /*SETTINGS ENDREGION*/

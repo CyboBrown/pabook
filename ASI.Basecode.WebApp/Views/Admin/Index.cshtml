@@ -171,23 +171,220 @@
             <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" required>
+                <div id="dateError" class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="room">Room:</label>
                 <select id="room" name="room" required>
-                    <option value="">Select a room</option>
+                    <option value="">Select Room</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="startTime">Start Time:</label>
-                <input type="time" id="startTime" name="startTime" required>
+                <select id="startTime" name="startTime" required>
+                    <option value="00:00">12:00 AM</option>
+                    <option value="00:15">12:15 AM</option>
+                    <option value="00:30">12:30 AM</option>
+                    <option value="00:45">12:45 AM</option>
+                    <option value="01:00">01:00 AM</option>
+                    <option value="01:15">01:15 AM</option>
+                    <option value="01:30">01:30 AM</option>
+                    <option value="01:45">01:45 AM</option>
+                    <option value="02:00">02:00 AM</option>
+                    <option value="02:15">02:15 AM</option>
+                    <option value="02:30">02:30 AM</option>
+                    <option value="02:45">02:45 AM</option>
+                    <option value="03:00">03:00 AM</option>
+                    <option value="03:15">03:15 AM</option>
+                    <option value="03:30">03:30 AM</option>
+                    <option value="03:45">03:45 AM</option>
+                    <option value="04:00">04:00 AM</option>
+                    <option value="04:15">04:15 AM</option>
+                    <option value="04:30">04:30 AM</option>
+                    <option value="04:45">04:45 AM</option>
+                    <option value="05:00">05:00 AM</option>
+                    <option value="05:15">05:15 AM</option>
+                    <option value="05:30">05:30 AM</option>
+                    <option value="05:45">05:45 AM</option>
+                    <option value="06:00">06:00 AM</option>
+                    <option value="06:15">06:15 AM</option>
+                    <option value="06:30">06:30 AM</option>
+                    <option value="06:45">06:45 AM</option>
+                    <option value="07:00">07:00 AM</option>
+                    <option value="07:15">07:15 AM</option>
+                    <option value="07:30">07:30 AM</option>
+                    <option value="07:45">07:45 AM</option>
+                    <option value="08:00">08:00 AM</option>
+                    <option value="08:15">08:15 AM</option>
+                    <option value="08:30">08:30 AM</option>
+                    <option value="08:45">08:45 AM</option>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="09:15">09:15 AM</option>
+                    <option value="09:30">09:30 AM</option>
+                    <option value="09:45">09:45 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:15">10:15 AM</option>
+                    <option value="10:30">10:30 AM</option>
+                    <option value="10:45">10:45 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:15">11:15 AM</option>
+                    <option value="11:30">11:30 AM</option>
+                    <option value="11:45">11:45 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="12:15">12:15 PM</option>
+                    <option value="12:30">12:30 PM</option>
+                    <option value="12:45">12:45 PM</option>
+                    <option value="13:00">01:00 PM</option>
+                    <option value="13:15">01:15 PM</option>
+                    <option value="13:30">01:30 PM</option>
+                    <option value="13:45">01:45 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="14:15">02:15 PM</option>
+                    <option value="14:30">02:30 PM</option>
+                    <option value="14:45">02:45 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                    <option value="15:15">03:15 PM</option>
+                    <option value="15:30">03:30 PM</option>
+                    <option value="15:45">03:45 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                    <option value="16:15">04:15 PM</option>
+                    <option value="16:30">04:30 PM</option>
+                    <option value="16:45">04:45 PM</option>
+                    <option value="17:00">05:00 PM</option>
+                    <option value="17:15">05:15 PM</option>
+                    <option value="17:30">05:30 PM</option>
+                    <option value="17:45">05:45 PM</option>
+                    <option value="18:00">06:00 PM</option>
+                    <option value="18:15">06:15 PM</option>
+                    <option value="18:30">06:30 PM</option>
+                    <option value="18:45">06:45 PM</option>
+                    <option value="19:00">07:00 PM</option>
+                    <option value="19:15">07:15 PM</option>
+                    <option value="19:30">07:30 PM</option>
+                    <option value="19:45">07:45 PM</option>
+                    <option value="20:00">08:00 PM</option>
+                    <option value="20:15">08:15 PM</option>
+                    <option value="20:30">08:30 PM</option>
+                    <option value="20:45">08:45 PM</option>
+                    <option value="21:00">09:00 PM</option>
+                    <option value="21:15">09:15 PM</option>
+                    <option value="21:30">09:30 PM</option>
+                    <option value="21:45">09:45 PM</option>
+                    <option value="22:00">10:00 PM</option>
+                    <option value="22:15">10:15 PM</option>
+                    <option value="22:30">10:30 PM</option>
+                    <option value="22:45">10:45 PM</option>
+                    <option value="23:00">11:00 PM</option>
+                    <option value="23:15">11:15 PM</option>
+                    <option value="23:30">11:30 PM</option>
+                    <option value="23:45">11:45 PM</option>
+                </select>
+                <div id="startTimeError" class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="endTime">End Time:</label>
-                <input type="time" id="endTime" name="endTime" required>
+                <select id="endTime" name="endTime" required>
+                    <option value="00:00">12:00 AM</option>
+                    <option value="00:15">12:15 AM</option>
+                    <option value="00:30">12:30 AM</option>
+                    <option value="00:45">12:45 AM</option>
+                    <option value="01:00">01:00 AM</option>
+                    <option value="01:15">01:15 AM</option>
+                    <option value="01:30">01:30 AM</option>
+                    <option value="01:45">01:45 AM</option>
+                    <option value="02:00">02:00 AM</option>
+                    <option value="02:15">02:15 AM</option>
+                    <option value="02:30">02:30 AM</option>
+                    <option value="02:45">02:45 AM</option>
+                    <option value="03:00">03:00 AM</option>
+                    <option value="03:15">03:15 AM</option>
+                    <option value="03:30">03:30 AM</option>
+                    <option value="03:45">03:45 AM</option>
+                    <option value="04:00">04:00 AM</option>
+                    <option value="04:15">04:15 AM</option>
+                    <option value="04:30">04:30 AM</option>
+                    <option value="04:45">04:45 AM</option>
+                    <option value="05:00">05:00 AM</option>
+                    <option value="05:15">05:15 AM</option>
+                    <option value="05:30">05:30 AM</option>
+                    <option value="05:45">05:45 AM</option>
+                    <option value="06:00">06:00 AM</option>
+                    <option value="06:15">06:15 AM</option>
+                    <option value="06:30">06:30 AM</option>
+                    <option value="06:45">06:45 AM</option>
+                    <option value="07:00">07:00 AM</option>
+                    <option value="07:15">07:15 AM</option>
+                    <option value="07:30">07:30 AM</option>
+                    <option value="07:45">07:45 AM</option>
+                    <option value="08:00">08:00 AM</option>
+                    <option value="08:15">08:15 AM</option>
+                    <option value="08:30">08:30 AM</option>
+                    <option value="08:45">08:45 AM</option>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="09:15">09:15 AM</option>
+                    <option value="09:30">09:30 AM</option>
+                    <option value="09:45">09:45 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:15">10:15 AM</option>
+                    <option value="10:30">10:30 AM</option>
+                    <option value="10:45">10:45 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:15">11:15 AM</option>
+                    <option value="11:30">11:30 AM</option>
+                    <option value="11:45">11:45 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="12:15">12:15 PM</option>
+                    <option value="12:30">12:30 PM</option>
+                    <option value="12:45">12:45 PM</option>
+                    <option value="13:00">01:00 PM</option>
+                    <option value="13:15">01:15 PM</option>
+                    <option value="13:30">01:30 PM</option>
+                    <option value="13:45">01:45 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="14:15">02:15 PM</option>
+                    <option value="14:30">02:30 PM</option>
+                    <option value="14:45">02:45 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                    <option value="15:15">03:15 PM</option>
+                    <option value="15:30">03:30 PM</option>
+                    <option value="15:45">03:45 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                    <option value="16:15">04:15 PM</option>
+                    <option value="16:30">04:30 PM</option>
+                    <option value="16:45">04:45 PM</option>
+                    <option value="17:00">05:00 PM</option>
+                    <option value="17:15">05:15 PM</option>
+                    <option value="17:30">05:30 PM</option>
+                    <option value="17:45">05:45 PM</option>
+                    <option value="18:00">06:00 PM</option>
+                    <option value="18:15">06:15 PM</option>
+                    <option value="18:30">06:30 PM</option>
+                    <option value="18:45">06:45 PM</option>
+                    <option value="19:00">07:00 PM</option>
+                    <option value="19:15">07:15 PM</option>
+                    <option value="19:30">07:30 PM</option>
+                    <option value="19:45">07:45 PM</option>
+                    <option value="20:00">08:00 PM</option>
+                    <option value="20:15">08:15 PM</option>
+                    <option value="20:30">08:30 PM</option>
+                    <option value="20:45">08:45 PM</option>
+                    <option value="21:00">09:00 PM</option>
+                    <option value="21:15">09:15 PM</option>
+                    <option value="21:30">09:30 PM</option>
+                    <option value="21:45">09:45 PM</option>
+                    <option value="22:00">10:00 PM</option>
+                    <option value="22:15">10:15 PM</option>
+                    <option value="22:30">10:30 PM</option>
+                    <option value="22:45">10:45 PM</option>
+                    <option value="23:00">11:00 PM</option>
+                    <option value="23:15">11:15 PM</option>
+                    <option value="23:30">11:30 PM</option>
+                    <option value="23:45">11:45 PM</option>
+                </select>
+                <div id="endTimeError" class="error-message"></div>
             </div>
 
             <div class="form-group full-width">
@@ -233,7 +430,16 @@
 
             <div class="form-group full-width">
                 <label for="type">Room Type:</label>
-                <input type="number" id="type" name="type" required>
+                <select id="type" name="type">
+                    <option value="">Select Room Type</option>
+                    <option value="1">Board Room</option>
+                    <option value="2">Conference Room</option>
+                    <option value="3">Meeting Room</option>
+                    <option value="4">Multipurpose Room</option>
+                    <option value="5">Recruitment Room</option>
+                    <option value="6">Training Room</option>
+                    <option value="0">Unassigned</option>
+                </select>
             </div>
 
             <div class="form-group full-width">
@@ -243,7 +449,9 @@
 
             <div class="form-group full-width">
                 <label for="location">Location:</label>
-                <input type="text" id="location" name="location" required>
+                <select id="location" name="location" class="form-control" required>
+                    <option value="">Select Location</option>
+                </select>
             </div>
 
             <div class="form-group full-width">
@@ -289,9 +497,9 @@
             <div class="form-group full-width">
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="0">Admin</option>
-                    <option value="1">Manager</option>
                     <option value="2">User</option>
+                    <option value="1">Manager</option>
+                    <option value="0">Admin</option>
                 </select>
             </div>
 
@@ -371,6 +579,7 @@
 
 @*Booking Script*@
 <script>
+    recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
@@ -454,7 +663,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                                 <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                        ${booking.recurring ? 'Yes' : 'No'}
+                                            ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -498,25 +707,33 @@
             const date = formData.get('date');
 
             // Validate date is not before the current date
-            const currentDate = new Date().toISOString().split('T')[0];
-            if (date < currentDate) {
-                alert('Selected date cannot be in the past.');
+            const currentDate = new Date();
+            const selectedDate = new Date(date);
+            currentDate.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                document.getElementById('dateError').textContent = 'Selected date cannot be in the past.';
+                document.getElementById('dateError').style.display = 'block';
                 return;
             }
 
             // Validate start time is not before the current time if booking is for today
             const currentDateTime = new Date();
             const selectedDateTime = new Date(`${date}T${startTime}`);
-            if (date === currentDate && selectedDateTime < currentDateTime) {
-                alert('Start time cannot be in the past.');
+            if (selectedDate.getTime() === currentDate.getTime() && selectedDateTime < currentDateTime) {
+                document.getElementById('startTimeError').textContent = 'Start time cannot be in the past.';
+                document.getElementById('startTimeError').style.display = 'block';
                 return;
             }
 
-            // Validate duration is at least 5 minutes
-            const startTimeInMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
-            const endTimeInMinutes = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
-            if (endTimeInMinutes - startTimeInMinutes < 5) {
-                alert('The duration between start time and end time must be at least 5 minutes.');
+            // Validate end time is at least 15 minutes after start time
+            const startTimeDate = new Date(`2000-01-01T${startTime}`);
+            const endTimeDate = new Date(`2000-01-01T${endTime}`);
+            const timeDifference = (endTimeDate - startTimeDate) / (1000 * 60); // difference in minutes
+            if (timeDifference < 15) {
+                document.getElementById('endTimeError').textContent = 'End time must be at least 15 minutes after start time.';
+                document.getElementById('endTimeError').style.display = 'block';
                 return;
             }
 
@@ -525,8 +742,8 @@
                 description: formData.get('description'),
                 date: formData.get('date'),
                 roomId: parseInt(formData.get('room')),
-                startTime: formatTimeToTimeSpan(formData.get('startTime')),
-                endTime: formatTimeToTimeSpan(formData.get('endTime')),
+                startTime: formatTimeToTimeSpan(startTime),
+                endTime: formatTimeToTimeSpan(endTime),
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
@@ -534,7 +751,7 @@
             };
 
             if (this.dataset.mode === 'edit') {
-                data.id = parseInt(this.dataset.bookingId); // Ensure the id is included and correctly parsed
+                data.id = parseInt(this.dataset.bookingId);
             }
 
             const submitButton = this.querySelector('button[type="submit"]');
@@ -570,13 +787,7 @@
                     delete this.dataset.bookingId;
                     submitButton.textContent = 'Create Booking';
 
-                    // Check if the booking is for today
-                    const today = new Date().toISOString().split('T')[0];
-                    if (data.date === today) {
-                        fetchTodaysBookings();
-                    }
-
-                    // Add success alert only for new bookings
+                    // Add success alert
                     if (method === 'POST') {
                         alert('Booking created successfully!');
                     } else {
@@ -596,6 +807,110 @@
                     submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
                 });
         });
+
+        function convertTimeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        //15 minute interval for auto fill end time
+        function getNearestFuture15MinInterval(date) {
+            const minutes = date.getMinutes();
+            const roundedMinutes = Math.ceil(minutes / 15) * 15;
+            const newDate = new Date(date);
+            newDate.setMinutes(roundedMinutes);
+            newDate.setSeconds(0);
+            newDate.setMilliseconds(0);
+            return newDate;
+        }
+
+        //set initial values for start and end time
+        document.getElementById('startTime').addEventListener('change', function () {
+            const startTime = new Date(`2000-01-01T${this.value}`);
+            const endTime = new Date(`2000-01-01T${document.getElementById('endTime').value}`);
+
+            if (endTime <= startTime) {
+                const newEndTime = new Date(startTime.getTime() + 15 * 60000);
+                document.getElementById('endTime').value = newEndTime.toTimeString().substring(0, 5);
+            }
+        });
+
+         //start time and end time validation
+        document.getElementById('startTime').addEventListener('change', validateTimes);
+        document.getElementById('endTime').addEventListener('change', validateTimes);
+        document.getElementById('date').addEventListener('change', validateTimes);
+
+        function validateTimes() {
+            validateStartTime();
+            validateEndTime();
+        }
+
+        function validateStartTime() {
+            const startTimeSelect = document.getElementById('startTime');
+            const dateInput = document.getElementById('date');
+            const errorElement = document.getElementById('startTimeError');
+
+            const selectedDate = new Date(dateInput.value);
+            const selectedTime = startTimeSelect.value;
+            const selectedDateTime = new Date(`${selectedDate.toDateString()} ${selectedTime}`);
+            const currentDateTime = new Date();
+
+            if (selectedDateTime < currentDateTime) {
+                errorElement.textContent = 'Start time cannot be in the past.';
+                errorElement.style.display = 'block';
+                startTimeSelect.setCustomValidity('Invalid start time');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                startTimeSelect.setCustomValidity('');
+            }
+        }
+
+        function validateEndTime() {
+            const startTimeSelect = document.getElementById('startTime');
+            const endTimeSelect = document.getElementById('endTime');
+            const errorElement = document.getElementById('endTimeError');
+
+            const startTime = new Date(`2000-01-01T${startTimeSelect.value}`);
+            const endTime = new Date(`2000-01-01T${endTimeSelect.value}`);
+
+            const timeDifference = (endTime - startTime) / (1000 * 60); // difference in minutes
+
+            if (timeDifference < 15) {
+                errorElement.textContent = 'End time must be at least 15 minutes after start time.';
+                errorElement.style.display = 'block';
+                endTimeSelect.setCustomValidity('Invalid end time');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                endTimeSelect.setCustomValidity('');
+            }
+        }
+
+
+        //date validation
+        document.getElementById('date').addEventListener('change', validateDate);
+
+        function validateDate() {
+            const dateInput = document.getElementById('date');
+            const errorElement = document.getElementById('dateError');
+            const selectedDate = new Date(dateInput.value);
+            const currentDate = new Date();
+
+            // Set both dates to midnight for accurate comparison
+            selectedDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                errorElement.textContent = 'Selected date cannot be in the past.';
+                errorElement.style.display = 'block';
+                dateInput.setCustomValidity('Invalid date');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                dateInput.setCustomValidity('');
+            }
+        }
 
         // Function to edit booking
         function editBooking(bookingId) {
@@ -647,7 +962,7 @@
                             <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
                             <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
                             ${booking.recurring ? `
-                                <p class="mb-2"><strong>Recurrence Type:</strong> ${booking.recurrenceTypeName}</p>
+                                <p class="mb-2"><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
                                 <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
                             ` : ''}
                         `;
@@ -698,7 +1013,23 @@
 
         btn.onclick = function () {
             modal.style.display = "block";
-            bookingForm.reset(); // reset button
+            bookingForm.reset(); // reset form
+
+            // Get the nearest future 15-minute interval
+            const now = new Date();
+            const startTime = getNearestFuture15MinInterval(now);
+
+            // Set end time to 15 minutes after start time
+            const endTime = new Date(startTime.getTime() + 15 * 60000);
+
+            // Format times for the select inputs
+            const formatTimeForSelect = (date) => {
+                return date.toTimeString().substring(0, 5);
+            };
+
+            // Set the start and end time in the form
+            document.getElementById('startTime').value = formatTimeForSelect(startTime);
+            document.getElementById('endTime').value = formatTimeForSelect(endTime);
         }
 
         span.onclick = function () {
@@ -730,7 +1061,8 @@
  </script>
 
  @*User Script*@
- <script>
+<script>
+     roles = ['Admin', 'Manager', 'User'];
      document.addEventListener("DOMContentLoaded", function () {
          function validateForm() {
              const requiredFields = userForm.querySelectorAll('[required]');
@@ -763,7 +1095,11 @@
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastName}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.userRole}</td>
+                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.userRole != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                        ${roles[user.userRole]}
+                                                  </span>
+                                              </td>
                                               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                   <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
                                                   <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
@@ -1038,7 +1374,35 @@
 
 @*Room Script*@
 <script>
+    roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"];
+    locations = [];
+
     document.addEventListener("DOMContentLoaded", function () {
+        //For fetching locations
+        function populateLocations() {
+            $.ajax({
+                url: '/api/Room/locations',
+                type: 'GET',
+                success: function (data) {
+                    var dropdown = $('#location');
+                    dropdown.empty();
+                    dropdown.append($('<option></option>').val('').text('Select Location'));
+                    $.each(data, function (i, item) {
+                        locations.push(item.name);
+                        dropdown.append($('<option></option>').val(item.id).text(item.name));
+                    });
+                },
+                error: function (error) {
+                    console.log('Error fetching locations:', error);
+                }
+            });
+        }
+
+        // Call this function when the page loads
+        $(document).ready(function () {
+            populateLocations();
+        });
+
         function validateForm() {
             const requiredFields = roomForm.querySelectorAll('[required]');
             let isValid = true;
@@ -1066,9 +1430,17 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.type}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${roomTypes[room.type]}
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.location}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.location != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${locations[room.location]}
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
@@ -1691,6 +2063,14 @@
 
         #roleDropdown {
             color:black;
+        }
+
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
         }
 
     </style>

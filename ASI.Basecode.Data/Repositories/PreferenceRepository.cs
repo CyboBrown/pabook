@@ -14,8 +14,10 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class PreferenceRepository : BaseRepository, IPreferenceRepository
     {
-        public PreferenceRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly AsiBasecodeDbContext _context;
+        public PreferenceRepository(AsiBasecodeDbContext context, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
+            _context = context; 
         }
 
         public void AddOrUpdatePreference(Preference preference)
@@ -25,14 +27,13 @@ namespace ASI.Basecode.Data.Repositories
             preference.Id = maxId;
             this.GetDbSet<Preference>().Add(preference);
             UnitOfWork.SaveChanges();*/
-            var existingPreference = GetPreferenceByUserId(preference.UserId);
+            var existingPreference = GetPreferenceByUserId(preference.Id);
             if (existingPreference != null)
             {
                 existingPreference.DarkMode = preference.DarkMode;
                 existingPreference.EnableNotifications = preference.EnableNotifications;
                 existingPreference.DefaultBookingDuration = preference.DefaultBookingDuration;
                 existingPreference.TimeFormat = preference.TimeFormat;
-                existingPreference.UpdatedBy = preference.UpdatedBy;
                 existingPreference.UpdatedDate = preference.UpdatedDate;
 
                 UpdatePreference(existingPreference);
@@ -80,6 +81,19 @@ namespace ASI.Basecode.Data.Repositories
             return await GetDbSet<Preference>().FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public void CreatePreference(Preference preference)
+        {
+            _context.Preferences.Add(preference);
+            UnitOfWork.SaveChanges();
+        }
+
+
+        public async Task<bool> PreferenceExistsAsync(int id)
+        {
+            return await _context.Preferences
+                                 .AnyAsync(p => p.Id == id && !p.Deleted);
+        }
+
         public async Task UpdatePreferenceAsync(Preference preference)
         {
             if (preference == null)
@@ -88,13 +102,13 @@ namespace ASI.Basecode.Data.Repositories
             SetEntityState(preference, EntityState.Modified);
             await UnitOfWork.SaveChangesAsync();
         }
-        public Preference GetPreferenceByUserId(int userId)
+        public Preference GetPreferenceByUserId(int id)
         {
-            return GetDbSet<Preference>().FirstOrDefault(p => p.UserId == userId);
+            return GetDbSet<Preference>().FirstOrDefault(p => p.Id == id);
         }
         public async Task<Preference> GetPreferenceByUserIdAsync(int userId)
         {
-            return await GetDbSet<Preference>().FirstOrDefaultAsync(p => p.UserId == userId);
+            return await GetDbSet<Preference>().FirstOrDefaultAsync(p => p.Id == userId);
         }
         public async Task AddOrUpdatePreferenceAsync(Preference preference)
         {/*
@@ -103,14 +117,13 @@ namespace ASI.Basecode.Data.Repositories
 
             await GetDbSet<Preference>().AddAsync(preference);
             await UnitOfWork.SaveChangesAsync();*/
-            var existingPreference = await GetPreferenceByUserIdAsync(preference.UserId);
+            var existingPreference = await GetPreferenceByUserIdAsync(preference.Id);
             if (existingPreference != null)
             {
                 existingPreference.DarkMode = preference.DarkMode;
                 existingPreference.EnableNotifications = preference.EnableNotifications;
                 existingPreference.DefaultBookingDuration = preference.DefaultBookingDuration;
                 existingPreference.TimeFormat = preference.TimeFormat;
-                existingPreference.UpdatedBy = preference.UpdatedBy;
                 existingPreference.UpdatedDate = preference.UpdatedDate;
 
                 await UpdatePreferenceAsync(existingPreference);

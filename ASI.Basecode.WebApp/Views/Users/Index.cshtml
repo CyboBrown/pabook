@@ -92,21 +92,22 @@
 <div id="addMeetingModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Booking Form</h1>
+        <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
             <div class="form-group full-width">
-                <label for="title">Title:</label>
+                <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
 
             <div class="form-group full-width">
-                <label for="description">Description:</label>
+                <label for="description">Meeting Description:</label>
                 <input type="text" id="description" name="description">
             </div>
 
             <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" required>
+                <div id="dateError" class="error-message"></div>
             </div>
 
             <div class="form-group">
@@ -118,12 +119,208 @@
 
             <div class="form-group">
                 <label for="startTime">Start Time:</label>
-                <input type="time" id="startTime" name="startTime" required>
+                <select id="startTime" name="startTime" required>
+                    <option value="00:00">12:00 AM</option>
+                    <option value="00:15">12:15 AM</option>
+                    <option value="00:30">12:30 AM</option>
+                    <option value="00:45">12:45 AM</option>
+                    <option value="01:00">01:00 AM</option>
+                    <option value="01:15">01:15 AM</option>
+                    <option value="01:30">01:30 AM</option>
+                    <option value="01:45">01:45 AM</option>
+                    <option value="02:00">02:00 AM</option>
+                    <option value="02:15">02:15 AM</option>
+                    <option value="02:30">02:30 AM</option>
+                    <option value="02:45">02:45 AM</option>
+                    <option value="03:00">03:00 AM</option>
+                    <option value="03:15">03:15 AM</option>
+                    <option value="03:30">03:30 AM</option>
+                    <option value="03:45">03:45 AM</option>
+                    <option value="04:00">04:00 AM</option>
+                    <option value="04:15">04:15 AM</option>
+                    <option value="04:30">04:30 AM</option>
+                    <option value="04:45">04:45 AM</option>
+                    <option value="05:00">05:00 AM</option>
+                    <option value="05:15">05:15 AM</option>
+                    <option value="05:30">05:30 AM</option>
+                    <option value="05:45">05:45 AM</option>
+                    <option value="06:00">06:00 AM</option>
+                    <option value="06:15">06:15 AM</option>
+                    <option value="06:30">06:30 AM</option>
+                    <option value="06:45">06:45 AM</option>
+                    <option value="07:00">07:00 AM</option>
+                    <option value="07:15">07:15 AM</option>
+                    <option value="07:30">07:30 AM</option>
+                    <option value="07:45">07:45 AM</option>
+                    <option value="08:00">08:00 AM</option>
+                    <option value="08:15">08:15 AM</option>
+                    <option value="08:30">08:30 AM</option>
+                    <option value="08:45">08:45 AM</option>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="09:15">09:15 AM</option>
+                    <option value="09:30">09:30 AM</option>
+                    <option value="09:45">09:45 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:15">10:15 AM</option>
+                    <option value="10:30">10:30 AM</option>
+                    <option value="10:45">10:45 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:15">11:15 AM</option>
+                    <option value="11:30">11:30 AM</option>
+                    <option value="11:45">11:45 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="12:15">12:15 PM</option>
+                    <option value="12:30">12:30 PM</option>
+                    <option value="12:45">12:45 PM</option>
+                    <option value="13:00">01:00 PM</option>
+                    <option value="13:15">01:15 PM</option>
+                    <option value="13:30">01:30 PM</option>
+                    <option value="13:45">01:45 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="14:15">02:15 PM</option>
+                    <option value="14:30">02:30 PM</option>
+                    <option value="14:45">02:45 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                    <option value="15:15">03:15 PM</option>
+                    <option value="15:30">03:30 PM</option>
+                    <option value="15:45">03:45 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                    <option value="16:15">04:15 PM</option>
+                    <option value="16:30">04:30 PM</option>
+                    <option value="16:45">04:45 PM</option>
+                    <option value="17:00">05:00 PM</option>
+                    <option value="17:15">05:15 PM</option>
+                    <option value="17:30">05:30 PM</option>
+                    <option value="17:45">05:45 PM</option>
+                    <option value="18:00">06:00 PM</option>
+                    <option value="18:15">06:15 PM</option>
+                    <option value="18:30">06:30 PM</option>
+                    <option value="18:45">06:45 PM</option>
+                    <option value="19:00">07:00 PM</option>
+                    <option value="19:15">07:15 PM</option>
+                    <option value="19:30">07:30 PM</option>
+                    <option value="19:45">07:45 PM</option>
+                    <option value="20:00">08:00 PM</option>
+                    <option value="20:15">08:15 PM</option>
+                    <option value="20:30">08:30 PM</option>
+                    <option value="20:45">08:45 PM</option>
+                    <option value="21:00">09:00 PM</option>
+                    <option value="21:15">09:15 PM</option>
+                    <option value="21:30">09:30 PM</option>
+                    <option value="21:45">09:45 PM</option>
+                    <option value="22:00">10:00 PM</option>
+                    <option value="22:15">10:15 PM</option>
+                    <option value="22:30">10:30 PM</option>
+                    <option value="22:45">10:45 PM</option>
+                    <option value="23:00">11:00 PM</option>
+                    <option value="23:15">11:15 PM</option>
+                    <option value="23:30">11:30 PM</option>
+                    <option value="23:45">11:45 PM</option>
+                </select>
+                <div id="startTimeError" class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="endTime">End Time:</label>
-                <input type="time" id="endTime" name="endTime" required>
+                <select id="endTime" name="endTime" required>
+                    <option value="00:00">12:00 AM</option>
+                    <option value="00:15">12:15 AM</option>
+                    <option value="00:30">12:30 AM</option>
+                    <option value="00:45">12:45 AM</option>
+                    <option value="01:00">01:00 AM</option>
+                    <option value="01:15">01:15 AM</option>
+                    <option value="01:30">01:30 AM</option>
+                    <option value="01:45">01:45 AM</option>
+                    <option value="02:00">02:00 AM</option>
+                    <option value="02:15">02:15 AM</option>
+                    <option value="02:30">02:30 AM</option>
+                    <option value="02:45">02:45 AM</option>
+                    <option value="03:00">03:00 AM</option>
+                    <option value="03:15">03:15 AM</option>
+                    <option value="03:30">03:30 AM</option>
+                    <option value="03:45">03:45 AM</option>
+                    <option value="04:00">04:00 AM</option>
+                    <option value="04:15">04:15 AM</option>
+                    <option value="04:30">04:30 AM</option>
+                    <option value="04:45">04:45 AM</option>
+                    <option value="05:00">05:00 AM</option>
+                    <option value="05:15">05:15 AM</option>
+                    <option value="05:30">05:30 AM</option>
+                    <option value="05:45">05:45 AM</option>
+                    <option value="06:00">06:00 AM</option>
+                    <option value="06:15">06:15 AM</option>
+                    <option value="06:30">06:30 AM</option>
+                    <option value="06:45">06:45 AM</option>
+                    <option value="07:00">07:00 AM</option>
+                    <option value="07:15">07:15 AM</option>
+                    <option value="07:30">07:30 AM</option>
+                    <option value="07:45">07:45 AM</option>
+                    <option value="08:00">08:00 AM</option>
+                    <option value="08:15">08:15 AM</option>
+                    <option value="08:30">08:30 AM</option>
+                    <option value="08:45">08:45 AM</option>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="09:15">09:15 AM</option>
+                    <option value="09:30">09:30 AM</option>
+                    <option value="09:45">09:45 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:15">10:15 AM</option>
+                    <option value="10:30">10:30 AM</option>
+                    <option value="10:45">10:45 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:15">11:15 AM</option>
+                    <option value="11:30">11:30 AM</option>
+                    <option value="11:45">11:45 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="12:15">12:15 PM</option>
+                    <option value="12:30">12:30 PM</option>
+                    <option value="12:45">12:45 PM</option>
+                    <option value="13:00">01:00 PM</option>
+                    <option value="13:15">01:15 PM</option>
+                    <option value="13:30">01:30 PM</option>
+                    <option value="13:45">01:45 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="14:15">02:15 PM</option>
+                    <option value="14:30">02:30 PM</option>
+                    <option value="14:45">02:45 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                    <option value="15:15">03:15 PM</option>
+                    <option value="15:30">03:30 PM</option>
+                    <option value="15:45">03:45 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                    <option value="16:15">04:15 PM</option>
+                    <option value="16:30">04:30 PM</option>
+                    <option value="16:45">04:45 PM</option>
+                    <option value="17:00">05:00 PM</option>
+                    <option value="17:15">05:15 PM</option>
+                    <option value="17:30">05:30 PM</option>
+                    <option value="17:45">05:45 PM</option>
+                    <option value="18:00">06:00 PM</option>
+                    <option value="18:15">06:15 PM</option>
+                    <option value="18:30">06:30 PM</option>
+                    <option value="18:45">06:45 PM</option>
+                    <option value="19:00">07:00 PM</option>
+                    <option value="19:15">07:15 PM</option>
+                    <option value="19:30">07:30 PM</option>
+                    <option value="19:45">07:45 PM</option>
+                    <option value="20:00">08:00 PM</option>
+                    <option value="20:15">08:15 PM</option>
+                    <option value="20:30">08:30 PM</option>
+                    <option value="20:45">08:45 PM</option>
+                    <option value="21:00">09:00 PM</option>
+                    <option value="21:15">09:15 PM</option>
+                    <option value="21:30">09:30 PM</option>
+                    <option value="21:45">09:45 PM</option>
+                    <option value="22:00">10:00 PM</option>
+                    <option value="22:15">10:15 PM</option>
+                    <option value="22:30">10:30 PM</option>
+                    <option value="22:45">10:45 PM</option>
+                    <option value="23:00">11:00 PM</option>
+                    <option value="23:15">11:15 PM</option>
+                    <option value="23:30">11:30 PM</option>
+                    <option value="23:45">11:45 PM</option>
+                </select>
+                <div id="endTimeError" class="error-message"></div>
             </div>
 
             <div class="form-group full-width">
@@ -157,21 +354,16 @@
 </div>
 
 <!-- Modal for details -->
-<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
-        <div id="bookingDetailsContent"></div>
+<<div id="bookingDetailsModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h3>Booking Details</h3>
+        <div id="bookingDetailsContent" class="white-container"></div>
     </div>
 </div>
 
-
-
 <script>
+       recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     //fetching karon nga bookings
     //document.addEventListener('DOMContentLoaded', function () {
     //    fetchTodaysBookings();
@@ -180,8 +372,36 @@
     //});
     //fetchTodaysBookings();
 
+        //this is the function for 'view'
+    function showBookingDetails(bookingId) {
+        fetch(`/api/Booking/${bookingId}`)
+            .then(response => response.json())
+            .then(booking => {
+                const modal = document.getElementById('bookingDetailsModal');
+                const content = document.getElementById('bookingDetailsContent');
+                content.innerHTML = `
+                    <p><strong>Meeting Title:</strong> ${booking.title}</p>
+                    <p><strong>Meeting Description:</strong> ${booking.description}</p>
+                    <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                    <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                    <p><strong>Room:</strong> ${booking.roomName}</p>
+                    <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                    ${booking.recurring ? `
+                        <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
+                        <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                    ` : ''}
+                `;
+                modal.style.display = 'block';
+            })
+            .catch(error => console.error('Error fetching booking details:', error));
+    }
 
-    function fetchTodaysBookings() {
+    document.getElementById('closeModalBtn').onclick = function () {
+        document.getElementById('bookingDetailsModal').style.display = 'none';
+    }
+        
+        //this is for fetching today's bookings
+       function fetchTodaysBookings() {
         fetch('/api/Booking/todaysBookings')
             .then(response => response.json())
             .then(data => {
@@ -192,7 +412,6 @@
                 bookingItemsContainer.innerHTML = ''; // Clear existing items
 
                 data.forEach(booking => {
-                    //console.log("Today's Bookings ID No. " + booking.id);
                     const bookingItem = document.createElement('tr');
                     bookingItem.classList.add('booking-item');
                     bookingItem.innerHTML = `
@@ -206,6 +425,13 @@
                         </td>
                     `;
                     bookingItemsContainer.appendChild(bookingItem);
+                });
+
+                // Add event listeners to the new buttons
+                document.querySelectorAll('#bookingItems .details-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        showBookingDetails(this.dataset.id);
+                    });
                 });
             })
             .catch(error => console.error('Error fetching bookings:', error));
@@ -325,7 +551,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${booking.recurring ? 'Yes' : 'No'}
+                                ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -370,29 +596,38 @@
             const date = formData.get('date');
 
             // Validate date is not before the current date
-            const currentDate = new Date().toISOString().split('T')[0];
-            if (date < currentDate) {
-                alert('Selected date cannot be in the past.');
+            const currentDate = new Date();
+            const selectedDate = new Date(date);
+            currentDate.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                document.getElementById('dateError').textContent = 'Selected date cannot be in the past.';
+                document.getElementById('dateError').style.display = 'block';
                 return;
             }
 
             // Validate start time is not before the current time if booking is for today
             const currentDateTime = new Date();
             const selectedDateTime = new Date(`${date}T${startTime}`);
-            if (date === currentDate && selectedDateTime < currentDateTime) {
-                alert('Start time cannot be in the past.');
+            if (selectedDate.getTime() === currentDate.getTime() && selectedDateTime < currentDateTime) {
+                document.getElementById('startTimeError').textContent = 'Start time cannot be in the past.';
+                document.getElementById('startTimeError').style.display = 'block';
                 return;
             }
 
-            // Validate duration is at least 5 minutes
-            const startTimeInMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
-            const endTimeInMinutes = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
-            if (endTimeInMinutes - startTimeInMinutes < 5) {
-                alert('The duration between start time and end time must be at least 5 minutes.');
+            // Validate end time is at least 15 minutes after start time
+            const startTimeDate = new Date(`2000-01-01T${startTime}`);
+            const endTimeDate = new Date(`2000-01-01T${endTime}`);
+            const timeDifference = (endTimeDate - startTimeDate) / (1000 * 60); // difference in minutes
+            if (timeDifference < 15) {
+                document.getElementById('endTimeError').textContent = 'End time must be at least 15 minutes after start time.';
+                document.getElementById('endTimeError').style.display = 'block';
                 return;
             }
 
             const data = {
+                id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
                 description: formData.get('description'),
                 date: formData.get('date'),
@@ -405,18 +640,9 @@
                 userId: getCurrentUserId()
             };
 
-            if (this.dataset.mode === 'edit') {
-                data.id = parseInt(this.dataset.bookingId); // Ensure the id is included and correctly parsed
-            }
-
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-
-            const url = this.dataset.mode === 'edit'
-                ? `/api/Booking/${this.dataset.bookingId}`
-                : '/api/Booking/create';
-            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
+            const isEdit = this.dataset.mode === 'edit';
+            const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
+            const method = isEdit ? 'PUT' : 'POST';
 
             fetch(url, {
                 method: method,
@@ -432,11 +658,11 @@
                     return response.json();
                 })
                 .then(result => {
-                    console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
+                    console.log('Booking ' + (isEdit ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
                     loadBookings(); // This will refresh the entire table
                     fetchTodaysBookings();
-                    bookingForm.reset();
+                    resetFormAndButton(); // Reset form after successful submission
 
                     // Reset form mode and submit button text
                     this.dataset.mode = 'create';
@@ -449,16 +675,12 @@
                         fetchTodaysBookings();
                     }
 
-                    // Add success alert only for new bookings
-                    if (method === 'POST') {
-                        alert('Booking created successfully!');
-                    } else {
-                        alert('Booking updated successfully!');
-                    }
+                    // Add success alert with correct message
+                    alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
                 })
                 .catch(error => {
-                    console.error('Error ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' booking:', error);
-                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the booking. Please try again.';
+                    console.error('Error ' + (isEdit ? 'updating' : 'creating') + ' booking:', error);
+                    let errorMessage = 'An error occurred while ' + (isEdit ? 'updating' : 'creating') + ' the booking. Please try again.';
                     if (error.errors) {
                         errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
                     }
@@ -466,11 +688,113 @@
                 })
                 .finally(() => {
                     submitButton.disabled = false;
-                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
+                    submitButton.textContent = isEdit ? 'Update Booking' : 'Create Booking';
                 });
         });
 
-        // Function to edit booking
+        function convertTimeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        //15 minute interval for auto fill end time
+        function getNearestFuture15MinInterval(date) {
+            const minutes = date.getMinutes();
+            const roundedMinutes = Math.ceil(minutes / 15) * 15;
+            const newDate = new Date(date);
+            newDate.setMinutes(roundedMinutes);
+            newDate.setSeconds(0);
+            newDate.setMilliseconds(0);
+            return newDate;
+        }
+
+        //set initial values for start and end time
+        document.getElementById('startTime').addEventListener('change', function () {
+            const startTime = new Date(`2000-01-01T${this.value}`);
+            const endTime = new Date(`2000-01-01T${document.getElementById('endTime').value}`);
+
+            if (endTime <= startTime) {
+                const newEndTime = new Date(startTime.getTime() + 15 * 60000);
+                document.getElementById('endTime').value = newEndTime.toTimeString().substring(0, 5);
+            }
+        });
+
+        //start time and end time validation
+        document.getElementById('startTime').addEventListener('change', validateTimes);
+        document.getElementById('endTime').addEventListener('change', validateTimes);
+        document.getElementById('date').addEventListener('change', validateTimes);
+
+        function validateTimes() {
+            validateStartTime();
+            validateEndTime();
+        }
+
+        function validateStartTime() {
+            const startTimeSelect = document.getElementById('startTime');
+            const dateInput = document.getElementById('date');
+            const errorElement = document.getElementById('startTimeError');
+
+            const selectedDate = new Date(dateInput.value);
+            const selectedTime = startTimeSelect.value;
+            const selectedDateTime = new Date(`${selectedDate.toDateString()} ${selectedTime}`);
+            const currentDateTime = new Date();
+
+            if (selectedDateTime < currentDateTime) {
+                errorElement.textContent = 'Start time cannot be in the past.';
+                errorElement.style.display = 'block';
+                startTimeSelect.setCustomValidity('Invalid start time');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                startTimeSelect.setCustomValidity('');
+            }
+        }
+
+        function validateEndTime() {
+            const startTimeSelect = document.getElementById('startTime');
+            const endTimeSelect = document.getElementById('endTime');
+            const errorElement = document.getElementById('endTimeError');
+
+            const startTime = new Date(`2000-01-01T${startTimeSelect.value}`);
+            const endTime = new Date(`2000-01-01T${endTimeSelect.value}`);
+
+            const timeDifference = (endTime - startTime) / (1000 * 60); // difference in minutes
+
+            if (timeDifference < 15) {
+                errorElement.textContent = 'End time must be at least 15 minutes after start time.';
+                errorElement.style.display = 'block';
+                endTimeSelect.setCustomValidity('Invalid end time');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                endTimeSelect.setCustomValidity('');
+            }
+        }
+
+        //date validation
+        document.getElementById('date').addEventListener('change', validateDate);
+
+        function validateDate() {
+            const dateInput = document.getElementById('date');
+            const errorElement = document.getElementById('dateError');
+            const selectedDate = new Date(dateInput.value);
+            const currentDate = new Date();
+
+            // Set both dates to midnight for accurate comparison
+            selectedDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < currentDate) {
+                errorElement.textContent = 'Selected date cannot be in the past.';
+                errorElement.style.display = 'block';
+                dateInput.setCustomValidity('Invalid date');
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                dateInput.setCustomValidity('');
+            }
+        }
+
         function editBooking(bookingId) {
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
@@ -490,51 +814,25 @@
                         document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
                     }
 
+                    // Set initial values for start and end time
+                    const startTime = new Date(`2000-01-01T${booking.startTime}`);
+                    const endTime = new Date(startTime.getTime() + 15 * 60000);
+                    document.getElementById('endTime').value = endTime.toTimeString().substring(0, 5);
+
                     // Change form submission to update instead of create
-                    const form = document.getElementById('bookingForm');
-                    form.dataset.mode = 'edit';
-                    form.dataset.bookingId = bookingId;
+                    bookingForm.dataset.mode = 'edit';
+                    bookingForm.dataset.bookingId = bookingId;
 
                     // Change submit button text to 'Update Booking'
-                    const submitButton = form.querySelector('button[type="submit"]');
                     submitButton.textContent = 'Update Booking';
 
                     // Show the modal
-                    document.getElementById('addMeetingModal').style.display = 'block';
+                    modal.style.display = "block";
                 })
                 .catch(error => console.error('Error fetching booking details:', error));
         }
 
-        function showBookingDetails(bookingId) {
-            function getRecurrenceTypeName(recurrenceId) {
-                result = "Error";
-                fetch(`/api/Booking/recurrence/${recurrenceId}`)
-                    .then(response => response.json())
-                    .then(data => result = data)
-                    .catch(error => console.error('Error getting recurrence type name:', error));
-                return result;
-            }
-            fetch(`/api/Booking/${bookingId}`)
-                .then(response => response.json())
-                .then(booking => {
-                    const modal = document.getElementById('bookingDetailsModal');
-                    const content = document.getElementById('bookingDetailsContent');
-                    content.innerHTML = `
-                    <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
-                    <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
-                    <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                    <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                    <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
-                    <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                    ${booking.recurring ? `
-                                <p class="mb-2"><strong>Recurrence Type:</strong> ${getRecurrenceTypeName(booking.recurrenceTypeId)}</p>
-                        <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                    ` : ''}
-                `;
-                    modal.classList.remove('hidden');
-                })
-                .catch(error => console.error('Error fetching booking details:', error));
-        }
+       
 
         function closeBookingDetailsModal() {
             const modal = document.getElementById('bookingDetailsModal');
@@ -556,9 +854,18 @@
                 fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
                     .then(response => {
                         if (response.ok) {
-                            // Remove the row from the table
-                            const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
-                            row.remove();
+                            // Remove the row from My Bookings table
+                            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+                            if (myBookingsRow) {
+                                myBookingsRow.remove();
+                            }
+
+                            // Remove the row from Today's Bookings list
+                            const todaysBookingsRow = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`).closest('tr');
+                            if (todaysBookingsRow) {
+                                todaysBookingsRow.remove();
+                            }
+
                             alert('Booking cancelled successfully');
                         } else {
                             throw new Error('Failed to cancel booking');
@@ -571,6 +878,36 @@
             }
         }
 
+        function removeBookingFromTables(bookingId) {
+            // Remove from My Bookings table
+            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+            if (myBookingsRow) {
+                myBookingsRow.remove();
+            }
+
+            // Remove from Today's Bookings table
+            const todaysBookingsRow = document.querySelector(`#todaysBookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+            if (todaysBookingsRow) {
+                todaysBookingsRow.remove();
+            }
+
+            // If the booking was the last one in Today's Bookings, update the display
+            const todaysBookingsTable = document.getElementById('todaysBookingsTableBody');
+            if (todaysBookingsTable && todaysBookingsTable.children.length === 0) {
+                document.getElementById('todaysBookingsSection').style.display = 'none';
+                document.getElementById('noBookingsMessage').style.display = 'block';
+            }
+        }
+
+        // reset the form and button
+        function resetFormAndButton() {
+            bookingForm.reset();
+            bookingForm.dataset.mode = 'create';
+            delete bookingForm.dataset.bookingId;
+            submitButton.textContent = 'Create Booking';
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        }
+
         // pag open/close sa modal
         var modal = document.getElementById("addMeetingModal");
         var btn = document.querySelector(".book-now button");
@@ -578,19 +915,36 @@
 
         btn.onclick = function () {
             modal.style.display = "block";
-            bookingForm.reset(); // reset button
+            resetFormAndButton(); // Reset form when opening for a new booking
+
+            // Get the nearest future 15-minute interval
+            const now = new Date();
+            const startTime = getNearestFuture15MinInterval(now);
+
+            // Set end time to 15 minutes after start time
+            const endTime = new Date(startTime.getTime() + 15 * 60000);
+
+            // Format times for the select inputs
+            const formatTimeForSelect = (date) => {
+                return date.toTimeString().substring(0, 5);
+            };
+
+            // Set the start and end time in the form
+            document.getElementById('startTime').value = formatTimeForSelect(startTime);
+            document.getElementById('endTime').value = formatTimeForSelect(endTime);
         }
 
         span.onclick = function () {
             modal.style.display = "none";
+            resetFormAndButton(); // Reset form when closing modal
         }
 
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+                resetFormAndButton(); // Reset form when closing modal by clicking outside
             }
         }
-
         // recurring nga choice
         document.getElementById('recurring').addEventListener('change', function () {
             document.getElementById('recurrenceOptions').style.display =
@@ -866,7 +1220,7 @@
             max-width: 700px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-family: 'YourMainContainerFont', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: white;
             position: relative;
         }
@@ -874,7 +1228,8 @@
             .modal-content h1 {
                 text-align: center;
                 color: #ecf0f1;
-                margin-bottom: 10px; 
+                margin-bottom: 10px;
+                font-weight: 600;
             }
 
             .modal-content form {
@@ -967,5 +1322,81 @@
             max-height: calc(76vh - 10rem); 
         }
 
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* for booking details modal */
+        #bookingDetailsModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+            #bookingDetailsModal .modal-content {
+                background-color: #185D62;
+                margin: 10% auto;
+                padding: 20px;
+                border: 1px solid #185D62;
+                width: 80%;
+                max-width: 600px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                font-family: 'Poppins', sans-serif;
+                color: white;
+                position: relative;
+            }
+
+                #bookingDetailsModal .modal-content h3 {
+                    text-align: center;
+                    color: #ecf0f1;
+                    margin-bottom: 10px;
+                    font-size: 2em;
+                    font-weight: 600;
+                }
+
+                #bookingDetailsModal .modal-content .close {
+                    color: #fff;
+                    position: absolute;
+                    top: 10px;
+                    right: 15px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+                    #bookingDetailsModal .modal-content .close:hover,
+                    #bookingDetailsModal .modal-content .close:focus {
+                        color: #ecf0f1;
+                        text-decoration: none;
+                    }
+
+        .white-container {
+            background-color: white;
+            color: #185D62;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+            .white-container p {
+                margin-bottom: 10px;
+                line-height: 1.6;
+                font-size: 1em;
+            }
+
+            .white-container strong {
+                color: #185D62;
+                font-weight: 600;
+            }
     </style>
 }
