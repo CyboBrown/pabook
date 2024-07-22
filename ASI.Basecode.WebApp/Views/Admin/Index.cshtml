@@ -21,7 +21,6 @@
             <div id="roomsTab" class="tab" onclick="switchTab('rooms')">
                 <i class="fas fa-door-open"></i>
                 <span>Rooms</span>
-                
             </div>
         </div>
         @*Bookings View*@
@@ -592,6 +591,7 @@
 @*Booking Script*@
 <script>
     recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
+    room = ['Conference Room A', 'Meeting Room B', 'Training Room C'];
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
@@ -1109,7 +1109,7 @@
         const tr = table.getElementsByTagName('tr');
         console.log(filter);
         for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName('td')[4];
+            const td = tr[i].getElementsByTagName('td')[2];
             if (td) {
                 const txtValue = (td.textContent || td.innerText).trim(); if (txtValue === filter) {
                     tr[i].style.display = '';
@@ -1405,7 +1405,7 @@
         document.querySelector('.reset-button').addEventListener('click', function () {
             userForm.reset();
         });
-    });
+     });
 
     function searchFilterUser() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1779,7 +1779,7 @@
             let rowContainsFilter = false;
             for (j = 0; j < 4; j++) { // Check the first four columns
                 td = tr[i].getElementsByTagName("td")[j];
-            if (td) {
+                if (td) {
                     txtValue = (td.textContent || td.innerText).toUpperCase();
                     if (txtValue.indexOf(filter) > -1) {
                         rowContainsFilter = true;
@@ -1788,12 +1788,12 @@
                 }
             }
             if (rowContainsFilter) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
             }
         }
+    }
 
     function toggleDropdownRoom() {
         document.getElementById('roomDropdown').classList.toggle('show');
@@ -1824,7 +1824,7 @@
             tr[i].style.display = '';
         }
         document.getElementById('roomDropdown').classList.remove('show');
-    }
+    } 
 </script>
 
 
