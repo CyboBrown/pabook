@@ -118,7 +118,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRoom()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out onclick="toggleDropdownRoom()">
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
@@ -1759,6 +1759,7 @@
             tr[i].style.display = '';
         }
         document.getElementById('roomDropdown').classList.remove('show');
+    }
 </script>
 
 
