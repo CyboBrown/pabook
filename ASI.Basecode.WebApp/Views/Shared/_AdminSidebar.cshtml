@@ -17,12 +17,12 @@
                 <span>Analytics</span>
             </a>
         </li>
-        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "ManageRoles" ? "active" : "")">
+        @*<li class="@(ViewContext.RouteData.Values["Action"].ToString() == "ManageRoles" ? "active" : "")">
             <a asp-controller="Admin" asp-action="ManageRoles">
                 <i class="fas fa-users-cog"></i>
                 <span>Manage Roles</span>
             </a>
-        </li>
+        </li>*@
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "AdminSettings" ? "active" : "")">
             <a asp-controller="Admin" asp-action="AdminSettings">
                 <i class="fas fa-cog"></i>

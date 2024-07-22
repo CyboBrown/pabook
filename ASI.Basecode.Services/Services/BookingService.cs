@@ -68,8 +68,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }
         }
@@ -116,8 +116,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }
         }
@@ -221,13 +221,23 @@ namespace ASI.Basecode.Services.Services
             _bookingRepository.CancelBooking(id);
         }
 
-        public bool CheckBookingAvailability(BookingViewModel booking)
+        /*public bool CheckBookingAvailability(BookingViewModel booking)
         {
             var conflicting_bookings = _bookingRepository.GetBookings()
                                                             .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
                                                             .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
                                                                         (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
                                                             .ToList();
+            return !conflicting_bookings.Any();
+        }*/
+        public bool CheckBookingAvailability(BookingViewModel booking)
+        {
+            var conflicting_bookings = _bookingRepository.GetBookings()
+                .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
+                .Where(b => b.Id != booking.Id) // giadd ni kay sometimes, if mu update booking bisan available ang day kay dli sya musugot
+                .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                            (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
+                .ToList();
             return !conflicting_bookings.Any();
         }
     }

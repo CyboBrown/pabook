@@ -49,8 +49,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAllPreferences: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetAllPreferences: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<PreferenceViewModel>();
             }
         }
@@ -66,8 +66,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<PreferenceViewModel>();
             }
         }
@@ -161,8 +161,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in SavePreference: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in SavePreference: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 throw; // Re-throw the exception to be caught by the controller
             }
         }
@@ -182,8 +182,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return null;
             }
         }

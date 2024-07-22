@@ -38,11 +38,12 @@
                         <div class="book-now">
                         <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
+                            Add Booking
                         </button>
                         </div>
-                        <button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                        @*<button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
                             <i class="fas fa-sync-alt"></i> 
-                        </button>
+                        </button>*@
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -117,9 +118,16 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRoom()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
+                        <div id="roomDropdown" class="dropdown-content">
+                            <a onclick="filterByLocation(0)">10th Floor</a>
+                            <a onclick="filterByLocation(1)">11th Floor</a>
+                            <a onclick="filterByLocation(2)">12th Floor</a>
+                            <a onclick="filterByLocation(3)">14th Floor</a>
+                            <a onclick="showAll()">Show All</a>
+                        </div>
                         <button id="addRoomButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
                         </button>
@@ -281,6 +289,7 @@
                     <option value="23:30">11:30 PM</option>
                     <option value="23:45">11:45 PM</option>
                 </select>
+                <span class="text-green-400 text-sm">UTC+8, Philippine Standard Time</span>
                 <div id="startTimeError" class="error-message"></div>
             </div>
 
@@ -406,6 +415,19 @@
                 <div class="form-group-half">
                     <label for="recurrenceEndDate">Recurrence End Date:</label>
                     <input type="date" id="recurrenceEndDate" name="recurrenceEndDate">
+                </div>
+            </div>
+
+            <div id="weeklyOptions" class="full-width" style="display: none;">
+                <label>Select Days:</label>
+                <div class="day-selector">
+                    <div class="day" data-day="SU">SU</div>
+                    <div class="day" data-day="M">M</div>
+                    <div class="day" data-day="TU">TU</div>
+                    <div class="day" data-day="W">W</div>
+                    <div class="day" data-day="TH">TH</div>
+                    <div class="day" data-day="F">F</div>
+                    <div class="day" data-day="SA">SA</div>
                 </div>
             </div>
 
@@ -1042,15 +1064,40 @@
             }
         }
 
-        // recurring nga choice
+        // Show/hide recurrence options
         document.getElementById('recurring').addEventListener('change', function () {
-            document.getElementById('recurrenceOptions').style.display =
-                this.value === 'true' ? 'flex' : 'none';
+            const isRecurring = this.value === 'true';
+            document.getElementById('recurrenceOptions').style.display = isRecurring ? 'flex' : 'none';
+            if (!isRecurring) {
+                document.getElementById('RecurrenceTypeId').value = '';
+                document.getElementById('recurrenceEndDate').value = '';
+                document.getElementById('weeklyOptions').style.display = 'none';
+                document.getElementById('day - selector').value = '';
+            }
+        });
+
+        // Show/hide weekly and monthly options
+        document.getElementById('RecurrenceTypeId').addEventListener('change', function () {
+            const selectedType = this.options[this.selectedIndex].text;
+            document.getElementById('weeklyOptions').style.display = selectedType === 'Weekly' ? 'block' : 'none';
+        });
+
+        // Day selection functionality
+        document.querySelectorAll('.day-selector .day').forEach(function (day) {
+            day.addEventListener('click', function () {
+                this.classList.toggle('selected');
+            });
         });
 
         // reset function
         document.querySelector('.reset-button').addEventListener('click', function () {
             document.getElementById('recurrenceOptions').style.display = 'none';
+            document.getElementById('RecurrenceTypeId').value = '';
+            document.getElementById('recurrenceEndDate').value = '';
+            document.getElementById('weeklyOptions').style.display = 'none';
+            document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                day.classList.remove('selected');
+            });
         });
 
         // get current user ID (to be implemented)
@@ -1249,11 +1296,11 @@
                     const modal = document.getElementById('userDetailsModal');
                     const content = document.getElementById('userDetailsContent');
                     content.innerHTML = `
-                        <p class="mb-2"><strong>userName:</strong> ${user.username}< /p>
-                        <p class="mb-2" > <strong>lastName: </strong> ${user.lastName}</p >
-                        <p class="mb-2" > <strong>firstName: </strong> ${user.firstName}</p >
-                        <p class="mb-2" > <strong>email: </strong> ${user.email}</p >
-                        <p class="mb-2" > <strong>userRole: </strong> ${user.userRole}</p >
+                        <p class="mb-2" > <strong>Username:</strong> ${user.userName}< /p>
+                        <p class="mb-2" > <strong>Last Name: </strong> ${user.lastName}</p >
+                        <p class="mb-2" > <strong>First Name: </strong> ${user.firstName}</p >
+                        <p class="mb-2" > <strong>Email: </strong> ${user.email}</p >
+                        <p class="mb-2" > <strong>Role: </strong> ${roles[user.userRole]}</p >
                         `;
                     modal.classList.remove('hidden');
                 })
@@ -1321,21 +1368,28 @@
      });
 
     function searchFilterUser() {
-        var input, filter, table, tr, td, i, txtValue;
+        var input, filter, table, tr, td, i, j, txtValue;
         input = document.getElementById("searchUserBar");
         filter = input.value.toUpperCase();
         table = document.getElementById("userTable");
         tr = table.getElementsByTagName("tr");
 
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
+        for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            let rowContainsFilter = false;
+            for (j = 0; j < 4; j++) { // Check the first four columns
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = (td.textContent || td.innerText).toUpperCase();
+                    if (txtValue.indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
                 }
+            }
+            if (rowContainsFilter) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
             }
         }
     }
@@ -1344,15 +1398,14 @@
         document.getElementById('roleDropdown').classList.toggle('show');
     }
 
-    function filterByRole(role) {
-        const filter = role.toString();
+    function filterByRole(userRole) {
+        const filter = roles[userRole];
         const table = document.getElementById('userTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
             const td = tr[i].getElementsByTagName('td')[4];
             if (td) {
-                const txtValue = td.textContent || td.innerText;
-                if (txtValue === filter) {
+                const txtValue = (td.textContent || td.innerText).trim(); if (txtValue === filter) {
                     tr[i].style.display = '';
                 } else {
                     tr[i].style.display = 'none';
@@ -1675,6 +1728,37 @@
                 }
             }
         }
+    }
+
+    function toggleDropdownRoom() {
+        document.getElementById('roomDropdown').classList.toggle('show');
+    }
+
+    function filterByroom(room) {
+        const filter = room.toString();
+        const table = document.getElementById('roomTable');
+        const tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName('td')[4];
+            if (td) {
+                const txtValue = td.textContent || td.innerText;
+                if (txtValue === filter) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+        document.getElementById('roomDropdown').classList.remove('show');
+    }
+
+    function showAll() {
+        const table = document.getElementById('roomTable');
+        const tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            tr[i].style.display = '';
+        }
+        document.getElementById('roomDropdown').classList.remove('show');
     }
 </script>
 
@@ -2072,6 +2156,28 @@
             margin-top: 5px;
             display: none;
         }
+
+        .day-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .day.selected {
+                background-color: #185D62;
+                border: 2px solid #000;
+            }
 
     </style>
 }

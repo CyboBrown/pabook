@@ -92,15 +92,15 @@
 <div id="addMeetingModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Booking Form</h1>
+        <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
             <div class="form-group full-width">
-                <label for="title">Title:</label>
+                <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
 
             <div class="form-group full-width">
-                <label for="description">Description:</label>
+                <label for="description">Meeting Description:</label>
                 <input type="text" id="description" name="description">
             </div>
 
@@ -218,6 +218,7 @@
                     <option value="23:45">11:45 PM</option>
                 </select>
                 <div id="startTimeError" class="error-message"></div>
+                <span class="text-green-400 text-sm">UTC+8, Philippine Standard Time</span>
             </div>
 
             <div class="form-group">
@@ -345,6 +346,19 @@
                 </div>
             </div>
 
+            <div id="weeklyOptions" class="full-width" style="display: none;">
+                <label>Select Days:</label>
+                <div class="day-selector">
+                    <div class="day" data-day="SU">SU</div>
+                    <div class="day" data-day="M">M</div>
+                    <div class="day" data-day="TU">TU</div>
+                    <div class="day" data-day="W">W</div>
+                    <div class="day" data-day="TH">TH</div>
+                    <div class="day" data-day="F">F</div>
+                    <div class="day" data-day="SA">SA</div>
+                </div>
+            </div>
+
             <div class="form-group full-width">
                 <button type="submit">Create Booking</button>
                 <button type="reset" class="reset-button">Reset</button>
@@ -354,15 +368,11 @@
 </div>
 
 <!-- Modal for details -->
-<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
-        <div id="bookingDetailsContent"></div>
+<<div id="bookingDetailsModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h3>Booking Details</h3>
+        <div id="bookingDetailsContent" class="white-container"></div>
     </div>
 </div>
 
@@ -377,28 +387,32 @@
     //fetchTodaysBookings();
 
         //this is the function for 'view'
-        function showBookingDetails(bookingId) {
-            fetch(`/api/Booking/${bookingId}`)
-                .then(response => response.json())
-                .then(booking => {
-                    const modal = document.getElementById('bookingDetailsModal');
-                    const content = document.getElementById('bookingDetailsContent');
-                    content.innerHTML = `
-                            <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
-                            <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
-                            <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                            <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                            <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
-                            <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                            ${booking.recurring ? `
-                                        <p class="mb-2"><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
-                                <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                            ` : ''}
-                        `;
-                    modal.classList.remove('hidden');
-                })
-                .catch(error => console.error('Error fetching booking details:', error));
-        }
+    function showBookingDetails(bookingId) {
+        fetch(`/api/Booking/${bookingId}`)
+            .then(response => response.json())
+            .then(booking => {
+                const modal = document.getElementById('bookingDetailsModal');
+                const content = document.getElementById('bookingDetailsContent');
+                content.innerHTML = `
+                    <p><strong>Meeting Title:</strong> ${booking.title}</p>
+                    <p><strong>Meeting Description:</strong> ${booking.description}</p>
+                    <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                    <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                    <p><strong>Room:</strong> ${booking.roomName}</p>
+                    <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                    ${booking.recurring ? `
+                        <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
+                        <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                    ` : ''}
+                `;
+                modal.style.display = 'block';
+            })
+            .catch(error => console.error('Error fetching booking details:', error));
+    }
+
+    document.getElementById('closeModalBtn').onclick = function () {
+        document.getElementById('bookingDetailsModal').style.display = 'none';
+    }
         
         //this is for fetching today's bookings
        function fetchTodaysBookings() {
@@ -483,29 +497,28 @@
             .catch(error => console.error('Error fetching rooms:', error));
 
         //For fetching recurr types
-        function populateRecurrenceTypes() {
-            $.ajax({
-                url: '/api/Booking/recurrenceTypes',
-                type: 'GET',
-                success: function (data) {
-                    var dropdown = $('#RecurrenceTypeId');
-                    dropdown.empty();
-                    dropdown.append($('<option></option>').val('').text('Select Recurrence Type'));
-                    $.each(data, function (i, item) {
-                        dropdown.append($('<option></option>').val(item.id).text(item.name));
-                    });
-                },
-                error: function (error) {
-                    console.log('Error fetching recurrence types:', error);
-                }
-            });
-        }
+            function populateRecurrenceTypes() {
+                $.ajax({
+                    url: '/api/Booking/recurrenceTypes',
+                    type: 'GET',
+                    success: function (data) {
+                        var dropdown = $('#RecurrenceTypeId');
+                        dropdown.empty();
+                        dropdown.append($('<option></option>').val('').text('Select Recurrence Type'));
+                        $.each(data, function (i, item) {
+                            dropdown.append($('<option></option>').val(item.id).text(item.name));
+                        });
+                    },
+                    error: function (error) {
+                        console.log('Error fetching recurrence types:', error);
+                    }
+                });
+            }
 
         // Call this function when the page loads
         $(document).ready(function () {
             populateRecurrenceTypes();
         });
-
 
         // Add form validation
         function validateForm() {
@@ -662,7 +675,7 @@
                     modal.style.display = "none";
                     loadBookings(); // This will refresh the entire table
                     fetchTodaysBookings();
-                    bookingForm.reset();
+                    resetFormAndButton(); // Reset form after successful submission
 
                     // Reset form mode and submit button text
                     this.dataset.mode = 'create';
@@ -820,16 +833,14 @@
                     document.getElementById('endTime').value = endTime.toTimeString().substring(0, 5);
 
                     // Change form submission to update instead of create
-                    const form = document.getElementById('bookingForm');
-                    form.dataset.mode = 'edit';
-                    form.dataset.bookingId = bookingId;
+                    bookingForm.dataset.mode = 'edit';
+                    bookingForm.dataset.bookingId = bookingId;
 
                     // Change submit button text to 'Update Booking'
-                    const submitButton = form.querySelector('button[type="submit"]');
                     submitButton.textContent = 'Update Booking';
 
                     // Show the modal
-                    document.getElementById('addMeetingModal').style.display = 'block';
+                    modal.style.display = "block";
                 })
                 .catch(error => console.error('Error fetching booking details:', error));
         }
@@ -901,6 +912,14 @@
             }
         }
 
+        // reset the form and button
+        function resetFormAndButton() {
+            bookingForm.reset();
+            bookingForm.dataset.mode = 'create';
+            delete bookingForm.dataset.bookingId;
+            submitButton.textContent = 'Create Booking';
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        }
 
         // pag open/close sa modal
         var modal = document.getElementById("addMeetingModal");
@@ -909,7 +928,7 @@
 
         btn.onclick = function () {
             modal.style.display = "block";
-            bookingForm.reset(); // reset form
+            resetFormAndButton(); // Reset form when opening for a new booking
 
             // Get the nearest future 15-minute interval
             const now = new Date();
@@ -930,23 +949,50 @@
 
         span.onclick = function () {
             modal.style.display = "none";
+            resetFormAndButton(); // Reset form when closing modal
         }
 
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+                resetFormAndButton(); // Reset form when closing modal by clicking outside
             }
         }
 
-        // recurring nga choice
+        // Show/hide recurrence options
         document.getElementById('recurring').addEventListener('change', function () {
-            document.getElementById('recurrenceOptions').style.display =
-                this.value === 'true' ? 'flex' : 'none';
+            const isRecurring = this.value === 'true';
+            document.getElementById('recurrenceOptions').style.display = isRecurring ? 'flex' : 'none';
+            if (!isRecurring) {
+                document.getElementById('RecurrenceTypeId').value = '';
+                document.getElementById('recurrenceEndDate').value = '';
+                document.getElementById('weeklyOptions').style.display = 'none';
+                document.getElementById('day - selector').value = '';
+            }
         });
 
+        // Show/hide weekly and monthly options
+        document.getElementById('RecurrenceTypeId').addEventListener('change', function () {
+            const selectedType = this.options[this.selectedIndex].text;
+            document.getElementById('weeklyOptions').style.display = selectedType === 'Weekly' ? 'block' : 'none';
+        });
+
+        // Day selection functionality
+        document.querySelectorAll('.day-selector .day').forEach(function (day) {
+            day.addEventListener('click', function () {
+                this.classList.toggle('selected');
+            });
+        });
+        
         // reset function
         document.querySelector('.reset-button').addEventListener('click', function () {
             document.getElementById('recurrenceOptions').style.display = 'none';
+            document.getElementById('RecurrenceTypeId').value = '';
+            document.getElementById('recurrenceEndDate').value = '';
+            document.getElementById('weeklyOptions').style.display = 'none';
+            document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                day.classList.remove('selected');
+            });
         });
 
         // get current user ID (to be implemented)
@@ -1213,7 +1259,7 @@
             max-width: 700px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-family: 'YourMainContainerFont', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: white;
             position: relative;
         }
@@ -1221,7 +1267,8 @@
             .modal-content h1 {
                 text-align: center;
                 color: #ecf0f1;
-                margin-bottom: 10px; 
+                margin-bottom: 10px;
+                font-weight: 600;
             }
 
             .modal-content form {
@@ -1320,5 +1367,98 @@
             margin-top: 5px;
             display: none;
         }
+
+        /* for booking details modal */
+        #bookingDetailsModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+            #bookingDetailsModal .modal-content {
+                background-color: #185D62;
+                margin: 10% auto;
+                padding: 20px;
+                border: 1px solid #185D62;
+                width: 80%;
+                max-width: 600px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                font-family: 'Poppins', sans-serif;
+                color: white;
+                position: relative;
+            }
+
+                #bookingDetailsModal .modal-content h3 {
+                    text-align: center;
+                    color: #ecf0f1;
+                    margin-bottom: 10px;
+                    font-size: 2em;
+                    font-weight: 600;
+                }
+
+                #bookingDetailsModal .modal-content .close {
+                    color: #fff;
+                    position: absolute;
+                    top: 10px;
+                    right: 15px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+                    #bookingDetailsModal .modal-content .close:hover,
+                    #bookingDetailsModal .modal-content .close:focus {
+                        color: #ecf0f1;
+                        text-decoration: none;
+                    }
+
+        .white-container {
+            background-color: white;
+            color: #185D62;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+            .white-container p {
+                margin-bottom: 10px;
+                line-height: 1.6;
+                font-size: 1em;
+            }
+
+            .white-container strong {
+                color: #185D62;
+                font-weight: 600;
+            }
+
+
+        .day-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .day.selected {
+                background-color: #185D62;
+                border: 2px solid #000;
+            }
     </style>
 }

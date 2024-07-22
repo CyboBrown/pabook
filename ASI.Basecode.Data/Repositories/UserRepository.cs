@@ -45,6 +45,10 @@ namespace ASI.Basecode.Data.Repositories
         public void AddUser(User user)
         {
             Console.WriteLine(" > UserRepo: AddUser");
+            Console.WriteLine(user.UserName);
+            Console.WriteLine(user.FirstName);
+            Console.WriteLine(user.LastName);
+            Console.WriteLine(user.Password);
             var maxId = GetDbSet<User>().Count() == 0 ? 1 : GetDbSet<User>().Max(x => x.Id) + 1;
             user.Id = maxId;
             this.GetDbSet<User>().Add(user);
