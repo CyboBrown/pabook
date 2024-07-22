@@ -38,11 +38,12 @@
                         <div class="book-now">
                         <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
+                            Add Booking
                         </button>
                         </div>
-                        <button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
+                        @*<button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
                             <i class="fas fa-sync-alt"></i> 
-                        </button>
+                        </button>*@
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -117,9 +118,16 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRoom()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
+                        <div id="roomDropdown" class="dropdown-content">
+                            <a onclick="filterByLocation(0)">10th Floor</a>
+                            <a onclick="filterByLocation(1)">11th Floor</a>
+                            <a onclick="filterByLocation(2)">12th Floor</a>
+                            <a onclick="filterByLocation(3)">14th Floor</a>
+                            <a onclick="showAll()">Show All</a>
+                        </div>
                         <button id="addRoomButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
                         </button>
@@ -1287,11 +1295,11 @@
                     const modal = document.getElementById('userDetailsModal');
                     const content = document.getElementById('userDetailsContent');
                     content.innerHTML = `
-                        <p class="mb-2"><strong>userName:</strong> ${user.username}< /p>
-                        <p class="mb-2" > <strong>lastName: </strong> ${user.lastName}</p >
-                        <p class="mb-2" > <strong>firstName: </strong> ${user.firstName}</p >
-                        <p class="mb-2" > <strong>email: </strong> ${user.email}</p >
-                        <p class="mb-2" > <strong>userRole: </strong> ${user.userRole}</p >
+                        <p class="mb-2" > <strong>Username:</strong> ${user.userName}< /p>
+                        <p class="mb-2" > <strong>Last Name: </strong> ${user.lastName}</p >
+                        <p class="mb-2" > <strong>First Name: </strong> ${user.firstName}</p >
+                        <p class="mb-2" > <strong>Email: </strong> ${user.email}</p >
+                        <p class="mb-2" > <strong>Role: </strong> ${roles[user.userRole]}</p >
                         `;
                     modal.classList.remove('hidden');
                 })
@@ -1359,21 +1367,28 @@
      });
 
     function searchFilterUser() {
-        var input, filter, table, tr, td, i, txtValue;
+        var input, filter, table, tr, td, i, j, txtValue;
         input = document.getElementById("searchUserBar");
         filter = input.value.toUpperCase();
         table = document.getElementById("userTable");
         tr = table.getElementsByTagName("tr");
 
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
+        for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            let rowContainsFilter = false;
+            for (j = 0; j < 4; j++) { // Check the first four columns
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = (td.textContent || td.innerText).toUpperCase();
+                    if (txtValue.indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
                 }
+            }
+            if (rowContainsFilter) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
             }
         }
     }
@@ -1382,15 +1397,14 @@
         document.getElementById('roleDropdown').classList.toggle('show');
     }
 
-    function filterByRole(role) {
-        const filter = role.toString();
+    function filterByRole(userRole) {
+        const filter = roles[userRole];
         const table = document.getElementById('userTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
             const td = tr[i].getElementsByTagName('td')[4];
             if (td) {
-                const txtValue = td.textContent || td.innerText;
-                if (txtValue === filter) {
+                const txtValue = (td.textContent || td.innerText).trim(); if (txtValue === filter) {
                     tr[i].style.display = '';
                 } else {
                     tr[i].style.display = 'none';
@@ -1714,6 +1728,36 @@
             }
         }
     }
+
+    function toggleDropdownRoom() {
+        document.getElementById('roomDropdown').classList.toggle('show');
+    }
+
+    function filterByroom(room) {
+        const filter = room.toString();
+        const table = document.getElementById('roomTable');
+        const tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName('td')[4];
+            if (td) {
+                const txtValue = td.textContent || td.innerText;
+                if (txtValue === filter) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+        document.getElementById('roomDropdown').classList.remove('show');
+    }
+
+    function showAll() {
+        const table = document.getElementById('roomTable');
+        const tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            tr[i].style.display = '';
+        }
+        document.getElementById('roomDropdown').classList.remove('show');
 </script>
 
 

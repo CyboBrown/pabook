@@ -54,8 +54,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAnalyticsDashboard: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetAnalyticsDashboard: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return new AnalyticsViewModel();
             }
         }

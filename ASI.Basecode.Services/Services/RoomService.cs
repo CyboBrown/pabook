@@ -81,8 +81,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAllRooms: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetAllRooms: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<RoomViewModel>();
             }
         }
@@ -138,15 +138,7 @@ namespace ASI.Basecode.Services.Services
             room.Deleted = false;
 
             _roomRepository.AddRoom(room);
-            /*
-            var room = new Room();
-            room.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            room.CreatedDate = DateTime.Now;
-            room.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            room.UpdatedDate = DateTime.Now;
-            room.Deleted = false;
-
-            _roomRepository.AddRoom(room);*/
+            
         }
 
         

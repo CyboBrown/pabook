@@ -86,7 +86,7 @@ namespace ASI.Basecode.Services.Services
             }
 
             // Retrieve the maximum current Id value
-            int maxId = _userRepository.GetMaxUserId();
+            //int maxId = _userRepository.GetMaxUserId();
             
             var user = new User();
             _mapper.Map(model, user);
