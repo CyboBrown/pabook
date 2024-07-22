@@ -346,6 +346,19 @@
                 </div>
             </div>
 
+            <div id="weeklyOptions" class="full-width" style="display: none;">
+                <label>Select Days:</label>
+                <div class="day-selector">
+                    <div class="day" data-day="SU">SU</div>
+                    <div class="day" data-day="M">M</div>
+                    <div class="day" data-day="TU">TU</div>
+                    <div class="day" data-day="W">W</div>
+                    <div class="day" data-day="TH">TH</div>
+                    <div class="day" data-day="F">F</div>
+                    <div class="day" data-day="SA">SA</div>
+                </div>
+            </div>
+
             <div class="form-group full-width">
                 <button type="submit">Create Booking</button>
                 <button type="reset" class="reset-button">Reset</button>
@@ -484,29 +497,28 @@
             .catch(error => console.error('Error fetching rooms:', error));
 
         //For fetching recurr types
-        function populateRecurrenceTypes() {
-            $.ajax({
-                url: '/api/Booking/recurrenceTypes',
-                type: 'GET',
-                success: function (data) {
-                    var dropdown = $('#RecurrenceTypeId');
-                    dropdown.empty();
-                    dropdown.append($('<option></option>').val('').text('Select Recurrence Type'));
-                    $.each(data, function (i, item) {
-                        dropdown.append($('<option></option>').val(item.id).text(item.name));
-                    });
-                },
-                error: function (error) {
-                    console.log('Error fetching recurrence types:', error);
-                }
-            });
-        }
+            function populateRecurrenceTypes() {
+                $.ajax({
+                    url: '/api/Booking/recurrenceTypes',
+                    type: 'GET',
+                    success: function (data) {
+                        var dropdown = $('#RecurrenceTypeId');
+                        dropdown.empty();
+                        dropdown.append($('<option></option>').val('').text('Select Recurrence Type'));
+                        $.each(data, function (i, item) {
+                            dropdown.append($('<option></option>').val(item.id).text(item.name));
+                        });
+                    },
+                    error: function (error) {
+                        console.log('Error fetching recurrence types:', error);
+                    }
+                });
+            }
 
         // Call this function when the page loads
         $(document).ready(function () {
             populateRecurrenceTypes();
         });
-
 
         // Add form validation
         function validateForm() {
@@ -946,15 +958,41 @@
                 resetFormAndButton(); // Reset form when closing modal by clicking outside
             }
         }
-        // recurring nga choice
+
+        // Show/hide recurrence options
         document.getElementById('recurring').addEventListener('change', function () {
-            document.getElementById('recurrenceOptions').style.display =
-                this.value === 'true' ? 'flex' : 'none';
+            const isRecurring = this.value === 'true';
+            document.getElementById('recurrenceOptions').style.display = isRecurring ? 'flex' : 'none';
+            if (!isRecurring) {
+                document.getElementById('RecurrenceTypeId').value = '';
+                document.getElementById('recurrenceEndDate').value = '';
+                document.getElementById('weeklyOptions').style.display = 'none';
+                document.getElementById('day - selector').value = '';
+            }
         });
 
+        // Show/hide weekly and monthly options
+        document.getElementById('RecurrenceTypeId').addEventListener('change', function () {
+            const selectedType = this.options[this.selectedIndex].text;
+            document.getElementById('weeklyOptions').style.display = selectedType === 'Weekly' ? 'block' : 'none';
+        });
+
+        // Day selection functionality
+        document.querySelectorAll('.day-selector .day').forEach(function (day) {
+            day.addEventListener('click', function () {
+                this.classList.toggle('selected');
+            });
+        });
+        
         // reset function
         document.querySelector('.reset-button').addEventListener('click', function () {
             document.getElementById('recurrenceOptions').style.display = 'none';
+            document.getElementById('RecurrenceTypeId').value = '';
+            document.getElementById('recurrenceEndDate').value = '';
+            document.getElementById('weeklyOptions').style.display = 'none';
+            document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                day.classList.remove('selected');
+            });
         });
 
         // get current user ID (to be implemented)
@@ -1398,6 +1436,29 @@
             .white-container strong {
                 color: #185D62;
                 font-weight: 600;
+            }
+
+
+        .day-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .day.selected {
+                background-color: #185D62;
+                border: 2px solid #000;
             }
     </style>
 }
