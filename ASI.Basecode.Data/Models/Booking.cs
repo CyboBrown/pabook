@@ -22,10 +22,10 @@ namespace ASI.Basecode.Data.Models
         public int RoomId { get; set; }
         public int? RecurrenceTypeId { get; set; }
         public DateTime? RecurrenceEndDate { get; set; }
+        public int? RecurrenceDayOfPeriod { get; set; }
 
         public virtual RecurrenceType RecurrenceType { get; set; }
         public virtual Room Room { get; set; }
         public virtual User User { get; set; }
-        public virtual Recurrence Recurrence { get; set; }
     }
 }
