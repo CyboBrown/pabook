@@ -68,8 +68,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }
         }
@@ -116,8 +116,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                //Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
+                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }
         }

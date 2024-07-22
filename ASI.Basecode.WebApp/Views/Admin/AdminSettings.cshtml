@@ -288,7 +288,7 @@
                     } else if (typeof data === 'object') {
                         // Update UI based on fetched preferences
                         document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
-                        document.querySelector('select[name="EnableNotifications"]').checked = data.enableNotifications;
+                        //document.querySelector('select[name="EnableNotifications"]').checked = data.enableNotifications;
                         document.querySelector('select[name="TimeFormat"]').checked = data.timeFormat;
                         document.querySelector('select[name="DefaultBookingDuration"]').checked = data.defaultBookingDuration;
                         document.body.classList.add(theme);
@@ -363,11 +363,11 @@
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
-
+            /*
             const enableNotificationsSelect = document.querySelector('select[name="EnableNotifications"]');
             if (enableNotificationsSelect) {
                 enableNotificationsSelect.checked = preferences.enableNotifications;
-            }
+            }*/
 
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
