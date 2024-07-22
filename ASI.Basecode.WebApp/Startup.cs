@@ -151,6 +151,7 @@ namespace ASI.Basecode.WebApp
             services.AddScoped<IPreferenceRepository, PreferenceRepository>();
             services.AddScoped<IPreferenceService, PreferenceService>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();
+            services.AddScoped<INotificationService, NotificationService>();
         }
 
 

@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Notifications";
+}
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<div class="outer-container">
+    <div class="main-content">
+        <div class="header">
+            <h1 class="notifications-title">Notifications</h1>
+        </div>
+        <div id="notificationsContainer" class="notifications-container">
+            <ul id="notificationsList">
+                <!-- Notifications will be populated here by JavaScript -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        loadNotifications();
+    });
+
+    function loadNotifications() {
+        fetch('/api/Notification/notifications')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(notifications => {
+                displayNotifications(notifications);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const list = document.getElementById('notificationsList');
+                list.innerHTML = '<li class="notification">Failed to load notifications. Please try again later.</li>';
+            });
+    }
+
+    function displayNotifications(notifications) {
+        const list = document.getElementById('notificationsList');
+        list.innerHTML = '';
+
+        if (notifications.length === 0) {
+            list.innerHTML = '<li class="notification">No notifications at this time.</li>';
+            return;
+        }
+
+        notifications.forEach(notification => {
+            const li = document.createElement('li');
+            li.className = notification.seen ? 'notification' : 'notification new';
+
+            const notifyDate = new Date(notification.notifyDate);
+            const formattedDate = notifyDate.toLocaleDateString();
+            const formattedTime = notifyDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const icon = getNotificationIcon(notification.type);
+
+            li.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-icon">${icon}</div>
+                    <div class="notification-main">
+                        <div class="notification-title">
+                            ${!notification.seen ? '<span class="new-indicator">•</span>' : ''}
+                            ${notification.title}
+                        </div>
+                        <div class="notification-description">${notification.description}</div>
+                    </div>
+                    <div class="notification-datetime">
+                        <span class="notification-time">${formattedTime}</span>
+                        <span class="notification-date">${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+
+            list.appendChild(li);
+        });
+    }
+
+    function getNotificationIcon(type) {
+        switch (type) {
+            case 1: return '<i class="fas fa-calendar-plus" title="Booking Creation"></i>';
+            case 2: return '<i class="fas fa-calendar-alt" title="Booking Update"></i>';
+            case 3: return '<i class="fas fa-calendar-times" title="Booking Cancellation"></i>';
+            case 4: return '<i class="fas fa-bell" title="Reminder"></i>';
+            default: return '<i class="fas fa-info-circle" title="Notification"></i>';
+        }
+    }
+</script>
+
+<style>
+    .header {
+        margin-bottom: 30px;
+    }
+
+    .notifications-title {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .notifications-container {
+        margin-top: 20px;
+    }
+
+    #notificationsList {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .notification {
+        background-color: #ffffff;
+        margin-bottom: 15px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .notification-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .notification-icon {
+        font-size: 1.5em;
+        margin-right: 15px;
+        color: #1890ff;
+    }
+
+    .notification-main {
+        flex-grow: 1;
+        margin-right: 20px;
+    }
+
+    .notification-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 1.1em;
+    }
+
+    .notification-description {
+        color: #555;
+        font-size: 0.9em;
+    }
+
+    .notification-datetime {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        color: #888;
+        font-size: 0.8em;
+        white-space: nowrap;
+    }
+
+    .notification-time {
+        margin-bottom: 2px;
+    }
+
+    .new-indicator {
+        color: #1890ff;
+        font-size: 20px;
+        margin-right: 5px;
+    }
+
+    .notification.new {
+        background-color: #f0f8ff;
+    }
+</style>
+

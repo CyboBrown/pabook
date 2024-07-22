@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Data
@@ -48,5 +49,7 @@ namespace ASI.Basecode.Data
         {
             await Database.SaveChangesAsync();
         }
+
+        public INotificationRepository NotificationRepository { get; private set; }
     }
 }
