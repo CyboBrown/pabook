@@ -26,28 +26,22 @@
         @*Bookings View*@
         <div id="bookingsContent" class="content flex">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownBookings()">
-                            <i class="fas fa-filter text-gray-400"></i>
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
                         </button>
-                        <div id="bookingsDropdown" class="dropdown-content">
-                            <a onclick="filterByRoom(0)">Conference Room A</a>
-                            <a onclick="filterByRoom(1)">Meeting Room B</a>
-                            <a onclick="filterByRoom(2)">Training Room C</a>
-                            <a onclick="showAllRooms()">Show All</a>
-                        </div>
-                        <div class="book-now">
-                        <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus"></i>
-                            Add Booking
-                        </button>
-                        </div>
-                        @*<button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-sync-alt"></i> 
-                        </button>*@
+                        
+                        <div class="book-now flex-grow">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
+                            </button>
+                        </div> 
+                        
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -73,12 +67,13 @@
         @*User View*@
         <div id="usersContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">U S E R S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="px-4 py-2 text-white rounded-md flex items-center justify-center transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
-                            <i class="fas fa-filter text-gray-400"></i>
+                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
                         </button>
                         <div id="roleDropdown" class="dropdown-content">
                             <a onclick="filterByRole(0)">Admins</a>
@@ -86,11 +81,9 @@
                             <a onclick="filterByRole(2)">Users</a>
                             <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button id="refreshUsersButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-sync-alt"></i>
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                         </button>
                     </div>
                 </div>
@@ -118,12 +111,13 @@
         @*Room View*@
         <div id="roomsContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
-                            <i class="fas fa-filter text-gray-400"></i>
+                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
                             <a onclick="filterByLocation(0)">10th Floor</a>
@@ -132,11 +126,9 @@
                             <a onclick="filterByLocation(3)">14th Floor</a>
                             <a onclick="showAllLocations()">Show All</a>
                         </div>
-                        <button id="addRoomButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button id="refreshRoomsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-sync-alt"></i>
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                         </button>
                     </div>
                 </div>
