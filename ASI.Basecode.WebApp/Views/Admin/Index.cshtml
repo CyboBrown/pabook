@@ -31,10 +31,15 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                        <button id="filterBookingsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownBookings()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
-                        
+                        <div id="bookingsDropdown" class="dropdown-content">
+                            <a onclick="filterByRoom(0)">Conference Room A</a>
+                            <a onclick="filterByRoom(1)">Meeting Room B</a>
+                            <a onclick="filterByRoom(2)">Training Room C</a>
+                            <a onclick="showAllRooms()">Show All</a>
+                        </div>
                         <div class="book-now">
                         <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
@@ -73,14 +78,14 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="px-4 py-2 text-white rounded-md flex items-center justify-center transition duration-300 ease-in-out" onclick="toggleDropdown()">
+                        <button id="filterUsersButton" class="px-4 py-2 text-white rounded-md flex items-center justify-center transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
                         <div id="roleDropdown" class="dropdown-content">
                             <a onclick="filterByRole(0)">Admins</a>
                             <a onclick="filterByRole(1)">Managers</a>
                             <a onclick="filterByRole(2)">Users</a>
-                            <a onclick="showAll()">Show All</a>
+                            <a onclick="showAllRoles()">Show All</a>
                         </div>
                         <button id="addUserButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
@@ -116,9 +121,9 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRoom()" placeholder="Search rooms...">
+                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out onclick="toggleDropdownRoom()">
+                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter text-gray-400"></i>
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
@@ -126,7 +131,7 @@
                             <a onclick="filterByLocation(1)">11th Floor</a>
                             <a onclick="filterByLocation(2)">12th Floor</a>
                             <a onclick="filterByLocation(3)">14th Floor</a>
-                            <a onclick="showAll()">Show All</a>
+                            <a onclick="showAllLocations()">Show All</a>
                         </div>
                         <button id="addRoomButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                             <i class="fas fa-plus"></i>
@@ -1066,6 +1071,81 @@
             return 1; // Placeholder value for now
         }
     });
+
+    function searchFilterBookings() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("searchBookingsBar");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("bookingsTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            let rowContainsFilter = false;
+            for (j = 0; j < 4; j++) { // Check the first four columns
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = (td.textContent || td.innerText).toUpperCase();
+                    if (txtValue.indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
+                }
+            }
+            if (rowContainsFilter) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+    function toggleDropdownBookings() {
+        document.getElementById('bookingsDropdown').classList.toggle('show');
+        console.log("buttons pressed...");
+    }
+
+    function filterByRoom(bookingsRoom) {
+        const filter = room[bookingsRoom];
+        const table = document.getElementById('bookingsTable');
+        const tr = table.getElementsByTagName('tr');
+        console.log(filter);
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName('td')[4];
+            if (td) {
+                const txtValue = (td.textContent || td.innerText).trim(); if (txtValue === filter) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+        document.getElementById('bookingsDropdown').classList.remove('show');
+    }
+
+    function showAllRooms() {
+        const table = document.getElementById('bookingsTable');
+        if (!table) {
+            console.error('Table with id "bookingsTable" not found');
+            return;
+        }
+
+        const tr = table.getElementsByTagName('tr');
+        if (!tr.length) {
+            console.error('No table rows found in "bookingsTable"');
+            return;
+        }
+
+        for (let i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            tr[i].style.display = '';
+        }
+
+        const bookingsDropdown = document.getElementById('bookingsDropdown');
+        if (bookingsDropdown) {
+            bookingsDropdown.classList.remove('show');
+        } else {
+            console.error('Element with id "bookingsDropdown" not found');
+        }
+    }
  </script>
 
  @*User Script*@
@@ -1326,7 +1406,7 @@
         document.querySelector('.reset-button').addEventListener('click', function () {
             userForm.reset();
         });
-     });
+    });
 
     function searchFilterUser() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1349,13 +1429,14 @@
             }
             if (rowContainsFilter) {
                 tr[i].style.display = "";
+            visibleRows++;
             } else {
                 tr[i].style.display = "none";
             }
         }
     }
 
-    function toggleDropdown() {
+    function toggleDropdownUsers() {
         document.getElementById('roleDropdown').classList.toggle('show');
     }
 
@@ -1376,13 +1457,29 @@
         document.getElementById('roleDropdown').classList.remove('show');
     }
 
-    function showAll() {
+    function showAllRoles() {
         const table = document.getElementById('userTable');
+        if (!table) {
+            console.error('Table with id "userTable" not found');
+            return;
+        }
+
         const tr = table.getElementsByTagName('tr');
-        for (let i = 1; i < tr.length; i++) {
+        if (!tr.length) {
+            console.error('No table rows found in "userTable"');
+            return;
+        }
+
+        for (let i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
             tr[i].style.display = '';
         }
-        document.getElementById('roleDropdown').classList.remove('show');
+
+        const roleDropdown = document.getElementById('roleDropdown');
+        if (roleDropdown) {
+            roleDropdown.classList.remove('show');
+        } else {
+            console.error('Element with id "roleDropdown" not found');
+        }
     }
  </script>
 
@@ -1671,18 +1768,28 @@
         });
     });
 
-    function searchFilterRoom() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("searchRoomBar");
+
+
+    function searchFilterRooms() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("searchRoomsBar");
         filter = input.value.toUpperCase();
         table = document.getElementById("roomTable");
         tr = table.getElementsByTagName("tr");
 
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
+        for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            let rowContainsFilter = false;
+            for (j = 0; j < 4; j++) { // Check the first four columns
+                td = tr[i].getElementsByTagName("td")[j];
             if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    txtValue = (td.textContent || td.innerText).toUpperCase();
+                    if (txtValue.indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
+                }
+            }
+            if (rowContainsFilter) {
                     tr[i].style.display = "";
                 } else {
                     tr[i].style.display = "none";
@@ -1713,13 +1820,14 @@
         document.getElementById('roomDropdown').classList.remove('show');
     }
 
-    function showAll() {
+    function showAllLocations() {
         const table = document.getElementById('roomTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
             tr[i].style.display = '';
         }
         document.getElementById('roomDropdown').classList.remove('show');
+    }
 </script>
 
 
@@ -2072,7 +2180,7 @@
             color:black;
         }
 
-        #searchRoomBar {
+        #searchRoomsBar {
             color:black;
         }
 
@@ -2107,6 +2215,14 @@
 
         #roleDropdown {
             color:black;
+        }
+
+        #bookingsDropdown {
+            color: black;
+        }
+
+        #roomDropdown {
+            color: black;
         }
 
 
