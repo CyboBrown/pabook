@@ -155,7 +155,7 @@
 <div id="addBookingModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Booking Form</h1>
+        <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
             <div class="form-group full-width">
                 <label for="title">Title:</label>
@@ -422,8 +422,10 @@
             </div>
 
             <div class="form-group full-width">
-                <button type="submit">Create Booking</button>
-                <button type="reset" class="reset-button">Reset</button>
+                <div class="button-group">
+                    <button type="reset" class="reset-button">Reset</button>
+                    <button type="submit">Add Meeting</button>
+                </div>
             </div>
         </form>
     </div>
@@ -433,7 +435,7 @@
 <div id="addRoomModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Room Form</h1>
+        <h1 style="font-size: 2rem;">Create Room</h1>
         <form id="roomForm">
             <div class="form-group full-width">
                 <label for="name">Room Name:</label>
@@ -473,8 +475,10 @@
             </div>
 
             <div class="form-group full-width">
-                <button type="submit">Add Room</button>
-                <button type="reset" class="reset-button">Reset</button>
+                <div class="button-group">
+                    <button type="reset" class="reset-button">Reset</button>
+                    <button type="submit">Add Room</button>
+                </div>
             </div>
         </form>
     </div>
@@ -484,7 +488,7 @@
 <div id="addUserModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">User Form</h1>
+        <h1 style="font-size: 2rem;">Create User</h1>
         <form id="userForm">
             <div class="form-group full-width">
                 <label for="username">Username:</label>
@@ -521,49 +525,40 @@
             </div>
 
             <div class="form-group full-width">
-                <button type="submit">Add User</button>
-                <button type="reset" class="reset-button">Reset</button>
+                <div class="button-group">
+                    <button type="reset" class="reset-button">Reset</button>
+                    <button type="submit">Add User</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
 @*Booking Details Modal*@
-<div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeBookingDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
-        <div id="bookingDetailsContent"></div>
+<<div id="bookingDetailsModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h3>Booking Details</h3>
+        <div id="bookingDetailsContent" class="white-container"></div>
     </div>
 </div>
 
 @*User Details Modal*@
-<div id="userDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeUserDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <h3 class="text-xl font-semibold mb-4">User Details</h3>
-        <div id="userDetailsContent"></div>
+<div id="userDetailsModal" class="modal">
+    <div class="modal-content">
+        <span id="closeUserDetailsModalBtn" class="close">&times;</span>
+        <h3>User Details</h3>
+        <div id="userDetailsContent" class="white-container"></div>
     </div>
 </div>
 
+
 @*Room Details Modal*@
-<div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeRoomDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <h3 class="text-xl font-semibold mb-4">Room Details</h3>
-        <div id="roomDetailsContent"></div>
+<div id="roomDetailsModal" class="modal">
+    <div class="modal-content">
+        <span id="closeRoomDetailsModalBtn" class="close">&times;</span>
+        <h3>Room Details</h3>
+        <div id="roomDetailsContent" class="white-container"></div>
     </div>
 </div>
 
@@ -967,37 +962,25 @@
                     const modal = document.getElementById('bookingDetailsModal');
                     const content = document.getElementById('bookingDetailsContent');
                     content.innerHTML = `
-                            <p class="mb-2"><strong>Title:</strong> ${booking.title}</p>
-                                <p class="mb-2"><strong>Created by:</strong> ${booking.createdBy || 'Unknown'}</p>
-                            <p class="mb-2"><strong>Description:</strong> ${booking.description}</p>
-                            <p class="mb-2"><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                            <p class="mb-2"><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                            <p class="mb-2"><strong>Room:</strong> ${booking.roomName}</p>
-                            <p class="mb-2"><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                            ${booking.recurring ? `
-                                <p class="mb-2"><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
-                                <p class="mb-2"><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                            ` : ''}
-                        `;
-                    modal.classList.remove('hidden');
+                        <p><strong>Meeting Title:</strong> ${booking.title}</p>
+                        <p><strong>Meeting Description:</strong> ${booking.description}</p>
+                        <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                        <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                        <p><strong>Room:</strong> ${booking.roomName}</p>
+                        <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                        ${booking.recurring ? `
+                            <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
+                            <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                        ` : ''}
+                    `;
+                    modal.style.display = 'block';
                 })
                 .catch(error => console.error('Error fetching booking details:', error));
         }
 
-        function closeBookingDetailsModal() {
-            const modal = document.getElementById('bookingDetailsModal');
-            modal.classList.add('hidden');
+        document.getElementById('closeModalBtn').onclick = function () {
+            document.getElementById('bookingDetailsModal').style.display = 'none';
         }
-
-        // Event listener for the close button
-        document.getElementById('closeBookingDetailsBtn').addEventListener('click', closeBookingDetailsModal);
-
-        // Event listener for closing the modal when clicking outside the content
-        document.getElementById('bookingDetailsModal').addEventListener('click', function (event) {
-            if (event.target === this) {
-                closeBookingDetailsModal();
-            }
-        });
 
         function cancelBooking(bookingId) {
             if (confirm('Are you sure you want to cancel this booking?')) {
@@ -1368,26 +1351,14 @@
                         <p class="mb-2" > <strong>Email: </strong> ${user.email}</p >
                         <p class="mb-2" > <strong>Role: </strong> ${roles[user.userRole]}</p >
                         `;
-                    modal.classList.remove('hidden');
+                    modal.style.display = 'block';
                 })
                 .catch(error => console.error('Error fetching user details:', error));
         }
 
-        function closeUserDetailsModal() {
-            const modal = document.getElementById('userDetailsModal');
-            modal.classList.add('hidden');
+        document.getElementById('closeUserDetailsModalBtn').onclick = function () {
+            document.getElementById('userDetailsModal').style.display = 'none';
         }
-
-        // Event listener for the close button
-        document.getElementById('closeUserDetailsBtn').addEventListener('click', closeUserDetailsModal);
-
-        // Event listener for closing the modal when clicking outside the content
-        document.getElementById('userDetailsModal').addEventListener('click', function (event) {
-            if (event.target === this) {
-                closeUserDetailsModal();
-            }
-        });
-
 
         //DELETE User
         function deleteUser(userId) {
@@ -1730,26 +1701,14 @@
                     <p class="mb-2"><strong>Location:</strong> ${locations[room.location]}</p>
                     <p class="mb-2"><strong>Facilities:</strong> ${room.facilities}</p>
                 `;
-                    modal.classList.remove('hidden');
+                    modal.style.display = 'block';
                 })
                 .catch(error => console.error('Error fetching room details:', error));
         }
 
-        function closeRoomDetailsModal() {
-            const modal = document.getElementById('roomDetailsModal');
-            modal.classList.add('hidden');
+        document.getElementById('closeRoomDetailsModalBtn').onclick = function () {
+            document.getElementById('roomDetailsModal').style.display = 'none';
         }
-
-        // Event listener for the close button
-        document.getElementById('closeRoomDetailsBtn').addEventListener('click', closeRoomDetailsModal);
-
-        // Event listener for closing the modal when clicking outside the content
-        document.getElementById('roomDetailsModal').addEventListener('click', function (event) {
-            if (event.target === this) {
-                closeRoomDetailsModal();
-            }
-        });
-
 
         //DELETE Room
         function deleteRoom(roomId) {
@@ -2100,7 +2059,7 @@
             max-width: 700px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-family: 'YourMainContainerFont', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: white;
             position: relative;
         }
@@ -2109,6 +2068,9 @@
                 text-align: center;
                 color: #ecf0f1;
                 margin-bottom: 10px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
 
             .modal-content form {
@@ -2118,7 +2080,6 @@
                 display: flex;
                 flex-wrap: wrap;
                 gap: 8px;
-                margin-bottom: 20px;
             }
 
             .modal-content label {
@@ -2159,21 +2120,43 @@
         .modal-content button {
             background-color: #5bc0de;
             color: white;
-            padding: 8px 12px;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            margin-top: 15px;
         }
 
             .modal-content button:hover {
                 background-color: #31b0d5;
             }
 
-            .bookingDetailsModal {
-                z-index: 100;
+            .modal-content button[type="submit"] {
+                background-color: #1893a2;
             }
+
+                .modal-content button[type="submit"]:hover {
+                    background-color: #0d353f;
+                }
+
+            .modal-content button[type="reset"] {
+                background-color: #35d3db;
+            }
+
+                .modal-content button[type="reset"]:hover {
+                    background-color: #19b6c1;
+
+                }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .close {
             color: #fff;
             position: absolute;
@@ -2283,6 +2266,76 @@
                 border: 2px solid #000;
             }
 
+        #bookingDetailsModal, #userDetailsModal, #roomDetailsModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+            #bookingDetailsModal .modal-content, #userDetailsModal .modal-content, #roomDetailsModal .modal-content{
+                background-color: #185D62;
+                margin: 10% auto;
+                padding: 20px;
+                border: 1px solid #185D62;
+                width: 80%;
+                max-width: 600px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                font-family: 'Poppins', sans-serif;
+                color: white;
+                position: relative;
+            }
+
+                #bookingDetailsModal .modal-content h3, #userDetailsModal .modal-content h3, #roomDetailsModal .modal-content h3 {
+                    text-align: center;
+                    color: #ecf0f1;
+                    margin-bottom: 10px;
+                    font-size: 2em;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                #bookingDetailsModal .modal-content .close {
+                    color: #fff;
+                    position: absolute;
+                    top: 10px;
+                    right: 15px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+                    #bookingDetailsModal .modal-content .close:hover,
+                    #bookingDetailsModal .modal-content .close:focus {
+                        color: #ecf0f1;
+                        text-decoration: none;
+                    }
+
+        .white-container {
+            background-color: white;
+            color: #185D62;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+            .white-container p {
+                margin-bottom: 10px;
+                line-height: 1.6;
+                font-size: 1em;
+            }
+
+            .white-container strong {
+                color: #185D62;
+                font-weight: 600;
+            }
     </style>
 }
 
