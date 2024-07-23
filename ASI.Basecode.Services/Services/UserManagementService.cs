@@ -64,9 +64,11 @@ namespace ASI.Basecode.Services.Services
                     return new UserManagementViewModel
                     {
                         Id = user.Id,
+                        UserName = user.UserName,
                         LastName = user.LastName,
                         FirstName = user.FirstName,
-                        Email = user.Email
+                        Email = user.Email,
+                        UserRole = user.UserRole,
                         // Map other properties as needed
                     };
                 }
