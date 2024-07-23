@@ -1,7 +1,8 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminHomeViewModel
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
-
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="~/css/admindark.css" />
 @{
     ViewData["Title"] = "Admin Home Page";
 }
@@ -25,27 +26,27 @@
         </div>
         @*Bookings View*@
         <div id="bookingsContent" class="content flex">
-            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                        <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
-                        <div class="flex space-x-2">
-                            <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-300 rounded-md flex items-center justify-center hover:bg-blue-500 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
-                                <i class="fas fa-filter mr-2"></i>
-                                Filter
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
+                    <div class="flex space-x-2">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
+                        </button>
+                        
+                        <div class="book-now flex-grow">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                             </button>
-                            <div class="book-now flex-grow">
-                                <button id="addBookingButton" class="w-20 px-4 py-2 text-sm bg-red-800 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-600 transition duration-300 ease-in-out">
-                                    <i class="fas fa-plus mr-2"></i>
-                                    Add
-                                </button>
-                            </div>
-                        </div>
+                        </div> 
+                        
                     </div>
                 </div>
-                <div class="bg-white shadow-lg rounded-lg flex-grow" style="overflow-y: auto;">
-                    <div class="table-container" style="overflow-x: auto;">
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
                         <table id="bookingsTable" class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -76,7 +77,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-300 rounded-md flex items-center justify-center hover:bg-blue-500 transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
+                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownUsers()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
@@ -86,9 +87,9 @@
                             <a onclick="filterByRole(2)">Users</a>
                             <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm bg-red-800 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-600 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus mr-2"></i>
-                            Add
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                         </button>
                     </div>
                 </div>
@@ -124,16 +125,16 @@
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
-                    <div class="flex space-x-2">
-                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-300 rounded-md flex items-center justify-center hover:bg-blue-500 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                    <div class="flex space-x-2">                    
+                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
                         </div>
-                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm bg-red-800 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-600 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus mr-2"></i>
-                            Add
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                         </button>
                     </div>
                 </div>
@@ -548,7 +549,7 @@
 </div>
 
 @*Booking Details Modal*@
-<<div id="bookingDetailsModal" class="modal">
+<div id="bookingDetailsModal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
         <h3>Booking Details</h3>

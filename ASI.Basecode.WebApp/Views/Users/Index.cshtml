@@ -5,6 +5,8 @@
 @{
     ViewData["Title"] = "User Home Page";
 }
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="~/css/admindark.css" />
 <div class="outer-container">
     <div class="main-content">
         <div class="header">
@@ -60,7 +62,7 @@
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">My Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
-                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-500 text-white rounded-md flex items-center justify-center hover:bg-blue-500 transition duration-300 ease-in-out">
+                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 text-white rounded-md flex items-center justify-center hover:bg-blue-500 transition duration-300 ease-in-out" style="background-color: #4D869C;">
                         <i class="fas fa-filter mr-2"></i>
                         Filter
                     </button>
@@ -378,7 +380,7 @@
 </div>
 
 <!-- Modal for details -->
-<<div id="bookingDetailsModal" class="modal">
+<div id="bookingDetailsModal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
         <h3>Booking Details</h3>
@@ -387,7 +389,7 @@
 </div>
 
 <!-- Modal for cancel -->
-<<div id="cancelModal" class="modal">
+<div id="cancelModal" class="modal">
     <div class="modal-content">
         <span id="closeButt" class="close">&times;</span>
         <h1>Cancel Booking</h1>
