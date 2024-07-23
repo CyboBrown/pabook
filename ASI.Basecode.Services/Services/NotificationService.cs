@@ -1,33 +1,38 @@
 ﻿using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
+using AutoMapper;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace ASI.Basecode.Services.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly INotificationRepository _notificationRepository;
+        private readonly IMapper _mapper;
 
-        public NotificationService(IUnitOfWork unitOfWork)
+        public NotificationService(INotificationRepository notificationRepository, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _notificationRepository = notificationRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Notification>> GetNotificationsAsync(int userId)
+        public IEnumerable<NotificationViewModel> GetAllNotifications()
         {
-            // First, mark all notifications as seen
-            await _unitOfWork.NotificationRepository.MarkAllAsSeenAsync(userId);
-
-            // Then, retrieve all active notifications
-            return await _unitOfWork.NotificationRepository.GetActiveNotificationsAsync(userId);
+            var notifications = _notificationRepository.GetNotifications().ToList();
+            return _mapper.Map<IEnumerable<NotificationViewModel>>(notifications);
         }
 
-        public async Task MarkAsSeenAsync(int id)
+        public IEnumerable<NotificationViewModel> GetUserNotifications(int userId)
         {
-            await _unitOfWork.NotificationRepository.MarkAsSeenAsync(id);
-            await _unitOfWork.SaveChangesAsync();
+            var notifications = _notificationRepository.GetNotifications()
+                .Where(n => n.UserId == userId)
+                .ToList();
+            return _mapper.Map<IEnumerable<NotificationViewModel>>(notifications);
         }
+
+        // You can add more methods here as needed, such as:
+        // AddNotification, UpdateNotification, DeleteNotification, etc.
     }
 }

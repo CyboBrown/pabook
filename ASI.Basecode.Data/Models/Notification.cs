@@ -11,7 +11,8 @@ namespace ASI.Basecode.Data.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime NotifyDate { get; set; }
-        public int Type { get; set; }
+
+        public NotificationType Type { get; set; }
         public bool Seen { get; set; }
         public int UserId { get; set; }
 
