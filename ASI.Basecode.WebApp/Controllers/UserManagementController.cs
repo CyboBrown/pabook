@@ -22,6 +22,7 @@ namespace ASI.Basecode.WebApp.Controllers
     public class UserManagementController : ControllerBase<UserManagementController>
     {
         private readonly IUserManagementService _userManagementService;
+        private readonly IPreferenceService _preferenceService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RoomController"/> class.
@@ -30,7 +31,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="loggerFactory">Logger factory</param>
         /// <param name="configuration">Configuration</param>
         /// <param name="mapper">Mapper</param>
-        public UserManagementController(
+        public UserManagementController(IPreferenceService preferenceService,
             IUserManagementService userManagementService,
             IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
@@ -39,31 +40,11 @@ namespace ASI.Basecode.WebApp.Controllers
         ) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _userManagementService = userManagementService;
+            _preferenceService = preferenceService;
         }
 
-        /*public IActionResult Index()
-        {
-            Console.WriteLine("Passed Controller Index");
-            var data = _roomService.GetAll();
-            return View(data);
-        }
-        */
+        
         #region GET METHODS
-        /*
-        [HttpGet]
-
-        public IActionResult Create()
-        {
-            Console.WriteLine("Passed Controller Get Create");
-            return View();
-        }
-        [HttpGet]
-        public IActionResult Delete(int Id)
-        {
-            var data = _roomService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
-            return View(data);
-        }*/
-
         /// <summary>
         /// Gets the users.
         /// </summary>
@@ -99,8 +80,6 @@ namespace ASI.Basecode.WebApp.Controllers
             var data = _userManagementService.GetAll().Where(x => x.Id.Equals(Id)).FirstOrDefault();
             return View(data);
         }
-
-
         #endregion
 
         #region POST METHODS
@@ -113,24 +92,39 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost("add")]
         public IActionResult Add([FromBody] UserManagementViewModel model)
         {
-
-            /*if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _userManagementService.Add(model);
-                return Ok(new { success = true, message = "User created successfully" });
+                return BadRequest(ModelState);
             }
-            return BadRequest(new { success = false, message = "Invalid booking data" });*/
+            _userManagementService.Add(model);
+            return CreatedAtAction(nameof(GetUser), new { id = model.Id }, model);/*
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            
+            var newUser = _userManagementService.Add(model); // Assuming this returns a User object or Id
 
-            _userManagementService.Add(model);
-            return CreatedAtAction(nameof(GetUser), new { id = model.Id }, model);
-            // Implementation to add a room
-            // Ensure the method logic handles the POST request correctly
-            //return Ok(new { message = "User added successfully" });
+            if (newUser == null)
+            {
+                return BadRequest("Failed to add user."); // Handle error if necessary
+            }
+
+            var defaultPreference = new Preference
+            {
+                Id = newUser.Id,  // Assuming newUser.Id is the UserId (primary key) in Preference table
+                DarkMode = false,  // Default value for dark mode
+                EnableNotifications = true,  // Default value for notifications
+                DefaultBookingDuration = 30,  // Default booking duration in minutes
+                TimeFormat = 24,  // Default time format (24-hour)
+                UpdatedDate = DateTime.UtcNow,
+                Deleted = false
+            };
+
+            _preferenceService.AddPreference(defaultPreference); // Assuming AddPreference method exists and adds to database
+
+            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);*/
         }
 
         /// <summary>

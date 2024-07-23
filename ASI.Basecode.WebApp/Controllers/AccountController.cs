@@ -85,6 +85,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (loginResult == LoginResult.Success)
             {
                 await _signInManager.SignInAsync(user);
+                _session.SetString("UserId", user.Id.ToString());
                 _session.SetString("UserName", user.UserName);
                 _session.SetString("UserRole", user.UserRole.ToString()); // Store role as string
                 _session.SetString("FullName", $"{user.FirstName} {user.LastName}");

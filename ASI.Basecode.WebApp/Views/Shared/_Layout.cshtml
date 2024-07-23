@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/style.css" />
-    
+    <link rel="stylesheet" href="~/css/admin.css" id="theme-style" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     @RenderSection("Styles", required: false)
@@ -61,6 +61,50 @@
             closeButton: true,
             progressBar: true
         };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchPreferences();
+        });
+
+        function fetchPreferences() {
+            fetch('/api/Preference/myPreferences')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        applyTheme(data.darkMode);
+                    } else {
+                        console.error('No preferences found. Setting default values or handling empty state.');
+                    }
+                })
+                .catch(error => console.error('Error fetching preferences:', error));
+        }
+
+        function applyTheme(isDarkMode) {
+            const body = document.body;
+            if (isDarkMode) {
+                body.classList.add('light');
+                body.classList.remove('dark');
+                loadTheme('adminlight.css');
+            } else {
+                body.classList.add('dark');
+                body.classList.remove('light');
+                loadTheme('admin.css');
+            }
+        }
+
+        function loadTheme(themeName) {
+            const themeStyle = document.getElementById('theme-style');
+            if (themeStyle) {
+                themeStyle.setAttribute('href', `/css/${themeName}`);
+            } else {
+                console.error('Theme style link element not found');
+            }
+        }
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

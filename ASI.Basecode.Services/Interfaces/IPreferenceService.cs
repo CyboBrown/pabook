@@ -10,6 +10,7 @@ namespace ASI.Basecode.Services.Interfaces
 {
     public interface IPreferenceService
     {
+        public void AddPreference(Preference preference);
         IEnumerable<PreferenceViewModel> GetAll(int? id = null);
         IEnumerable<PreferenceViewModel> GetAllPreferences();
         IEnumerable<PreferenceViewModel> GetUserPreferences();      

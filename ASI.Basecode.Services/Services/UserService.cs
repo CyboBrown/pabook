@@ -8,23 +8,26 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.Services.Services
 {
-        public class UserService : IUserService
-        {
-            private readonly IUserRepository _userRepository;
-            private readonly IMapper _mapper;
-            private readonly IHttpContextAccessor _contextAccessor;
+    public class UserService : IUserService
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IPreferenceService _preferenceService;
 
-        public UserService(IUserRepository repository, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public UserService(IPreferenceService preferenceService, IUserRepository repository, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _mapper = mapper;
             _userRepository = repository;
             _contextAccessor = contextAccessor;
+            _preferenceService = preferenceService;
         }
 
         public LoginResult Authenticate(string username, string password, out User user)
@@ -49,7 +52,7 @@ namespace ASI.Basecode.Services.Services
         }
 
         public void Add(UserViewModel model)
-        {
+        {/*
             Console.WriteLine(" > UserService: Add");
             var user = new User();
             if (!_userRepository.UserExists(model.UserName))
@@ -67,9 +70,43 @@ namespace ASI.Basecode.Services.Services
             else
             {
                 throw new InvalidDataException(Resources.Messages.Errors.UserExists);
-            }
-        }
+            }*/
 
+            Console.WriteLine(" > UserService: Add");
+            var user = new User();
+            if (!_userRepository.UserExists(model.UserName))
+            {
+                _mapper.Map(model, user);
+                user.Password = PasswordManager.EncryptPassword(model.Password);
+                user.CreatedDate = DateTime.Now;
+                user.UpdatedDate = DateTime.Now;
+                user.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                user.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                user.UserRole = 1;
+
+                _userRepository.AddUser(user);
+
+                // Create default preferences for the new user
+                var defaultPreference = new Preference
+                {
+                    Id = user.Id,
+                    DarkMode = false,
+                    EnableNotifications = true,
+                    DefaultBookingDuration = 30,
+                    TimeFormat = 24,
+                    UpdatedDate = DateTime.UtcNow,
+                    Deleted = false
+                };
+
+                _preferenceService.AddPreference(defaultPreference);
+            }
+            else
+            {
+                throw new InvalidDataException(Resources.Messages.Errors.UserExists);
+            }
+
+        }
+        
         public IEnumerable<UserViewModel> GetAll(int? id = null, string username = null, string firstname = null, string lastname = null)
         {
             Console.WriteLine(" > UserService: GetAll");
@@ -111,6 +148,31 @@ namespace ASI.Basecode.Services.Services
         {
             Console.WriteLine(" > UserService: GetUserById");
             return _userRepository.GetUserById(id);
+        }
+        public PreferenceViewModel GetPreferenceById(int id)
+        {
+            var preference = _preferenceService.GetPreference(id);
+            if (preference != null)
+            {
+                return new PreferenceViewModel(preference);
+            }
+            return null;
+        }
+
+        public void CreatePreference(PreferenceViewModel preferenceModel)
+        {
+            var preference = new Preference
+            {
+                Id = preferenceModel.Id,
+                DarkMode = preferenceModel.DarkMode,
+                EnableNotifications = preferenceModel.EnableNotifications,
+                DefaultBookingDuration = preferenceModel.DefaultBookingDuration,
+                TimeFormat = preferenceModel.TimeFormat,
+                UpdatedDate = DateTime.UtcNow,
+                Deleted = false
+            };
+
+            _preferenceService.AddPreference(preference);
         }
     }
 }
