@@ -173,7 +173,7 @@
 
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" value=@DateTime.Today.ToString("yyyy-MM-dd") required>
                 <div id="dateError" class="error-message"></div>
             </div>
 
@@ -514,9 +514,9 @@
             <div class="form-group full-width">
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="2">User</option>
-                    <option value="1">Manager</option>
-                    <option value="0">Admin</option>
+                    <option value="2" id="op_user">User</option>
+                    <option value="1" id="op_manager">Manager</option>
+                    <option value="0" id="op_admin">Admin</option>
                 </select>
             </div>
 
@@ -684,10 +684,10 @@
                                             ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
                                     <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
-                                    <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
-                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel Booking</button>
                                 </td>
                             `;
                         tableBody.appendChild(row);
@@ -714,7 +714,7 @@
         bookingForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            if (!validateForm()) {
+            if (!validateForm()) {  
                 alert('Please fill in all required fields.');
                 return;
             }
@@ -1218,9 +1218,9 @@
                                                         ${roles[user.userRole]}
                                                   </span>
                                               </td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                      <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                                                   <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                                  <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                                                   <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
                                               </td>
                                           `;
@@ -1583,8 +1583,8 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
                                     <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
+                                    <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
                                     <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
                                 </td>
                             `;

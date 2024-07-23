@@ -66,7 +66,8 @@ namespace ASI.Basecode.Services.Services
                         Id = user.Id,
                         LastName = user.LastName,
                         FirstName = user.FirstName,
-                        Email = user.Email
+                        Email = user.Email,
+                        UserRole = user.UserRole,
                         // Map other properties as needed
                     };
                 }
