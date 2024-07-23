@@ -21,7 +21,6 @@ namespace ASI.Basecode.Data
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Preference> Preferences { get; set; }
-        public virtual DbSet<Recurrence> Recurrences { get; set; }
         public virtual DbSet<RecurrenceType> RecurrenceTypes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
@@ -115,7 +114,7 @@ namespace ASI.Basecode.Data
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__UserI__4BAC3F29");
+                    .HasConstraintName("FK__Notificat__UserI__48CFD27E");
             });
 
             modelBuilder.Entity<Preference>(entity =>

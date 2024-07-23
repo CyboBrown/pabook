@@ -21,29 +21,27 @@
             <div id="roomsTab" class="tab" onclick="switchTab('rooms')">
                 <i class="fas fa-door-open"></i>
                 <span>Rooms</span>
-                
             </div>
         </div>
         @*Bookings View*@
         <div id="bookingsContent" class="content flex">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-3xl font-bold mb-4 text-gray-800">Bookings</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
-                            <i class="fas fa-filter text-gray-400"></i>
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
                         </button>
                         
-                        <div class="book-now">
-                        <button id="addBookingButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus"></i>
-                            Add Booking
-                        </button>
-                        </div>
-                        @*<button id="refreshBookingsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-sync-alt"></i> 
-                        </button>*@
+                        <div class="book-now flex-grow">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
+                            </button>
+                        </div> 
+                        
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -69,24 +67,23 @@
         @*User View*@
         <div id="usersContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-3xl font-bold mb-4 text-gray-800">Users</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">U S E R S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="px-4 py-2 text-white rounded-md flex items-center justify-center transition duration-300 ease-in-out" onclick="toggleDropdown()">
-                            <i class="fas fa-filter text-gray-400"></i>
+                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
                         </button>
                         <div id="roleDropdown" class="dropdown-content">
                             <a onclick="filterByRole(0)">Admins</a>
                             <a onclick="filterByRole(1)">Managers</a>
                             <a onclick="filterByRole(2)">Users</a>
-                            <a onclick="showAll()">Show All</a>
+                            <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button id="refreshUsersButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-sync-alt"></i>
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                         </button>
                     </div>
                 </div>
@@ -114,25 +111,19 @@
         @*Room View*@
         <div id="roomsContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
-                <h2 class="text-3xl font-bold mb-4 text-gray-800">Rooms</h2>
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchRoomBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRoom()" placeholder="Search rooms...">
+                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
-                            <i class="fas fa-filter text-gray-400"></i>
+                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
-                            <a onclick="filterByLocation(0)">10th Floor</a>
-                            <a onclick="filterByLocation(1)">11th Floor</a>
-                            <a onclick="filterByLocation(2)">12th Floor</a>
-                            <a onclick="filterByLocation(3)">14th Floor</a>
-                            <a onclick="showAll()">Show All</a>
                         </div>
-                        <button id="addRoomButton" class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button id="refreshRoomsButton" class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center justify-center hover:bg-green-700 transition duration-300 ease-in-out">
-                            <i class="fas fa-sync-alt"></i>
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add
                         </button>
                     </div>
                 </div>
@@ -157,7 +148,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -178,7 +168,7 @@
 
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" value=@DateTime.Today.ToString("yyyy-MM-dd") required>
                 <div id="dateError" class="error-message"></div>
             </div>
 
@@ -443,7 +433,7 @@
 <div id="addRoomModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Create Room</h1>
+        <h1 style="font-size: 2.5rem;">Room Form</h1>
         <form id="roomForm">
             <div class="form-group full-width">
                 <label for="name">Room Name:</label>
@@ -494,7 +484,7 @@
 <div id="addUserModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Create User</h1>
+        <h1 style="font-size: 2.5rem;">User Form</h1>
         <form id="userForm">
             <div class="form-group full-width">
                 <label for="username">Username:</label>
@@ -519,9 +509,9 @@
             <div class="form-group full-width">
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="2">User</option>
-                    <option value="1">Manager</option>
-                    <option value="0">Admin</option>
+                    <option value="2" id="op_user">User</option>
+                    <option value="1" id="op_manager">Manager</option>
+                    <option value="0" id="op_admin">Admin</option>
                 </select>
             </div>
 
@@ -541,7 +531,7 @@
 @*Booking Details Modal*@
 <div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+        <button id="closeBookingDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -554,7 +544,7 @@
 @*User Details Modal*@
 <div id="userDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+        <button id="closeUserDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -567,7 +557,7 @@
 @*Room Details Modal*@
 <div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+        <button id="closeRoomDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -602,6 +592,7 @@
 @*Booking Script*@
 <script>
     recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
+    room = ['Conference Room A', 'Meeting Room B', 'Training Room C'];
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
@@ -688,10 +679,10 @@
                                             ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
                                     <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
-                                    <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
-                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel Booking</button>
                                 </td>
                             `;
                         tableBody.appendChild(row);
@@ -718,7 +709,7 @@
         bookingForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            if (!validateForm()) {
+            if (!validateForm()) {  
                 alert('Please fill in all required fields.');
                 return;
             }
@@ -999,7 +990,7 @@
         }
 
         // Event listener for the close button
-        document.getElementById('closeModalBtn').addEventListener('click', closeBookingDetailsModal);
+        document.getElementById('closeBookingDetailsBtn').addEventListener('click', closeBookingDetailsModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('bookingDetailsModal').addEventListener('click', function (event) {
@@ -1105,6 +1096,81 @@
             return 1; // Placeholder value for now
         }
     });
+
+    function searchFilterBookings() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("searchBookingsBar");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("bookingsTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            let rowContainsFilter = false;
+            for (j = 0; j < 4; j++) { // Check the first four columns
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = (td.textContent || td.innerText).toUpperCase();
+                    if (txtValue.indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
+                }
+            }
+            if (rowContainsFilter) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+    function toggleDropdownBookings() {
+        document.getElementById('bookingsDropdown').classList.toggle('show');
+        console.log("buttons pressed...");
+    }
+
+    function filterByRoom(bookingsRoom) {
+        const filter = room[bookingsRoom];
+        const table = document.getElementById('bookingsTable');
+        const tr = table.getElementsByTagName('tr');
+        console.log(filter);
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName('td')[2];
+            if (td) {
+                const txtValue = (td.textContent || td.innerText).trim(); if (txtValue === filter) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+        document.getElementById('bookingsDropdown').classList.remove('show');
+    }
+
+    function showAllRooms() {
+        const table = document.getElementById('bookingsTable');
+        if (!table) {
+            console.error('Table with id "bookingsTable" not found');
+            return;
+        }
+
+        const tr = table.getElementsByTagName('tr');
+        if (!tr.length) {
+            console.error('No table rows found in "bookingsTable"');
+            return;
+        }
+
+        for (let i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            tr[i].style.display = '';
+        }
+
+        const bookingsDropdown = document.getElementById('bookingsDropdown');
+        if (bookingsDropdown) {
+            bookingsDropdown.classList.remove('show');
+        } else {
+            console.error('Element with id "bookingsDropdown" not found');
+        }
+    }
  </script>
 
  @*User Script*@
@@ -1147,9 +1213,9 @@
                                                         ${roles[user.userRole]}
                                                   </span>
                                               </td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                      <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                                                   <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                                  <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                                                   <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
                                               </td>
                                           `;
@@ -1296,7 +1362,7 @@
                     const modal = document.getElementById('userDetailsModal');
                     const content = document.getElementById('userDetailsContent');
                     content.innerHTML = `
-                        <p class="mb-2" > <strong>Username:</strong> ${user.userName}< /p>
+                        <p class="mb-2" > <strong>Username:</strong> ${user.userName}</p>
                         <p class="mb-2" > <strong>Last Name: </strong> ${user.lastName}</p >
                         <p class="mb-2" > <strong>First Name: </strong> ${user.firstName}</p >
                         <p class="mb-2" > <strong>Email: </strong> ${user.email}</p >
@@ -1313,7 +1379,7 @@
         }
 
         // Event listener for the close button
-        document.getElementById('closeDetailsBtn').addEventListener('click', closeUserDetailsModal);
+        document.getElementById('closeUserDetailsBtn').addEventListener('click', closeUserDetailsModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('userDetailsModal').addEventListener('click', function (event) {
@@ -1394,7 +1460,7 @@
         }
     }
 
-    function toggleDropdown() {
+    function toggleDropdownUsers() {
         document.getElementById('roleDropdown').classList.toggle('show');
     }
 
@@ -1402,6 +1468,7 @@
         const filter = roles[userRole];
         const table = document.getElementById('userTable');
         const tr = table.getElementsByTagName('tr');
+        console.log("Filter User...");
         for (let i = 1; i < tr.length; i++) {
             const td = tr[i].getElementsByTagName('td')[4];
             if (td) {
@@ -1415,13 +1482,29 @@
         document.getElementById('roleDropdown').classList.remove('show');
     }
 
-    function showAll() {
+    function showAllRoles() {
         const table = document.getElementById('userTable');
+        if (!table) {
+            console.error('Table with id "userTable" not found');
+            return;
+        }
+
         const tr = table.getElementsByTagName('tr');
-        for (let i = 1; i < tr.length; i++) {
+        if (!tr.length) {
+            console.error('No table rows found in "userTable"');
+            return;
+        }
+
+        for (let i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
             tr[i].style.display = '';
         }
-        document.getElementById('roleDropdown').classList.remove('show');
+
+        const roleDropdown = document.getElementById('roleDropdown');
+        if (roleDropdown) {
+            roleDropdown.classList.remove('show');
+        } else {
+            console.error('Element with id "roleDropdown" not found');
+        }
     }
  </script>
 
@@ -1431,19 +1514,24 @@
     locations = [];
 
     document.addEventListener("DOMContentLoaded", function () {
-        //For fetching locations
-        function populateLocations() {
+        function populateLocationsDropdown() {
             $.ajax({
                 url: '/api/Room/locations',
                 type: 'GET',
                 success: function (data) {
                     var dropdown = $('#location');
+                    var roomDropdown = $('#roomDropdown');
                     dropdown.empty();
-                    dropdown.append($('<option></option>').val('').text('Select Location'));
-                    $.each(data, function (i, item) {
-                        locations.push(item.name);
-                        dropdown.append($('<option></option>').val(item.id).text(item.name));
+                    roomDropdown.empty();
+
+                    dropdown.append($('<option></option>').val('').text('Select location'));
+                    data.forEach((location, index) => {
+                        locations.push(location.name);
+                        dropdown.append($('<option></option>').val(location.id).text(location.name));
+                        roomDropdown.append($('<a></a>').attr('onclick', `filterByLocation('${location.name}')`).text(location.name));
                     });
+
+                    roomDropdown.append($('<a></a>').attr('onclick', 'showAllLocations()').text('Show All'));
                 },
                 error: function (error) {
                     console.log('Error fetching locations:', error);
@@ -1451,9 +1539,8 @@
             });
         }
 
-        // Call this function when the page loads
         $(document).ready(function () {
-            populateLocations();
+            populateLocationsDropdown();
         });
 
         function validateForm() {
@@ -1495,9 +1582,9 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
                                     <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
-                                    <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
                                     <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
                                 </td>
                             `;
@@ -1639,8 +1726,8 @@
                     content.innerHTML = `
                     <p class="mb-2"><strong>Name:</strong> ${room.name}</p>
                     <p class="mb-2"><strong>Capacity:</strong> ${room.capacity}</p>
-                    <p class="mb-2"><strong>Type:</strong> ${room.type}</p>
-                    <p class="mb-2"><strong>Location:</strong> ${room.location}</p>
+                    <p class="mb-2"><strong>Type:</strong> ${roomTypes[room.type]}</p>
+                    <p class="mb-2"><strong>Location:</strong> ${locations[room.location]}</p>
                     <p class="mb-2"><strong>Facilities:</strong> ${room.facilities}</p>
                 `;
                     modal.classList.remove('hidden');
@@ -1654,7 +1741,7 @@
         }
 
         // Event listener for the close button
-        document.getElementById('closeDetailsBtn').addEventListener('click', closeRoomDetailsModal);
+        document.getElementById('closeRoomDetailsBtn').addEventListener('click', closeRoomDetailsModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('roomDetailsModal').addEventListener('click', function (event) {
@@ -1710,22 +1797,31 @@
         });
     });
 
-    function searchFilterRoom() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("searchRoomBar");
+
+
+    function searchFilterRooms() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("searchRoomsBar");
         filter = input.value.toUpperCase();
         table = document.getElementById("roomTable");
         tr = table.getElementsByTagName("tr");
 
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
+        for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+            let rowContainsFilter = false;
+            for (j = 0; j < 4; j++) { // Check the first four columns
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = (td.textContent || td.innerText).toUpperCase();
+                    if (txtValue.indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
                 }
+            }
+            if (rowContainsFilter) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
             }
         }
     }
@@ -1734,14 +1830,14 @@
         document.getElementById('roomDropdown').classList.toggle('show');
     }
 
-    function filterByroom(room) {
-        const filter = room.toString();
+    function filterByLocation(room) {
+        const filter = room;
         const table = document.getElementById('roomTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName('td')[4];
+            const td = tr[i].getElementsByTagName('td')[3];
             if (td) {
-                const txtValue = td.textContent || td.innerText;
+                const txtValue = (td.textContent || td.innerText).trim();
                 if (txtValue === filter) {
                     tr[i].style.display = '';
                 } else {
@@ -1752,14 +1848,14 @@
         document.getElementById('roomDropdown').classList.remove('show');
     }
 
-    function showAll() {
+    function showAllLocations() {
         const table = document.getElementById('roomTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
             tr[i].style.display = '';
         }
         document.getElementById('roomDropdown').classList.remove('show');
-    }
+    } 
 </script>
 
 
@@ -2112,7 +2208,7 @@
             color:black;
         }
 
-        #searchRoomBar {
+        #searchRoomsBar {
             color:black;
         }
 
@@ -2147,6 +2243,14 @@
 
         #roleDropdown {
             color:black;
+        }
+
+        #bookingsDropdown {
+            color: black;
+        }
+
+        #roomDropdown {
+            color: black;
         }
 
 
