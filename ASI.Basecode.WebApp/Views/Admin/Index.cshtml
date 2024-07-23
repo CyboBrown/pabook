@@ -71,7 +71,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
@@ -120,11 +120,6 @@
                             Filter
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
-                            <a onclick="filterByLocation(0)">10th Floor</a>
-                            <a onclick="filterByLocation(1)">11th Floor</a>
-                            <a onclick="filterByLocation(2)">12th Floor</a>
-                            <a onclick="filterByLocation(3)">14th Floor</a>
-                            <a onclick="showAllLocations()">Show All</a>
                         </div>
                         <button id="addRoomButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                                 <i class="fas fa-plus mr-2"></i>
@@ -1473,6 +1468,7 @@
         const filter = roles[userRole];
         const table = document.getElementById('userTable');
         const tr = table.getElementsByTagName('tr');
+        console.log("Filter User...");
         for (let i = 1; i < tr.length; i++) {
             const td = tr[i].getElementsByTagName('td')[4];
             if (td) {
@@ -1515,22 +1511,27 @@
 @*Room Script*@
 <script>
     roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"];
-    locations = ['10th Floor', '11th Floor', '12th Floor', '14th Floor'];
+    locations = [];
 
     document.addEventListener("DOMContentLoaded", function () {
-        //For fetching locations
-        function populateLocations() {
+        function populateLocationsDropdown() {
             $.ajax({
                 url: '/api/Room/locations',
                 type: 'GET',
                 success: function (data) {
                     var dropdown = $('#location');
+                    var roomDropdown = $('#roomDropdown');
                     dropdown.empty();
-                    dropdown.append($('<option></option>').val('').text('Select Location'));
-                    $.each(data, function (i, item) {
-                        locations.push(item.name);
-                        dropdown.append($('<option></option>').val(item.id).text(item.name));
+                    roomDropdown.empty();
+
+                    dropdown.append($('<option></option>').val('').text('Select location'));
+                    data.forEach((location, index) => {
+                        locations.push(location.name);
+                        dropdown.append($('<option></option>').val(location.id).text(location.name));
+                        roomDropdown.append($('<a></a>').attr('onclick', `filterByLocation('${location.name}')`).text(location.name));
                     });
+
+                    roomDropdown.append($('<a></a>').attr('onclick', 'showAllLocations()').text('Show All'));
                 },
                 error: function (error) {
                     console.log('Error fetching locations:', error);
@@ -1538,9 +1539,8 @@
             });
         }
 
-        // Call this function when the page loads
         $(document).ready(function () {
-            populateLocations();
+            populateLocationsDropdown();
         });
 
         function validateForm() {
@@ -1830,14 +1830,14 @@
         document.getElementById('roomDropdown').classList.toggle('show');
     }
 
-    function filterByroom(room) {
-        const filter = room.toString();
+    function filterByLocation(room) {
+        const filter = room;
         const table = document.getElementById('roomTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName('td')[4];
+            const td = tr[i].getElementsByTagName('td')[3];
             if (td) {
-                const txtValue = td.textContent || td.innerText;
+                const txtValue = (td.textContent || td.innerText).trim();
                 if (txtValue === filter) {
                     tr[i].style.display = '';
                 } else {
