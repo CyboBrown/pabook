@@ -20,6 +20,7 @@ namespace ASI.Basecode.Data.Repositories
             _context = context; 
         }
 
+
         public void AddOrUpdatePreference(Preference preference)
         {/*
             Console.WriteLine(" > PreferenceRepo: AddPreference");
@@ -51,7 +52,8 @@ namespace ASI.Basecode.Data.Repositories
 
         public Preference GetPreference(int id)
         {
-            return GetDbSet<Preference>().FirstOrDefault(p => p.Id == id);
+            return _context.Preferences.Find(id);
+            //return GetDbSet<Preference>().FirstOrDefault(p => p.Id == id);
         }
         public void RemovePreference(int id)
         {

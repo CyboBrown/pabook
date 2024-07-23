@@ -112,7 +112,11 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             */
             // Return an empty view or an error view if necessary
-            return View();
+            var model = new PreferenceViewModel
+            {
+                // Initialize properties as needed
+            };
+            return View(model);
         }
         /*
         [HttpPost]

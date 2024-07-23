@@ -117,7 +117,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = model.UserId;  // This should be retrieved from the session or context
+                var userId = model.Id;  // This should be retrieved from the session or context
 
                 var preference = await _preferenceService.GetPreferenceAsync(userId);
                 if (preference == null)

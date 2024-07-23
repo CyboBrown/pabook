@@ -27,29 +27,27 @@ namespace ASI.Basecode.WebApp.Controllers
     public class PreferenceController : ControllerBase<PreferenceController>
     {
         private readonly IPreferenceService _preferenceService;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        //private readonly IMapper _mapper;
         private readonly ILogger<PreferenceController> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PreferenceController(
+        public PreferenceController(IUserService userService,
             IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
             IConfiguration configuration,
-            IMapper mapper,
+            /*IMapper mapper,*/
             IPreferenceService preferenceService,
             ILogger<PreferenceController> logger)
-            : base(httpContextAccessor, loggerFactory, configuration, mapper)
+            : base(httpContextAccessor, loggerFactory, configuration /*mapper*/)
         {
             _httpContextAccessor = httpContextAccessor;
             _preferenceService = preferenceService;
-            _mapper = mapper;
+            //_mapper = mapper;
             _logger = logger;
+            _userService = userService;
         }
 
-        public IActionResult Settings()
-        {
-            return View();
-        }
 
         [HttpGet("preferences")]
         public IActionResult GetPreferences()
@@ -199,12 +197,12 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
-        [HttpPost("save")]
+        [HttpPost("update")]
         public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var userId = model.UserId;  // This should be retrieved from the session or context
+                var userId = model.Id;  // This should be retrieved from the session or context
 
                 var preference = await _preferenceService.GetPreferenceAsync(userId);
                 if (preference == null)
