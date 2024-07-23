@@ -1,7 +1,8 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminHomeViewModel
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
-
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="~/css/admindark.css" />
 @{
     ViewData["Title"] = "Admin Home Page";
 }
@@ -30,13 +31,13 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
                         
                         <div class="book-now flex-grow">
-                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                             </button>
@@ -71,7 +72,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
+                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownUsers()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
@@ -81,7 +82,7 @@
                             <a onclick="filterByRole(2)">Users</a>
                             <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
@@ -115,13 +116,13 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
                         </div>
-                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
@@ -535,7 +536,7 @@
 </div>
 
 @*Booking Details Modal*@
-<<div id="bookingDetailsModal" class="modal">
+<div id="bookingDetailsModal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
         <h3>Booking Details</h3>
