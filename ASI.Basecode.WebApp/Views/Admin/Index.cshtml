@@ -168,7 +168,7 @@
 
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" value=@DateTime.Today.ToString("yyyy-MM-dd") required>
                 <div id="dateError" class="error-message"></div>
             </div>
 
@@ -433,7 +433,7 @@
 <div id="addRoomModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Create Room</h1>
+        <h1 style="font-size: 2.5rem;">Room Form</h1>
         <form id="roomForm">
             <div class="form-group full-width">
                 <label for="name">Room Name:</label>
@@ -484,7 +484,7 @@
 <div id="addUserModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h1 style="font-size: 2.5rem;">Create User</h1>
+        <h1 style="font-size: 2.5rem;">User Form</h1>
         <form id="userForm">
             <div class="form-group full-width">
                 <label for="username">Username:</label>
@@ -509,9 +509,9 @@
             <div class="form-group full-width">
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="2">User</option>
-                    <option value="1">Manager</option>
-                    <option value="0">Admin</option>
+                    <option value="2" id="op_user">User</option>
+                    <option value="1" id="op_manager">Manager</option>
+                    <option value="0" id="op_admin">Admin</option>
                 </select>
             </div>
 
@@ -531,7 +531,7 @@
 @*Booking Details Modal*@
 <div id="bookingDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+        <button id="closeBookingDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -544,7 +544,7 @@
 @*User Details Modal*@
 <div id="userDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeModalBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+        <button id="closeUserDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -557,7 +557,7 @@
 @*Room Details Modal*@
 <div id="roomDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-gray-400 p-6 rounded-lg shadow-xl max-w-md w-full text-white font-sans relative">
-        <button id="closeDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
+        <button id="closeRoomDetailsBtn" class="absolute top-2 right-2 text-white hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -679,10 +679,10 @@
                                             ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
                                     <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
-                                    <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
-                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel Booking</button>
                                 </td>
                             `;
                         tableBody.appendChild(row);
@@ -709,7 +709,7 @@
         bookingForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            if (!validateForm()) {
+            if (!validateForm()) {  
                 alert('Please fill in all required fields.');
                 return;
             }
@@ -990,7 +990,7 @@
         }
 
         // Event listener for the close button
-        document.getElementById('closeModalBtn').addEventListener('click', closeBookingDetailsModal);
+        document.getElementById('closeBookingDetailsBtn').addEventListener('click', closeBookingDetailsModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('bookingDetailsModal').addEventListener('click', function (event) {
@@ -1213,9 +1213,9 @@
                                                         ${roles[user.userRole]}
                                                   </span>
                                               </td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                      <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                                                   <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                                  <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                                                   <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
                                               </td>
                                           `;
@@ -1362,7 +1362,7 @@
                     const modal = document.getElementById('userDetailsModal');
                     const content = document.getElementById('userDetailsContent');
                     content.innerHTML = `
-                        <p class="mb-2" > <strong>Username:</strong> ${user.userName}< /p>
+                        <p class="mb-2" > <strong>Username:</strong> ${user.userName}</p>
                         <p class="mb-2" > <strong>Last Name: </strong> ${user.lastName}</p >
                         <p class="mb-2" > <strong>First Name: </strong> ${user.firstName}</p >
                         <p class="mb-2" > <strong>Email: </strong> ${user.email}</p >
@@ -1379,7 +1379,7 @@
         }
 
         // Event listener for the close button
-        document.getElementById('closeDetailsBtn').addEventListener('click', closeUserDetailsModal);
+        document.getElementById('closeUserDetailsBtn').addEventListener('click', closeUserDetailsModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('userDetailsModal').addEventListener('click', function (event) {
@@ -1582,9 +1582,9 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
                                     <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
-                                    <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
                                     <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
                                 </td>
                             `;
@@ -1726,8 +1726,8 @@
                     content.innerHTML = `
                     <p class="mb-2"><strong>Name:</strong> ${room.name}</p>
                     <p class="mb-2"><strong>Capacity:</strong> ${room.capacity}</p>
-                    <p class="mb-2"><strong>Type:</strong> ${room.type}</p>
-                    <p class="mb-2"><strong>Location:</strong> ${room.location}</p>
+                    <p class="mb-2"><strong>Type:</strong> ${roomTypes[room.type]}</p>
+                    <p class="mb-2"><strong>Location:</strong> ${locations[room.location]}</p>
                     <p class="mb-2"><strong>Facilities:</strong> ${room.facilities}</p>
                 `;
                     modal.classList.remove('hidden');
@@ -1741,7 +1741,7 @@
         }
 
         // Event listener for the close button
-        document.getElementById('closeDetailsBtn').addEventListener('click', closeRoomDetailsModal);
+        document.getElementById('closeRoomDetailsBtn').addEventListener('click', closeRoomDetailsModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('roomDetailsModal').addEventListener('click', function (event) {
