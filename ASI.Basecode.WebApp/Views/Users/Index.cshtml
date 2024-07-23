@@ -106,7 +106,7 @@
 
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" value=@DateTime.Today.ToString("yyyy-MM-dd") required>
                 <div id="dateError" class="error-message"></div>
             </div>
 
@@ -349,13 +349,13 @@
             <div id="weeklyOptions" class="full-width" style="display: none;">
                 <label>Select Days:</label>
                 <div class="day-selector">
-                    <div class="day" data-day="SU">SU</div>
-                    <div class="day" data-day="M">M</div>
-                    <div class="day" data-day="TU">TU</div>
-                    <div class="day" data-day="W">W</div>
-                    <div class="day" data-day="TH">TH</div>
-                    <div class="day" data-day="F">F</div>
-                    <div class="day" data-day="SA">SA</div>
+                    <div class="day" data-day="sunday">S</div>
+                    <div class="day" data-day="monday">M</div>
+                    <div class="day" data-day="tuesday">TU</div>
+                    <div class="day" data-day="wednesday">W</div>
+                    <div class="day" data-day="thursday">TH</div>
+                    <div class="day" data-day="friday">F</div>
+                    <div class="day" data-day="saturday">SA</div>
                 </div>
             </div>
 
@@ -654,6 +654,39 @@
                 return;
             }
 
+            // Get day of period for recurrence
+            let dayOfPeriod = 0;
+            document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                console.log(day.getAttribute('data-day'));
+                let data = day.getAttribute('data-day');
+                if(day.classList.contains('selected')) {
+                    switch (data) {
+                        case 'sunday':
+                            dayOfPeriod += 64;
+                            break;
+                        case 'monday':
+                            dayOfPeriod += 32;
+                            break;
+                        case 'tuesday':
+                            dayOfPeriod += 16;
+                            break;
+                        case 'wednesday':
+                            dayOfPeriod += 8;
+                            break;
+                        case 'thursday':
+                            dayOfPeriod += 4;
+                            break;
+                        case 'friday':
+                            dayOfPeriod += 2;
+                            break;
+                        case 'saturday':
+                            dayOfPeriod += 1;
+                            break;
+                    }
+                }
+            });
+            console.log("Day Of Period: " + dayOfPeriod);
+
             const data = {
                 id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
@@ -665,6 +698,7 @@
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
+                recurrenceDayOfPeriod: dayOfPeriod,
                 userId: getCurrentUserId()
             };
 
@@ -1055,7 +1089,7 @@
         function getCurrentUserId() {
             // should return the ID of the currently logged-in user
             // pwede from global var, local stor, or API call
-            return 1; // Placeholder value for now
+            return parseInt(@HttpContextAccessor.HttpContext.Session.GetString("UserId"));
         }
     });
 </script>
