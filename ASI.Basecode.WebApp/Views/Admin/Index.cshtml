@@ -30,11 +30,13 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                        <input type="date" id="filterDate" name="date" class="w-50 px-4 py-2 text-sm text-black">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownBookings()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
-                        
+                        <div id="bookingsDropdown" class="dropdown-content">
+                        </div>
                         <div class="book-now flex-grow">
                             <button id="addBookingButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
                                 <i class="fas fa-plus mr-2"></i>
@@ -1171,6 +1173,30 @@
             console.error('Element with id "bookingsDropdown" not found');
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const datePicker = document.getElementById('filterDate');
+        const dataTable = document.getElementById('bookingsTable');
+        const rows = dataTable.getElementsByTagName('tr');
+
+        console.log(datePicker, dataTable, rows);
+
+        datePicker.addEventListener('input', function () {
+            const selectedDate = datePicker.value;
+            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+                const row = rows[i];
+                const dateCell = row.getElementsByTagName('td')[1]; // Assuming date is in the first column
+                if (dateCell.textContent === selectedDate) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+                console.log(datePicker.value);
+                console.log(selectedDate);
+                console.log(dateCell.textContent);
+            }
+        });
+    });
  </script>
 
  @*User Script*@
@@ -1510,8 +1536,8 @@
 
 @*Room Script*@
 <script>
-    roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"];
-    locations = [];
+    var roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"];
+    var locations = [];
 
     document.addEventListener("DOMContentLoaded", function () {
         function populateLocationsDropdown() {
@@ -1519,6 +1545,7 @@
                 url: '/api/Room/locations',
                 type: 'GET',
                 success: function (data) {
+                    console.log('Fetched locations data:', data); // Debugging statement
                     var dropdown = $('#location');
                     var roomDropdown = $('#roomDropdown');
                     dropdown.empty();
@@ -1526,9 +1553,14 @@
 
                     dropdown.append($('<option></option>').val('').text('Select location'));
                     data.forEach((location, index) => {
-                        locations.push(location.name);
-                        dropdown.append($('<option></option>').val(location.id).text(location.name));
-                        roomDropdown.append($('<a></a>').attr('onclick', `filterByLocation('${location.name}')`).text(location.name));
+                        console.log('Processing location:', location); // Debugging statement
+                        if (location && typeof location.name === 'string' && location.name.trim() !== '' && typeof location.id === 'number' && location.id >= 0) {
+                            locations.push(location.name);
+                            dropdown.append($('<option></option>').val(location.id).text(location.name));
+                            roomDropdown.append($('<a></a>').attr('onclick', `filterByLocation('${location.name}')`).text(location.name));
+                        } else {
+                            console.warn('Invalid location data:', location); // Warning for invalid data
+                        }
                     });
 
                     roomDropdown.append($('<a></a>').attr('onclick', 'showAllLocations()').text('Show All'));
@@ -1838,6 +1870,7 @@
             const td = tr[i].getElementsByTagName('td')[3];
             if (td) {
                 const txtValue = (td.textContent || td.innerText).trim();
+                console.log(filter);
                 if (txtValue === filter) {
                     tr[i].style.display = '';
                 } else {
