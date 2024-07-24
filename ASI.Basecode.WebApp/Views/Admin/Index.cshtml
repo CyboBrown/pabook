@@ -32,7 +32,7 @@
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
                         <input type="date" id="filterDate" name="date" class="w-50 px-4 py-2 text-sm text-black">
-                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownBookings()">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownBookings()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
@@ -43,7 +43,7 @@
                             <a onclick="showAllRooms()">Show All</a>
                         </div>
                         <div class="book-now flex-grow">
-                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #36C2CE;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                             </button>
@@ -93,7 +93,7 @@
                             <a onclick="filterByRole(2)">Users</a>
                             <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #36C2CE;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
@@ -138,7 +138,7 @@
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
                         </div>
-                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #36C2CE;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
@@ -178,11 +178,11 @@
         <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
             <div class="form-group full-width">
-                <label for="title">Title:</label>
+                <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
             <div class="form-group full-width">
-                <label for="description">Description:</label>
+                <label for="description">Meeting Description:</label>
                 <input type="text" id="description" name="description">
             </div>
 
