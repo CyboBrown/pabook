@@ -62,9 +62,25 @@ body {
         color: red;
     }
 
+
+
 .save-button {
-    background-color: #28a745;
-    color: white;
+    padding: 10px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 100px;
+    background-color: #ADC5CF;
+    color: #185D62;
+    display: block;
+    z-index: 100;
+    border-radius: 20px;
+}
+
+.save-button:hover {
+    background-color: #10515ba9;
+    color: #fff;
 }
 
 .cancel-button {
@@ -81,7 +97,9 @@ body {
 }
 
 .time-select {
+    background-color: var(--dark-main);
     color: #fff;
+    transition: background-color 0.4s ease;
 }
 
  /*Additional dark mode styles can be added here */

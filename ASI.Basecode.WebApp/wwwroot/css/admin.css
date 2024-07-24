@@ -328,8 +328,8 @@ h2 {
 
 .settings-section {
     margin-top: 20px;
-    margin-left: 100px; /* Margin from main container */
-    margin-right: 100px;
+    margin-left: 50px; /* Margin from main container */
+    margin-right: 50px;
     padding: 20px;
     border-radius: 10px;
     background-color: #185D62;
@@ -341,6 +341,7 @@ body.light .settings-section {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .setting-group {
+    margin-top: 50px;
     margin-bottom: 0;
 
 }
@@ -358,11 +359,12 @@ body.light .settings-section {
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
+    margin-top: 20px;
     /*font-size: 1rem;*/
 }
 
 .setting span {
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .status {
@@ -372,7 +374,7 @@ body.light .settings-section {
 
 .time-select {
     font-size: 14px;
-    background-color: transparent;
+    background-color: #fff;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
@@ -441,8 +443,13 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(20px);
 }
-/*
+
 .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+
+
     display: flex;
     justify-content: flex-end;
     margin-top: 30px;
@@ -457,43 +464,29 @@ input:checked + .slider:before {
     color: #fff;
     margin-top: 100px;
 }
+
 .save-button {
-    display: block;
-    background-color: #4D869C;
+    padding: 15px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    background-color: #10515b;
     color: #fff;
-    padding: 0.8rem 1.5rem;
+    display: block;
     z-index: 100;
-    border-radius: 20px;
+}
+.save-button:hover {
+    background-color: #10515ba9;
 }
 .pulse {
     animation: pulse 1.5s infinite;
 }
-
 .action-buttons:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}*/
-.action-buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 30px;
+    box-shadow: rgba(0, 0, 0, 0.1);
 }
-
-.save-button {
-    padding: 10px 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 100px;
-    background-color: #4D869C;
-    color: #fff;
-    font-size: 0.5rem;
-}
-.save-button:hover {
-    background-color: #10515b;
-}
-
+/*SETTINGS ENDREGION*/
 
 
 /*Light Mode*/
@@ -577,6 +570,20 @@ body.light .user-email {
 body.light .notification-section a {
     color: var(--light-text);
 }
+body.light .time-select {
+    background-color: var(--light-main);
+    color: var(--dark-main);
+    transition: background-color 0.4s ease;
+}
+body.light .save-button {
+    background-color: var(--dark-main);
+    color: #fff;
+}
+
+body.light .save-button:hover {
+    background-color: #10515ba9;
+}
+
 
 .notification-section a.light {
     color: var(--light-text);
@@ -621,9 +628,8 @@ body.light .profile-pic {
     margin-right: 20px;
 }
 body.light .setting-group h2 {
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 10px;
     color: var(--light-text);
 }
 
-/*SETTINGS ENDREGION*/

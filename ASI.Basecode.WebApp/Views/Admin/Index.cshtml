@@ -32,7 +32,7 @@
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
                         <input type="date" id="filterDate" name="date" class="w-50 px-4 py-2 text-sm text-black">
-                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C"; onclick="toggleDropdownBookings()">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownBookings()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
@@ -177,6 +177,7 @@
         <span class="close">&times;</span>
         <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
+            <div class="message-container" id="bookingMessage"></div>
             <div class="form-group full-width">
                 <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
@@ -579,6 +580,22 @@
         <span id="closeRoomDetailsModalBtn" class="close">&times;</span>
         <h3>Room Details</h3>
         <div id="roomDetailsContent" class="white-container"></div>
+    </div>
+</div>
+
+@*Confirm Delete Modal*@
+<div id="confirmDeleteModal" class="modal">
+    <div class="modal-content">
+        <span id="closeButt" class="close">&times;</span>
+                <h1 class="modal-title" id="modalTitle" style="font-size: 2rem;">Cancel Booking</h1>
+        <div class="modal-body" id="modalContent">
+            Are you sure you want to cancel this booking?
+        </div>
+        &nbsp;
+        <div class="button-container">
+            <button id="confirmDelete" class="btn btn-danger">Yes, Cancel Booking</button>
+            <button id="cancelDelete" class="btn btn-secondary">No, Keep Booking</button>
+        </div>
     </div>
 </div>
 
@@ -1049,14 +1066,16 @@
                             // Remove the row from the table
                             const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
                             row.remove();
-                            alert('Booking cancelled successfully');
+                            displayMessage('Booking cancelled successfully', 'success');
+                            //alert('Booking cancelled successfully');
                         } else {
                             throw new Error('Failed to cancel booking');
                         }
                     })
                     .catch(error => {
                         console.error('Error cancelling booking:', error);
-                        alert('Failed to cancel booking. Please try again.');
+                        //alert('Failed to cancel booking. Please try again.');
+                        displayMessage('Failed to cancel booking. Please try again.');
                     });
             }
         }
@@ -1138,6 +1157,16 @@
             return 1; // Placeholder value for now
         }
     });
+    //newwwwwwwwwwwwwww
+    function displayMessage() {
+        const bookingContainer = document.getElementById('bookingContainer');
+        bookingContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
+        bookingContainer.textContent = 'Cancelled!';
+        messageContainer.style.display = 'block';
+        setTimeout(() => {
+                bookingContainer.style.display = 'none';
+            }, 3000);
+    }
 
     function searchFilterBookings() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1273,7 +1302,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                             <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                            <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
+                                        <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}" data-title="Delete User" data-content="Are you sure you want to remove this user?">Delete</button>
                         </td>
                     `;
                         tableBody.appendChild(row);
@@ -1382,13 +1411,14 @@
                     //alert('User ' + (method === 'POST' ? 'created' : 'updated') + ' successfully!');
 
                     if (method === 'POST') { 
-                        alert('User created successfully!');
+                        toastr.success('User created successfully!');
                     } else {
-                        alert('User updated successfully!');
+                        toastr.success('User updated successfully!');
                     }
                 })
                 .catch(error => {
                     let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the user. Please try again.';
+
 
                     if (error.status) {
                         errorMessage += '\n\nStatus Code: ' + error.status;
@@ -1464,25 +1494,56 @@
             document.getElementById('userDetailsModal').style.display = 'none';
         }
 
+
         //DELETE User
-        function deleteUser(userId) {
-            if (confirm('Are you sure you want to remove this User?')) {
-                fetch(`/api/UserManagement/${userId}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            const row = document.querySelector(`button[data-id="${userId}"]`).closest('tr');
-                            row.remove();
-                            alert('User removed successfully');
-                        } else {
-                            throw new Error('Failed to remove user');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error removing user:', error);
-                        alert('Failed to remove user. Please try again.');
-                    });
+            function deleteUser(userId) {
+            
+                const modal = document.getElementById('confirmDeleteModal');
+                const confirmBtn = document.getElementById('confirmDelete');
+                const cancelBtn = document.getElementById('cancelDelete');
+                const exitBtn = document.getElementById('closeButt');
+                const modalTitle = modal.querySelector('#modalTitle');
+                const modalContent = modal.querySelector('#modalContent');
+
+                modalTitle.textContent = "Delete User";
+                modalContent.textContent = "Are you sure you want to delete this user?";
+                confirmBtn.textContent = "Yes, Delete User";
+                cancelBtn.textContent = "No, Keep User";
+
+                modal.style.display = 'block';
+
+                confirmBtn.onclick = function () {
+                            fetch(`/api/UserManagement/${userId}`, { method: 'DELETE' })
+                                .then(response => {
+                                    if (response.ok) {
+                                        const row = document.querySelector(`button[data-id="${userId}"]`).closest('tr');
+                                        row.remove();
+                                        toastr.success('User removed successfully');
+                                    } else {
+                                        throw new toastr.error('Failed to remove user');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error removing user:', error);   
+                                    toaster.error('Failed to remove user. Please try again.');
+                                });
+                            modal.style.display = 'none';
+                }
+
+                exitBtn.onclick = function () {
+                    modal.style.display = 'none';
+                }
+
+                cancelBtn.onclick = function () {
+                    modal.style.display = 'none';
+                }
+
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                }
             }
-        }
 
         var userModal = document.getElementById("addUserModal");
         var userBtn = document.getElementById("addUserButton");
@@ -1508,6 +1569,28 @@
         });
      });
 
+     document.addEventListener("DOMContentLoaded", function () {
+        // Get all buttons that trigger the modal
+        const modalButtons = document.querySelectorAll(".open-modal-btn");
+
+        // Loop through each button and add a click event listener
+        modalButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Get data attributes from the clicked button
+            const title = button.getAttribute("data-title");
+            const content = button.getAttribute("data-content");
+
+            // Set modal title and content
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalContent").textContent = content;
+
+            // Show the modal
+            $("#myModal").modal("show");
+          });
+        });
+      });
+
+     // SEARCH FILTER
     function searchFilterUser() {
         var input, filter, table, tr, td, i, j, txtValue;
         input = document.getElementById("searchUserBar");
@@ -1539,6 +1622,7 @@
         document.getElementById('roleDropdown').classList.toggle('show');
     }
 
+    // FILTER BY ROLE
     function filterByRole(userRole) {
         const filter = roles[userRole];
         const table = document.getElementById('userTable');
@@ -1557,6 +1641,7 @@
         document.getElementById('roleDropdown').classList.remove('show');
     }
 
+    // FILTER SHOW ALL
     function showAllRoles() {
         const table = document.getElementById('userTable');
         if (!table) {
@@ -1868,22 +1953,37 @@
 
         //DELETE Room
         function deleteRoom(roomId) {
-            if (confirm('Are you sure you want to remove this room?')) {
-                fetch(`/api/Room/${roomId}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            const row = document.querySelector(`button[data-id="${roomId}"]`).closest('tr');
-                            row.remove();
-                            alert('Room cancelled successfully');
-                        } else {
-                            throw new Error('Failed to cancel room');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error cancelling room:', error);
-                        alert('Failed to cancel room. Please try again.');
-                    });
-            }
+                    const modal = document.getElementById('confirmDeleteModal');
+                    const confirmBtn = document.getElementById('confirmDelete');
+                    const cancelBtn = document.getElementById('cancelDelete');
+                    const exitBtn = document.getElementById('closeButt');
+                    const modalTitle = modal.querySelector('#modalTitle');
+                    const modalContent = modal.querySelector('#modalContent');
+
+                    modalTitle.textContent = "Delete Room";
+                    modalContent.textContent = "Are you sure you want to delete this room?";
+                    confirmBtn.textContent = "Yes, Delete room";
+                    cancelBtn.textContent = "No, Keep room";
+
+                    modal.style.display = 'block';
+
+                    confirmBtn.onclick = function() {
+                        fetch(`/api/Room/${roomId}`, { method: 'DELETE' })
+                                .then(response => {
+                                    if (response.ok) {
+                                        const row = document.querySelector(`button[data-id="${roomId}"]`).closest('tr');
+                                        row.remove();
+                                        toastr.success('Room cancelled successfully');
+                                    } else {
+                                        throw new toastr.error('Failed to cancel room');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error cancelling room:', error);
+                                    toastr.error('Failed to cancel room. Please try again.');
+                                });
+                        modal.style.display = 'none';
+                    }
         }
 
 
@@ -1996,6 +2096,37 @@
 
 @section Styles {
     <style>
+                .message-container {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    background-color: #565656;
+                    color: white;
+                    text-align: center;
+                    padding: 10px 0;
+                    z-index: 1000;
+                    font-size: 16px;
+                }
+
+                .message {
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                }
+
+                    .message.success {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+
+                    .message.error {
+                        background-color: #f44336;
+                        color: white;
+                    }
+
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -2493,6 +2624,102 @@
                 color: #185D62;
                 font-weight: 600;
             }
+
+                #confirmDeleteModal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0, 0, 0, 0.6);
+                }
+
+                    #confirmDeleteModal .modal-content {
+                        background-color: #185D62;
+                        margin: 15% auto;
+                        padding: 30px;
+                        border: none;
+                        width: 90%;
+                        max-width: 500px;
+                        border-radius: 15px;
+                        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+                        font-family: 'Poppins', sans-serif;
+                        color: white;
+                        position: relative;
+                        text-align: center;
+                    }
+
+                        #confirmDeleteModal .modal-content h1 {
+                            font-size: 2rem;
+                            color: #ecf0f1;
+                            margin-bottom: 20px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+
+                        #confirmDeleteModal .modal-content p {
+                            font-size: 1.1rem;
+                            margin-bottom: 25px;
+                            line-height: 1.5;
+                        }
+
+                    #confirmDeleteModal .close {
+                        position: absolute;
+                        top: 10px;
+                        right: 15px;
+                        color: #ecf0f1;
+                        font-size: 28px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        transition: color 0.3s ease;
+                    }
+
+                        #cancelconfirmDeleteModalModal .close:hover {
+                            color: #bdc3c7;
+                        }
+
+                    #confirmDeleteModal .button-container {
+                        display: flex;
+                        justify-content: center;
+                        gap: 15px;
+                    }
+
+                #confirmDeleteModal .btn {
+                        padding: 12px 24px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease, transform 0.2s ease;
+                        margin: 0 10px;
+                    }
+
+                    #confirmDeleteModal .btn-danger {
+                        background-color: #db3327;
+                        color: white;
+                    }
+
+                    #confirmDeleteModal .btn-secondary {
+                        background-color: #9a9999;
+                        color: white;
+                    }
+
+                    #confirmDeleteModal .btn:hover {
+                        transform: translateY(-2px);
+                    }
+
+                #confirmDeleteModal .btn-danger:hover {
+                        background-color: #ff2348;
+                    }
+
+                #confirmDeleteModal .btn-secondary:hover {
+                        background-color: #6c7a7d;
+                    }
     </style>
 }
 
