@@ -34,7 +34,8 @@
     });
 
     function loadNotifications() {
-        fetch('/api/Notification/id')
+        const userId = document.getElementById('userId').value;
+        fetch(`/api/Notification/userId`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -43,21 +44,14 @@
             })
             .then(data => {
                 notifications = data;
+                notifications.sort((a, b) => new Date(b.notifyDate) - new Date(a.notifyDate));
                 displayNotifications();
                 updatePagination();
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('notificationsList').innerHTML = '<li class="inner-container">Failed to load notifications. Please try again later.</li>';
+                document.getElementById('notificationsList').innerHTML = '<li class="notification">Failed to load notifications. Please try again later.</li>';
             });
-    }
-
-        // Sort notifications by createdDate in descending order
-        notifications.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
-
-        displayNotifications();
-        updatePagination();
-    
     }
 
     function displayNotifications() {

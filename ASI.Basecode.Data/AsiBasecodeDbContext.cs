@@ -130,35 +130,35 @@ namespace ASI.Basecode.Data
                     .HasConstraintName("FK__Preferences__Id__4E88ABD4");
             });
 
-            modelBuilder.Entity<Recurrence>(entity =>
-            {
-                entity.HasKey(e => e.BookingId)
-                    .HasName("PK__Recurren__73951AEDB93D0132");
+            //modelBuilder.Entity<Recurrence>(entity =>
+            //{
+            //    entity.HasKey(e => e.BookingId)
+            //        .HasName("PK__Recurren__73951AEDB93D0132");
 
-                entity.ToTable("Recurrence");
+            //    entity.ToTable("Recurrence");
 
-                entity.Property(e => e.BookingId).ValueGeneratedNever();
+            //    entity.Property(e => e.BookingId).ValueGeneratedNever();
 
-                entity.Property(e => e.CreatedBy)
-                    .HasMaxLength(256)
-                    .IsUnicode(false);
+            //    entity.Property(e => e.CreatedBy)
+            //        .HasMaxLength(256)
+            //        .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            //    entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.EndDate).HasColumnType("date");
+            //    entity.Property(e => e.EndDate).HasColumnType("date");
 
-                entity.Property(e => e.UpdatedBy)
-                    .HasMaxLength(256)
-                    .IsUnicode(false);
+            //    entity.Property(e => e.UpdatedBy)
+            //        .HasMaxLength(256)
+            //        .IsUnicode(false);
 
-                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            //    entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
-                entity.HasOne(d => d.Booking)
-                    .WithOne(p => p.Recurrence)
-                    .HasForeignKey<Recurrence>(d => d.BookingId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Recurrenc__Booki__48CFD27E");
-            });
+            //    entity.HasOne(d => d.Booking)
+            //        .WithOne(p => p.Recurrence)
+            //        .HasForeignKey<Recurrence>(d => d.BookingId)
+            //        .OnDelete(DeleteBehavior.ClientSetNull)
+            //        .HasConstraintName("FK__Recurrenc__Booki__48CFD27E");
+            //});
 
             modelBuilder.Entity<RecurrenceType>(entity =>
             {

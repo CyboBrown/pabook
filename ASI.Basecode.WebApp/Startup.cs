@@ -153,6 +153,7 @@ namespace ASI.Basecode.WebApp
             services.AddScoped<IAnalyticsService, AnalyticsService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+    
 
         }
 

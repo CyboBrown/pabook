@@ -28,13 +28,13 @@ namespace ASI.Basecode.WebApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetNotifications(int id)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetNotifications(int userId)
         {
             try
             {
                 //int userId = GetCurrentUserId();
-                var notifications = await _notificationService.GetNotificationsAsync(id);
+                var notifications = await _notificationService.GetNotificationsForUserAsync(userId);
                 return Ok(notifications);
             }
             catch (Exception ex)
@@ -68,5 +68,7 @@ namespace ASI.Basecode.WebApp.Controllers
         //    }
         //    throw new UnauthorizedAccessException("User is not authenticated or user ID is invalid.");
         //}
+        // Fetch user preferences when page loads
+      
     }
 }

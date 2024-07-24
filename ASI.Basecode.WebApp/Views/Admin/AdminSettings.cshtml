@@ -299,10 +299,13 @@
 
     <script>
         // Fetch user preferences when page loads
+    
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
-            const userId = @(Model != null ? Model.Id.ToString() : "null");
-            //getPreferencesById(userId);
+            var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
+            sessionStorage.setItem('UserId', userId);
+            getPreferencesById(userId);
+            displaySuccessMessage();
         });
 
         //DarkMode and LightMode

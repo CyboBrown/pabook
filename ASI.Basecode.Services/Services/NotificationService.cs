@@ -1,9 +1,11 @@
 ﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -18,21 +20,50 @@ namespace ASI.Basecode.Services.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<NotificationViewModel> GetAllNotifications()
+        public Task AddNotificationAsync(NotificationViewModel notification)
         {
-            var notifications = _notificationRepository.GetNotifications().ToList();
+            throw new NotImplementedException();
+        }
+
+        public void CreateBookingNotifications(int userId, string reminderTitle, string reminderDescription, DateTime dateTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateNotification(int userId, string creationTitle, string creationDescription, DateTime now, NotificationType creation)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteNotificationAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotificationViewModel> GetNotificationByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<NotificationViewModel>> GetNotificationsForUserAsync(int userId)
+        {
+            var notifications = await _notificationRepository.GetNotificationsForUserAsync(userId);
             return _mapper.Map<IEnumerable<NotificationViewModel>>(notifications);
         }
 
-        public IEnumerable<NotificationViewModel> GetUserNotifications(int userId)
+        public Task MarkAllAsSeenAsync(int userId)
         {
-            var notifications = _notificationRepository.GetNotifications()
-                .Where(n => n.UserId == userId)
-                .ToList();
-            return _mapper.Map<IEnumerable<NotificationViewModel>>(notifications);
+            throw new NotImplementedException();
         }
 
-        // You can add more methods here as needed, such as:
-        // AddNotification, UpdateNotification, DeleteNotification, etc.
+        public async Task MarkAsSeenAsync(int id)
+        {
+            await _notificationRepository.MarkAsSeenAsync(id);
+        }
+
+        public Task UpdateNotificationAsync(NotificationViewModel notification)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
