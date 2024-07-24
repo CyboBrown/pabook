@@ -32,11 +32,15 @@
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
                         <input type="date" id="filterDate" name="date" class="w-50 px-4 py-2 text-sm text-black">
-                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownBookings()">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C"; onclick="toggleDropdownBookings()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
                         <div id="bookingsDropdown" class="dropdown-content">
+                            <a onclick="filterByRoom(0)">Conference Room A</a>
+                            <a onclick="filterByRoom(1)">Meeting Room B</a>
+                            <a onclick="filterByRoom(2)">Training Room C</a>
+                            <a onclick="showAllRooms()">Show All</a>
                         </div>
                         <div class="book-now flex-grow">
                             <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
@@ -174,11 +178,11 @@
         <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
             <div class="form-group full-width">
-                <label for="title">Title:</label>
+                <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
             <div class="form-group full-width">
-                <label for="description">Description:</label>
+                <label for="description">Meeting Description:</label>
                 <input type="text" id="description" name="description">
             </div>
 
@@ -1209,30 +1213,6 @@
             console.error('Element with id "bookingsDropdown" not found');
         }
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const datePicker = document.getElementById('filterDate');
-        const dataTable = document.getElementById('bookingsTable');
-        const rows = dataTable.getElementsByTagName('tr');
-
-        console.log(datePicker, dataTable, rows);
-
-        datePicker.addEventListener('input', function () {
-            const selectedDate = datePicker.value;
-            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
-                const row = rows[i];
-                const dateCell = row.getElementsByTagName('td')[1]; // Assuming date is in the first column
-                if (dateCell.textContent === selectedDate) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-                console.log(datePicker.value);
-                console.log(selectedDate);
-                console.log(dateCell.textContent);
-            }
-        });
-    });
  </script>
 
  @*User Script*@
