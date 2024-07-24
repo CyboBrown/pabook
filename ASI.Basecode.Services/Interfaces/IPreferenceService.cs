@@ -16,8 +16,7 @@ namespace ASI.Basecode.Services.Interfaces
         IEnumerable<PreferenceViewModel> GetUserPreferences();      
         PreferenceViewModel GetPreferenceById(int id);
         PreferenceViewModel GetUserPreferences(int id);
-
-     
+    
         void CreatePreference(PreferenceViewModel preference);
         void UpdatePreference(PreferenceViewModel preference);
         void SavePreference(PreferenceViewModel preference);
