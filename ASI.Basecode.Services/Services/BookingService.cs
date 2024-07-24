@@ -110,6 +110,7 @@ namespace ASI.Basecode.Services.Services
                         Recurring = booking.Recurring,
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
+                        RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                         RoomName = room?.Name ?? "Unknown Room",
                         Cancelled = booking.Cancelled
                     };
@@ -179,6 +180,7 @@ namespace ASI.Basecode.Services.Services
                 Recurring = booking.Recurring,
                 RecurrenceTypeId = booking.RecurrenceTypeId,
                 RecurrenceEndDate = booking.RecurrenceEndDate,
+                RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                 RoomName = room?.Name ?? "Unknown Room"
             };
         }
