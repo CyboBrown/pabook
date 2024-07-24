@@ -1,7 +1,8 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminHomeViewModel
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
-
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="~/css/admindark.css" />
 @{
     ViewData["Title"] = "Admin Home Page";
 }
@@ -25,27 +26,27 @@
         </div>
         @*Bookings View*@
         <div id="bookingsContent" class="content flex">
-            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+           <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh; display: flex; flex-direction: column; justify-content: space-between;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
-                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                        <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
                         
                         <div class="book-now flex-grow">
-                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                             </button>
-                        </div> 
-                        
+                        </div>
+                    
                     </div>
                 </div>
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                <div class="bg-white shadow-lg rounded-lg flex-grow" style="overflow-y: auto;">
+                     <div class="table-container" style="overflow-x: auto;">
                         <table id="bookingsTable" class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -57,21 +58,26 @@
                                 </tr>
                             </thead>
                             <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- ari ang mga bookings ma display -->
+                                <!-- Bookings will be displayed here -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div id="paginationContainer" class="flex justify-center items-center py-1" style="margin-top: 0.5rem;">
+                    <div id="pagination" class="flex justify-center items-center">
+                        <!-- Pagination will be dynamically generated here -->
                     </div>
                 </div>
             </div>
         </div>
         @*User View*@
         <div id="usersContent" class="content hidden">
-            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+            <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">U S E R S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
                     <div id="dropdown" class="flex space-x-2">
-                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownUsers()">
+                        <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownUsers()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
@@ -81,15 +87,15 @@
                             <a onclick="filterByRole(2)">Users</a>
                             <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
                     </div>
                 </div>
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="bg-white shadow-lg rounded-lg flex-grow overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
-                        <table id="userTable"class="min-w-full max-w-full divide-y divide-gray-200">
+                        <table id="userTable" class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
@@ -106,28 +112,33 @@
                         </table>
                     </div>
                 </div>
+                <div id="userPaginationContainer" class="flex justify-center items-center py-1" style="margin-top: 0.5rem;">
+                    <div id="userPagination" class="flex justify-center items-center">
+                        <!-- Pagination will be dynamically generated here -->
+                    </div>
+                </div>
             </div>
         </div>
         @*Room View*@
         <div id="roomsContent" class="content hidden">
-            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+            <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
-                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold bg-blue-600 rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdownRoom()">
+                        <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
                         </div>
-                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm bg-red-600 text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out">
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #91DDCF;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
                     </div>
                 </div>
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="bg-white shadow-lg rounded-lg flex-grow overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
                         <table id="roomTable" class="min-w-full max-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -146,10 +157,13 @@
                         </table>
                     </div>
                 </div>
+                <div id="roomPaginationContainer" class="flex justify-center items-center py-1" style="margin-top: 0.5rem;">
+                    <div id="roomPagination" class="flex justify-center items-center">
+                        <!-- Pagination will be dynamically generated here -->
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
 @*Add Booking Modal*@
 <div id="addBookingModal" class="modal">
@@ -535,7 +549,7 @@
 </div>
 
 @*Booking Details Modal*@
-<<div id="bookingDetailsModal" class="modal">
+<div id="bookingDetailsModal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
         <h3>Booking Details</h3>
@@ -652,7 +666,10 @@
         const bookingForm = document.getElementById('bookingForm');
         const submitButton = bookingForm.querySelector('button[type="submit"]');
 
-        function loadBookings() {
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        function loadBookings(page = 1) {
             fetch('/api/Booking/bookings')
                 .then(response => {
                     if (!response.ok) {
@@ -661,29 +678,36 @@
                     return response.json();
                 })
                 .then(data => {
+                    const totalItems = data.length;
+                    const totalPages = Math.ceil(totalItems / itemsPerPage);
+                    currentPage = page;
+
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    const currentItems = data.slice(startIndex, endIndex);
+
                     const tableBody = document.getElementById('bookingsTableBody');
                     tableBody.innerHTML = '';
-                    data.forEach(booking => {
+                    currentItems.forEach(booking => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
-                                <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                            ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
-                                    </span>
-                                </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
-                                    <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
-                                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel Booking</button>
-                                </td>
-                            `;
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
+                            <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
+                            <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel Booking</button>
+                        </td>
+                    `;
                         tableBody.appendChild(row);
                     });
 
-                    // Add event listeners to the new buttons
                     document.querySelectorAll('.edit-btn').forEach(btn => {
                         btn.addEventListener('click', () => editBooking(btn.dataset.id));
                     });
@@ -693,11 +717,40 @@
                     document.querySelectorAll('.cancel-btn').forEach(btn => {
                         btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
                     });
+
+                    generatePagination(totalPages);
                 })
                 .catch(error => console.error('Error fetching bookings:', error));
         }
 
-        // i laod ang bookings
+        function generatePagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '← Previous';
+            prevButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => loadBookings(currentPage - 1);
+            pagination.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.innerHTML = i;
+                pageButton.className = `px-3 py-1 mx-1 rounded text-sm ${i === currentPage ? 'bg-green-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`;
+                pageButton.onclick = () => loadBookings(i);
+                pagination.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = 'Next →';
+            nextButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => loadBookings(currentPage + 1);
+            pagination.appendChild(nextButton);
+        }
+
+        // Load initial bookings
         loadBookings();
 
         // Form submission
@@ -1177,48 +1230,93 @@
         const userForm = document.getElementById('userForm');
          const submitButton = userForm.querySelector('button[type="submit"]');
 
-         function loadUsers() {
-             fetch('/api/UserManagement/users')
-                 .then(response => response.json())
-                 .then(data => {
-                     const tableBody = document.getElementById('usersTableBody');
-                     tableBody.innerHTML = '';
-                     data.forEach(user => {
-                         console.log("User data:", user);
-                         const row = document.createElement('tr');
-                         row.innerHTML = `
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.userName}</td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastName}</td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.userRole != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                                        ${roles[user.userRole]}
-                                                  </span>
-                                              </td>
-                                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                      <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
-                                                  <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                                  <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
-                                              </td>
-                                          `;
-                         tableBody.appendChild(row);
-                     });
+        let currentPage = 1;
+        const itemsPerPage = 5;
 
-                     document.querySelectorAll('.edit-user-btn').forEach(btn => {
-                         btn.addEventListener('click', () => editUser(btn.dataset.id));
-                     });
-                     document.querySelectorAll('.details-user-btn').forEach(btn => {
-                         btn.addEventListener('click', () => showUserDetails(btn.dataset.id));
-                     });
-                     document.querySelectorAll('.delete-user-btn').forEach(btn => {
-                         btn.addEventListener('click', () => deleteUser(btn.dataset.id));
-                     });
-                 })
-                 .catch(error => console.error('Error fetching user:', error));
-         }
+        function loadUsers(page = 1) {
+            fetch('/api/UserManagement/users')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const totalItems = data.length;
+                    const totalPages = Math.ceil(totalItems / itemsPerPage);
+                    currentPage = page;
 
-         loadUsers();
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    const currentItems = data.slice(startIndex, endIndex);
+
+                    const tableBody = document.getElementById('usersTableBody');
+                    tableBody.innerHTML = '';
+                    currentItems.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.userName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.firstName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.userRole != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${roles[user.userRole]}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
+                            <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
+                            <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
+                        </td>
+                    `;
+                        tableBody.appendChild(row);
+                    });
+
+                    document.querySelectorAll('.edit-user-btn').forEach(btn => {
+                        btn.addEventListener('click', () => editUser(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.details-user-btn').forEach(btn => {
+                        btn.addEventListener('click', () => showUserDetails(btn.dataset.id));
+                    });
+                    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                        btn.addEventListener('click', () => deleteUser(btn.dataset.id));
+                    });
+
+                    generatePagination(totalPages);
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }
+
+        function generatePagination(totalPages) {
+            const pagination = document.getElementById('userPagination');
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '← Previous';
+            prevButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => loadUsers(currentPage - 1);
+            pagination.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.innerHTML = i;
+                pageButton.className = `px-3 py-1 mx-1 rounded text-sm ${i === currentPage ? 'bg-green-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`;
+                pageButton.onclick = () => loadUsers(i);
+                pagination.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = 'Next →';
+            nextButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => loadUsers(currentPage + 1);
+            pagination.appendChild(nextButton);
+        }
+
+        // Load initial users
+        loadUsers();
 
          userForm.addEventListener('submit', function (e) {
              e.preventDefault();
@@ -1531,34 +1629,50 @@
         const roomForm = document.getElementById('roomForm');
         const submitButton = roomForm.querySelector('button[type="submit"]');
 
-        function loadRooms() {
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        function loadRooms(page = 1) {
             fetch('/api/Room/rooms')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    const totalItems = data.length;
+                    const totalPages = Math.ceil(totalItems / itemsPerPage);
+                    currentPage = page;
+
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    const currentItems = data.slice(startIndex, endIndex);
+
                     const tableBody = document.getElementById('roomsTableBody');
                     tableBody.innerHTML = '';
-                    data.forEach(room => {
+                    currentItems.forEach(room => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                        ${roomTypes[room.type]}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.location != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                        ${locations[room.location]}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
-                                    <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
-                                    <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
-                                </td>
-                            `;
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${roomTypes[room.type]}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.location != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${locations[room.location]}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
+                            <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
+                            <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
+                        </td>
+                    `;
                         tableBody.appendChild(row);
                     });
 
@@ -1571,10 +1685,40 @@
                     document.querySelectorAll('.delete-room-btn').forEach(btn => {
                         btn.addEventListener('click', () => deleteRoom(btn.dataset.id));
                     });
+
+                    generatePagination(totalPages);
                 })
                 .catch(error => console.error('Error fetching rooms:', error));
         }
 
+        function generatePagination(totalPages) {
+            const pagination = document.getElementById('roomPagination');
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '← Previous';
+            prevButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => loadRooms(currentPage - 1);
+            pagination.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.innerHTML = i;
+                pageButton.className = `px-3 py-1 mx-1 rounded text-sm ${i === currentPage ? 'bg-green-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`;
+                pageButton.onclick = () => loadRooms(i);
+                pagination.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = 'Next →';
+            nextButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => loadRooms(currentPage + 1);
+            pagination.appendChild(nextButton);
+        }
+
+        // Load initial rooms
         loadRooms();
 
         roomForm.addEventListener('submit', function (e) {

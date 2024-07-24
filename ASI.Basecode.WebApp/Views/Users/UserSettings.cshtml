@@ -59,10 +59,20 @@
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
+
+            var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
+            sessionStorage.setItem('UserId', userId);
+            
         });
 
         function fetchPreferences() {
-            fetch('/api/Preference/myPreferences')
+            const userId = sessionStorage.getItem('UserId');
+            if (!userId) {
+                console.error('User ID not found in session storage.');
+                return;
+            }
+
+            fetch(`/api/Preference/myPreferences?userId=${userId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -74,16 +84,20 @@
 
                     if (Array.isArray(data) && data.length === 0) {
                         console.log('No preferences found. Setting default values or handling empty state.');
-
+                        // Handle case when no preferences are found (perhaps set defaults)
                     } else if (typeof data === 'object') {
                         // Update UI based on fetched preferences
                         document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
-                        //document.querySelector('select[name="EnableNotifications"]').checked = data.enableNotifications;
-                        document.querySelector('select[name="TimeFormat"]').checked = data.timeFormat;
-                        document.querySelector('select[name="DefaultBookingDuration"]').checked = data.defaultBookingDuration;
-                        document.body.classList.add(theme);
-                        // Store preferences in session storage
-                        sessionStorage.setItem('userPreferences', JSON.stringify(data));
+                        document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString(); // Convert to string
+                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Convert to string
+
+                        // Store preferences including TimeFormat and DefaultBookingDuration in session storage
+                        const preferences = {
+                            darkMode: data.darkMode,
+                            timeFormat: data.timeFormat,
+                            defaultBookingDuration: data.defaultBookingDuration
+                        };
+                        sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
 
                         // Apply theme based on preferences
                         applyTheme(data.darkMode);
@@ -94,6 +108,8 @@
                 .catch(error => console.error('Error fetching preferences:', error));
         }
 
+
+
         const darkModeToggle = document.querySelector('#dark-change input');
         darkModeToggle.addEventListener('change', function () {
             const theme = this.checked ? 'light' : 'dark';
@@ -101,14 +117,7 @@
             const preferences = JSON.parse(sessionStorage.getItem('userPreferences')) || {};
             preferences.darkMode = this.checked;
             sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
-            // Update server-side preference as well
-            fetch('/api/Preference/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(preferences)
-            });
+            
         });
         //DarkMode and LightMode
         function applyTheme(isDarkMode) {
@@ -116,11 +125,11 @@
             if (isDarkMode) {
                 body.classList.add('light');
                 body.classList.remove('dark');
-                loadTheme('adminlight.css'); //CSS file for light mode
+                loadTheme('user.css'); //CSS file for light mode
             } else {
                 body.classList.add('dark');
                 body.classList.remove('light');
-                loadTheme('admin.css'); //CSS file for light mode
+                loadTheme('admindark.css'); //CSS file for light mode
             }
         }
 
@@ -180,6 +189,7 @@
         //Save Changes Button nga function
         function savePreferences() {
             const preferences = {
+                Id: parseInt(sessionStorage.getItem('UserId')),
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
                 //enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
                 timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
