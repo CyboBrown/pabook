@@ -94,8 +94,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
         private int GetCurrentUserId()
         {
-            // Implement logic to retrieve userId from session or context
-            // Example:
             var userId = Convert.ToInt32(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
             return userId;
         }
