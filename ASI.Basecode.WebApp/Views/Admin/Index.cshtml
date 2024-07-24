@@ -177,6 +177,7 @@
         <span class="close">&times;</span>
         <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
+            <div class="message-container" id="bookingMessage"></div>
             <div class="form-group full-width">
                 <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
@@ -1049,14 +1050,16 @@
                             // Remove the row from the table
                             const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
                             row.remove();
-                            alert('Booking cancelled successfully');
+                            displayMessage('Booking cancelled successfully', 'success');
+                            //alert('Booking cancelled successfully');
                         } else {
                             throw new Error('Failed to cancel booking');
                         }
                     })
                     .catch(error => {
                         console.error('Error cancelling booking:', error);
-                        alert('Failed to cancel booking. Please try again.');
+                        //alert('Failed to cancel booking. Please try again.');
+                        displayMessage('Failed to cancel booking. Please try again.');
                     });
             }
         }
@@ -1138,6 +1141,16 @@
             return 1; // Placeholder value for now
         }
     });
+    //newwwwwwwwwwwwwww
+    function displayMessage() {
+        const bookingContainer = document.getElementById('bookingContainer');
+        bookingContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
+        bookingContainer.textContent = 'Cancelled!';
+        messageContainer.style.display = 'block';
+        setTimeout(() => {
+                bookingContainer.style.display = 'none';
+            }, 3000);
+    }
 
     function searchFilterBookings() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1996,6 +2009,37 @@
 
 @section Styles {
     <style>
+                .message-container {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    background-color: #565656;
+                    color: white;
+                    text-align: center;
+                    padding: 10px 0;
+                    z-index: 1000;
+                    font-size: 16px;
+                }
+
+                .message {
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                }
+
+                    .message.success {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+
+                    .message.error {
+                        background-color: #f44336;
+                        color: white;
+                    }
+
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;

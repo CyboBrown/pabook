@@ -181,7 +181,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     preference.EnableNotifications = model.EnableNotifications;
                     preference.DefaultBookingDuration = model.DefaultBookingDuration;
                     // Update other properties
-
+                    
                     await _preferenceService.UpdatePreferenceAsync(preference);
                 }
 

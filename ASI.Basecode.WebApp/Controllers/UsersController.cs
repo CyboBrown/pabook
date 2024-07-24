@@ -70,10 +70,10 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Displays the settings page.
         /// </summary>
         /// <returns>User Settings View</returns>
-        [HttpGet]
+        //[HttpGet]
         public IActionResult UserSettings()
         {
-            if (User.Identity.IsAuthenticated)
+            /*if (User.Identity.IsAuthenticated)
             {
                 var userIdClaim = User.FindFirst("UserId")?.Value;
                 if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
@@ -102,7 +102,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Handle the case when the user is not authenticated
                 ModelState.AddModelError(string.Empty, "User is not authenticated.");
             }
-
+            */
             // Return an empty view or an error view if necessary
             return View();
         }
@@ -112,7 +112,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// </summary>
         /// <param name="model">Preference view model</param>
         /// <returns>Redirects to the user settings page</returns>
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> SavePreferences(PreferenceViewModel model)
         {
             if (ModelState.IsValid)
@@ -156,6 +156,6 @@ namespace ASI.Basecode.WebApp.Controllers
         private string GetCurrentUserName()
         {
             return HttpContext.User.Identity.Name;
-        }
+        }*/
     }
 }
