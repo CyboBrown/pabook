@@ -12,15 +12,16 @@
         <div class="outer-container">
             <div class="main-content">
                 <h1>Account Settings</h1>
-                <div class="profile-section">
-                    <div class="profile-pic"></div>
-                    <div class="profile-info">
-                        <span class="profile-name">ADMIN USER</span>
-                        <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
-                    </div>
-                </div>
+                
 
                 <div class="settings-section">
+                    <div class="profile-section">
+                        <div class="profile-pic"></div>
+                        <div class="profile-info">
+                            <span class="profile-name">USER</span>
+                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                        </div>
+                    </div>
                     <div class="setting">
                         <span>Switch to light mode</span>
                         <label id="dark-change" class="toggle-switch">
