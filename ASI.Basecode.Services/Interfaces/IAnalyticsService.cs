@@ -17,6 +17,8 @@ namespace ASI.Basecode.Services.Interfaces
         string GetMostBookedRoom();
         string GetPeakTime();
         Dictionary<string, MonthlyDataViewModel> GetMonthlyData();
+        Dictionary<string, MonthlyDataViewModel> GetMonthlyData(int year, int month); 
+        Dictionary<string, MonthlyDataViewModel> GetYearlyData(int year); 
     }
 }
 
