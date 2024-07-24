@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
@@ -8,7 +7,6 @@ using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -16,13 +14,20 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IRoomRepository _roomRepository;
+        private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public BookingService(IBookingRepository bookingRepository, IRoomRepository roomRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public BookingService(
+            IBookingRepository bookingRepository,
+            IRoomRepository roomRepository,
+            INotificationService notificationService,
+            IMapper mapper,
+            IHttpContextAccessor contextAccessor)
         {
             _bookingRepository = bookingRepository;
             _roomRepository = roomRepository;
+            _notificationService = notificationService;
             _mapper = mapper;
             _contextAccessor = contextAccessor;
         }
@@ -31,8 +36,7 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var bookings = _bookingRepository.GetBookings()
-                                                 .ToList();
+                var bookings = _bookingRepository.GetBookings().ToList();
                 var bookingViewModels = new List<BookingViewModel>();
 
                 foreach (var booking in bookings)
@@ -58,7 +62,7 @@ namespace ASI.Basecode.Services.Services
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
                         RoomName = room?.Name ?? "Unknown Room",
-                        Cancelled = booking.Cancelled 
+                        Cancelled = booking.Cancelled
                     };
 
                     bookingViewModels.Add(bookingViewModel);
@@ -68,8 +72,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
-                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }
         }
@@ -78,8 +82,9 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
+                var currentUser = _contextAccessor.HttpContext.User.Identity.Name;
                 var bookings = _bookingRepository.GetBookings()
-                                                 .Where(b => b.CreatedBy == _contextAccessor.HttpContext.User.Identity.Name)
+                                                 .Where(b => b.CreatedBy == currentUser)
                                                  .ToList();
                 var bookingViewModels = new List<BookingViewModel>();
 
@@ -116,8 +121,8 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
-                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Console.WriteLine($"Error in GetUserBookings: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<BookingViewModel>();
             }
         }
@@ -126,12 +131,30 @@ namespace ASI.Basecode.Services.Services
         {
             var booking = new Booking();
             _mapper.Map(model, booking);
-            booking.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name; // placeholder pani, dapat user ni realtime
+            booking.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             booking.CreatedDate = DateTime.Now;
-            booking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name; // placeholder pani, dapat user ni realtime
+            booking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             booking.UpdatedDate = DateTime.Now;
             booking.Deleted = false;
             _bookingRepository.AddBooking(booking);
+
+            try
+            {
+                // Create creation notification
+                var creationTitle = "New Booking Created";
+                var creationDescription = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} at {booking.Room.Name}";
+                _notificationService.CreateNotification(booking.UserId, creationTitle, creationDescription, DateTime.Now, NotificationType.Creation);
+
+                // Create reminder notifications
+                var reminderTitle = "Meeting Reminder";
+                var reminderDescription = $"Your meeting {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} at {booking.Room.Name}";
+                _notificationService.CreateBookingNotifications(booking.UserId, reminderTitle, reminderDescription, booking.Date.Add(booking.StartTime));
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error creating notifications: {ex.Message}");
+            }
         }
 
         public BookingViewModel GetBookingById(int id)
@@ -146,7 +169,7 @@ namespace ASI.Basecode.Services.Services
             return new BookingViewModel
             {
                 Id = booking.Id,
-                CreatedBy =booking.CreatedBy ?? "Unknown",
+                CreatedBy = booking.CreatedBy ?? "Unknown",
                 Title = booking.Title ?? "No Title",
                 Description = booking.Description,
                 Date = booking.Date,
@@ -160,10 +183,72 @@ namespace ASI.Basecode.Services.Services
             };
         }
 
-        public void Delete(int id)
+        public void UpdateBooking(BookingViewModel model)
         {
-            Console.WriteLine(" > BookingService: Delete");
-            _bookingRepository.DeleteBooking(id);
+            var existingBooking = _bookingRepository.GetBooking(model.Id);
+            if (existingBooking == null)
+            {
+                throw new Exception("Booking not found");
+            }
+
+            var createdBy = existingBooking.CreatedBy;
+            var createdDate = existingBooking.CreatedDate;
+
+            _mapper.Map(model, existingBooking);
+
+            existingBooking.CreatedBy = createdBy;
+            existingBooking.CreatedDate = createdDate;
+            existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+            existingBooking.UpdatedDate = DateTime.Now;
+
+            _bookingRepository.UpdateBooking(existingBooking);
+
+            try
+            {
+                // Create update notification
+                var updateTitle = "Booking Updated";
+                var updateDescription = $"Your booking for {existingBooking.Room.Name} has been changed to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm}";
+                _notificationService.CreateNotification(existingBooking.UserId, updateTitle, updateDescription, DateTime.Now, NotificationType.Update);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error creating update notification: {ex.Message}");
+            }
+        }
+
+        public void CancelBooking(int id)
+        {
+            var booking = _bookingRepository.GetBooking(id);
+            if (booking == null)
+            {
+                throw new Exception("Booking not found");
+            }
+
+            _bookingRepository.CancelBooking(id);
+
+            try
+            {
+                // Create cancellation notification
+                var cancelTitle = "Booking Canceled";
+                var cancelDescription = $"Meeting {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} at {booking.Room.Name} has been cancelled";
+                _notificationService.CreateNotification(booking.UserId, cancelTitle, cancelDescription, DateTime.Now, NotificationType.Cancellation);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error creating cancellation notification: {ex.Message}");
+            }
+        }
+
+        public bool CheckBookingAvailability(BookingViewModel booking)
+        {
+            var conflictingBookings = _bookingRepository.GetBookings()
+                                                        .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
+                                                        .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                                                                    (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
+                                                        .ToList();
+            return !conflictingBookings.Any();
         }
 
         public IEnumerable<BookingViewModel> GetAll(int? id = null, string title = null, string room = null)
@@ -182,7 +267,7 @@ namespace ASI.Basecode.Services.Services
                 Title = s.Title,
                 Description = s.Description,
                 RoomId = s.RoomId,
-                UserId = 0,
+                UserId = s.UserId,
                 Date = s.Date,
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
@@ -192,53 +277,10 @@ namespace ASI.Basecode.Services.Services
             return data;
         }
 
-        public void UpdateBooking(BookingViewModel booking)
+        public void Delete(int id)
         {
-            var existingBooking = _bookingRepository.GetBooking(booking.Id);
-            if (existingBooking == null)
-            {
-                throw new Exception("Booking not found");
-            }
-
-            // Preserve the original CreatedBy and CreatedDate
-            var createdBy = existingBooking.CreatedBy;
-            var createdDate = existingBooking.CreatedDate;
-
-            _mapper.Map(booking, existingBooking);
-
-            // Restore the original CreatedBy and CreatedDate
-            existingBooking.CreatedBy = createdBy;
-            existingBooking.CreatedDate = createdDate;
-
-            existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            existingBooking.UpdatedDate = DateTime.Now;
-
-            _bookingRepository.UpdateBooking(existingBooking);
-        }
-
-        public void CancelBooking(int id)
-        {
-            _bookingRepository.CancelBooking(id);
-        }
-
-        /*public bool CheckBookingAvailability(BookingViewModel booking)
-        {
-            var conflicting_bookings = _bookingRepository.GetBookings()
-                                                            .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
-                                                            .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
-                                                                        (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
-                                                            .ToList();
-            return !conflicting_bookings.Any();
-        }*/
-        public bool CheckBookingAvailability(BookingViewModel booking)
-        {
-            var conflicting_bookings = _bookingRepository.GetBookings()
-                .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
-                .Where(b => b.Id != booking.Id) // giadd ni kay sometimes, if mu update booking bisan available ang day kay dli sya musugot
-                .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
-                            (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
-                .ToList();
-            return !conflicting_bookings.Any();
+            Console.WriteLine(" > BookingService: Delete");
+            _bookingRepository.DeleteBooking(id);
         }
     }
 }

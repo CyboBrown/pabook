@@ -1,0 +1,273 @@
+﻿@{
+    ViewData["Title"] = "Notifications";
+}
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<div class="outer-container">
+    <div class="main-content">
+        <div class="header">
+            <h1 class="notifications-title">Notifications</h1>
+        </div>
+        <div class="inner-container">
+            <div id="notificationsContainer" class="notifications-container">
+                <ul id="notificationsList">
+                    <!-- Notifications will be populated here by JavaScript -->
+                </ul>
+            </div>
+            <div class="pagination">
+                <button id="prevPage" class="page-nav"><i class="fas fa-chevron-left"></i></button>
+                <span id="pageInfo"></span>
+                <button id="nextPage" class="page-nav"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentPage = 1;
+    let notifications = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadNotifications();
+        document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
+        document.getElementById('nextPage').addEventListener('click', () => changePage(1));
+    });
+
+    function loadNotifications() {
+        const userId = document.getElementById('userId').value;
+        fetch(`/api/Notification/userId`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                notifications = data;
+                notifications.sort((a, b) => new Date(b.notifyDate) - new Date(a.notifyDate));
+                displayNotifications();
+                updatePagination();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('notificationsList').innerHTML = '<li class="notification">Failed to load notifications. Please try again later.</li>';
+            });
+    }
+
+    function displayNotifications() {
+        const list = document.getElementById('notificationsList');
+        list.innerHTML = '';
+
+        const startIndex = (currentPage - 1) * 5;
+        const endIndex = startIndex + 5;
+        const pageNotifications = notifications.slice(startIndex, endIndex);
+
+        if (pageNotifications.length === 0) {
+            list.innerHTML = '<li class="notification">No notifications at this time.</li>';
+            return;
+        }
+
+        pageNotifications.forEach(notification => {
+            const li = document.createElement('li');
+            li.className = notification.seen ? 'notification' : 'notification new';
+
+            const notifyDate = new Date(notification.notifyDate);
+            const formattedDate = notifyDate.toLocaleDateString();
+            const formattedTime = notifyDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const icon = getNotificationIcon(notification.type);
+
+            li.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">${icon}</div>
+                        <div class="notification-main">
+                            <div class="notification-title">
+                                ${!notification.seen ? '<span class="new-indicator">•</span>' : ''}
+                                ${notification.title}
+                            </div>
+                            <div class="notification-description">${notification.description}</div>
+                        </div>
+                        <div class="notification-datetime">
+                            <div>${formattedTime}</div>
+                            <div>${formattedDate}</div>
+                        </div>
+                    </div>
+                `;
+
+            list.appendChild(li);
+        });
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(notifications.length / 5);
+        document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById('prevPage').disabled = currentPage === 1;
+        document.getElementById('nextPage').disabled = currentPage === totalPages;
+    }
+
+    function changePage(direction) {
+        currentPage += direction;
+        displayNotifications();
+        updatePagination();
+    }
+
+    function getNotificationIcon(type) {
+        switch (type) {
+            case 1: return '<i class="fas fa-calendar-plus" title="Booking Creation"></i>';
+            case 2: return '<i class="fas fa-calendar-alt" title="Booking Update"></i>';
+            case 3: return '<i class="fas fa-calendar-times" title="Booking Cancellation"></i>';
+            case 4: return '<i class="fas fa-bell" title="Reminder"></i>';
+            default: return '<i class="fas fa-info-circle" title="Notification"></i>';
+        }
+    }
+</script>
+<style>
+    .outer-container {
+        box-sizing: border-box;
+        background-color: var(--light);
+        padding: 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column-reverse;
+        flex-direction: column;
+        width: calc(100% - 265px);
+        height: calc(100%-40px);
+        top: 20px;
+        right: 20px;
+        bottom: 20px;
+        margin-left: 100px;
+        position: fixed;
+        z-index: 50;
+    }
+
+    .main-content {
+        height: 85vh;
+        background-color: #185D62;
+        padding: 20px;
+        color: #fff;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+z-index: 50;
+    }
+
+    .header {
+        margin-bottom: 20px;
+    }
+
+    .notifications-title {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .inner-container {
+        height: 600px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .notifications-container {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    #notificationsList {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .notification {
+        padding: 20px;
+        border-bottom: 1px solid #185D62;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+    }
+
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+    .notification-content {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .notification-icon {
+        font-size: 1.5em;
+        margin-right: 15px;
+        color: #185D62;
+    }
+
+    .notification-main {
+        flex-grow: 1;
+    }
+
+    .notification-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 1.1em;
+    }
+
+    .notification-description {
+        color: #555;
+        font-size: 0.9em;
+    }
+
+    .notification-datetime {
+        text-align: right;
+        color: #888;
+        font-size: 0.8em;
+        min-width: 80px;
+    }
+
+    .new-indicator {
+        color: #1BC7D2;
+        font-size: 20px;
+        margin-right: 5px;
+    }
+
+    .notification.new {
+        background-color: #e6f7ff;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+        background-color: #ffffff;
+    }
+
+    .page-nav {
+        background-color: #185D62;
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 1.2em;
+    }
+
+        .page-nav:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+    #pageInfo {
+        color: #185D62;
+        font-size: 1.2em;
+        margin: 0 20px;
+    }
+</style>
