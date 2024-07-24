@@ -5,6 +5,8 @@
 @{
     ViewData["Title"] = "User Home Page";
 }
+<link rel="stylesheet" href="~/css/admin.css" />
+<link rel="stylesheet" href="~/css/admindark.css" />
 <div class="outer-container">
     <div class="main-content">
         <div class="header">
@@ -55,12 +57,12 @@
                 </div>
             </div>
         </div>
-        <div id="myBookingsContent" class="content hidden">
-            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+       <div id="myBookingsContent" class="content hidden">
+            <div class="container mx-auto p-4 bg-gray-100 relative" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">My Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-black" onkeyup="searchFilterBookings()" placeholder="Search...">
-                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdown()">
+                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
+                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
                         <i class="fas fa-filter mr-2"></i>
                         Filter
                     </button>
@@ -84,13 +86,21 @@
                                 </tr>
                             </thead>
                             <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- ari ang mga bookings ma display -->
+                                <!-- Bookings will be displayed here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-gray-100 p-2 flex justify-between items-center shadow-md">
+                            <span id="pageInfo" class="text-sm text-gray-700" style="margin-left: 1.5rem;">></span>
+                            <div class="flex space-x-2" style="margin-right: 1.25rem;">
+                        <button id="prevPage" class="px-4 py-2 bg-gray-300 text-white-700 rounded-md hover:bg-gray-400 transition duration-300 ease-in-out disabled:opacity-80 disabled:cursor-not-allowed">Previous</button>
+                        <button id="nextPage" class="px-4 py-2 bg-gray-300 text-white-700 rounded-md hover:bg-gray-400 transition duration-300 ease-in-out disabled:opacity-80 disabled:cursor-not-allowed">Next</button>
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -112,14 +122,14 @@
 
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" value=@DateTime.Today.ToString("yyyy-MM-dd") required>
                 <div id="dateError" class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="room">Room:</label>
                 <select id="room" name="room" required>
-                    <option value="">Select a room</option>
+                    <option value="">Select Room</option>
                 </select>
             </div>
 
@@ -355,30 +365,45 @@
             <div id="weeklyOptions" class="full-width" style="display: none;">
                 <label>Select Days:</label>
                 <div class="day-selector">
-                    <div class="day" data-day="SU">SU</div>
-                    <div class="day" data-day="M">M</div>
-                    <div class="day" data-day="TU">TU</div>
-                    <div class="day" data-day="W">W</div>
-                    <div class="day" data-day="TH">TH</div>
-                    <div class="day" data-day="F">F</div>
-                    <div class="day" data-day="SA">SA</div>
+                    <div class="day" data-day="sunday">S</div>
+                    <div class="day" data-day="monday">M</div>
+                    <div class="day" data-day="tuesday">TU</div>
+                    <div class="day" data-day="wednesday">W</div>
+                    <div class="day" data-day="thursday">TH</div>
+                    <div class="day" data-day="friday">F</div>
+                    <div class="day" data-day="saturday">SA</div>
                 </div>
             </div>
 
             <div class="form-group full-width">
-                <button type="submit">Create Booking</button>
-                <button type="reset" class="reset-button">Reset</button>
+                <div class="button-group">
+                    <button type="reset" class="reset-button">Reset</button>
+                    <button type="submit">Create Booking</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal for details -->
-<<div id="bookingDetailsModal" class="modal">
+<div id="bookingDetailsModal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
         <h3>Booking Details</h3>
         <div id="bookingDetailsContent" class="white-container"></div>
+    </div>
+</div>
+
+<!-- Modal for cancel -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <span id="closeButt" class="close">&times;</span>
+        <h1>Cancel Booking</h1>
+        <p>Are you sure you want to cancel this booking?</p>
+        <div class="button-container">
+            <button id="confirmCancel" class="btn btn-danger">Yes, Cancel</button>
+            <button id="cancelCancel" class="btn btn-secondary">No, Keep Booking</button>
+        </div>
     </div>
 </div>
 
@@ -550,6 +575,10 @@
         const bookingForm = document.getElementById('bookingForm');
         const submitButton = bookingForm.querySelector('button[type="submit"]');
 
+        let currentPage = 1;
+        const rowsPerPage = 5;
+        let bookingsData = [];
+
         function loadBookings() {
             fetch('/api/Booking/myBookings')
                 .then(response => {
@@ -559,42 +588,84 @@
                     return response.json();
                 })
                 .then(data => {
-                    const tableBody = document.getElementById('bookingsTableBody');
-                    tableBody.innerHTML = '';
-                    data.forEach(booking => {
-                        console.log("My Bookings ID No. " + booking.id);
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
-                            <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
-                            <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
-                        </td>
-                    `;
-                        tableBody.appendChild(row);
-                    });
-
-                    // Add event listeners to the new buttons
-                    document.querySelectorAll('.edit-btn').forEach(btn => {
-                        btn.addEventListener('click', () => editBooking(btn.dataset.id));
-                    });
-                    document.querySelectorAll('.details-btn').forEach(btn => {
-                        btn.addEventListener('click', () => showBookingDetails(btn.dataset.id));
-                    });
-                    document.querySelectorAll('.cancel-btn').forEach(btn => {
-                        btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
-                    });
+                    bookingsData = data;
+                    renderTable();
                 })
                 .catch(error => console.error('Error fetching bookings:', error));
         }
+
+        function renderTable() {
+            const tableBody = document.getElementById('bookingsTableBody');
+            tableBody.innerHTML = '';
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = bookingsData.slice(start, end);
+
+            pageData.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
+                <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button class="details-btn text-green-600 hover:text-green-900 mr-2" data-id="${booking.id}">Details</button>
+                    <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${booking.id}">Edit</button>
+                    <button class="cancel-btn text-red-600 hover:text-red-900" data-id="${booking.id}">Cancel</button>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('pageInfo').textContent = `Showing ${start + 1} to ${Math.min(end, bookingsData.length)} of ${bookingsData.length} results`;
+
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = end >= bookingsData.length;
+
+            prevButton.classList.toggle('bg-gray-300', currentPage === 1);
+            prevButton.classList.toggle('bg-green-700', currentPage !== 1);
+            prevButton.classList.toggle('hover:bg-green-900', currentPage !== 1);
+
+            nextButton.classList.toggle('bg-gray-300', end >= bookingsData.length);
+            nextButton.classList.toggle('bg-green-700', end < bookingsData.length);
+            nextButton.classList.toggle('hover:bg-green-900', end < bookingsData.length);
+
+            addEventListeners();
+        }
+
+        function addEventListeners() {
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => editBooking(btn.dataset.id));
+            });
+            document.querySelectorAll('.details-btn').forEach(btn => {
+                btn.addEventListener('click', () => showBookingDetails(btn.dataset.id));
+            });
+            document.querySelectorAll('.cancel-btn').forEach(btn => {
+                btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
+            });
+        }
+
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            if ((currentPage * rowsPerPage) < bookingsData.length) {
+                currentPage++;
+                renderTable();
+            }
+        });
 
         // i laod ang bookings
         fetchTodaysBookings();
@@ -645,6 +716,39 @@
                 return;
             }
 
+            // Get day of period for recurrence
+            let dayOfPeriod = 0;
+            document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                console.log(day.getAttribute('data-day'));
+                let data = day.getAttribute('data-day');
+                if(day.classList.contains('selected')) {
+                    switch (data) {
+                        case 'sunday':
+                            dayOfPeriod += 64;
+                            break;
+                        case 'monday':
+                            dayOfPeriod += 32;
+                            break;
+                        case 'tuesday':
+                            dayOfPeriod += 16;
+                            break;
+                        case 'wednesday':
+                            dayOfPeriod += 8;
+                            break;
+                        case 'thursday':
+                            dayOfPeriod += 4;
+                            break;
+                        case 'friday':
+                            dayOfPeriod += 2;
+                            break;
+                        case 'saturday':
+                            dayOfPeriod += 1;
+                            break;
+                    }
+                }
+            });
+            console.log("Day Of Period: " + dayOfPeriod);
+
             const data = {
                 id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
@@ -656,6 +760,7 @@
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
+                recurrenceDayOfPeriod: dayOfPeriod,
                 userId: getCurrentUserId()
             };
 
@@ -858,8 +963,14 @@
             modal.classList.add('hidden');
         }
 
+        function closeCancelModal() {
+            const modal = document.getElementById('cancelModal');
+            modal.classList.add('hidden');
+        }
+
         // Event listener for the close button
         document.getElementById('closeModalBtn').addEventListener('click', closeBookingDetailsModal);
+        document.getElementById('closeModalBtn').addEventListener('click', closeCancelModal);
 
         // Event listener for closing the modal when clicking outside the content
         document.getElementById('bookingDetailsModal').addEventListener('click', function (event) {
@@ -868,53 +979,88 @@
             }
         });
 
+        //function for cancel
         function cancelBooking(bookingId) {
-            if (confirm('Are you sure you want to cancel this booking?')) {
-                fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            // Remove the row from My Bookings table
-                            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
-                            if (myBookingsRow) {
-                                myBookingsRow.remove();
-                            }
+            const modal = document.getElementById('cancelModal');
+            const confirmBtn = document.getElementById('confirmCancel');
+            const cancelBtn = document.getElementById('cancelCancel');
+            const exitBtn = document.getElementById('closeButt');
 
-                            // Remove the row from Today's Bookings list
-                            const todaysBookingsRow = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`).closest('tr');
-                            if (todaysBookingsRow) {
-                                todaysBookingsRow.remove();
-                            }
+            modal.style.display = 'block';
 
-                            alert('Booking cancelled successfully');
-                        } else {
-                            throw new Error('Failed to cancel booking');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error cancelling booking:', error);
-                        alert('Failed to cancel booking. Please try again.');
-                    });
+            confirmBtn.onclick = function () {
+                modal.style.display = 'none';
+                proceedWithCancellation(bookingId);
             }
+
+            exitBtn.onclick = function () {
+                modal.style.display = 'none';
+            }
+
+            cancelBtn.onclick = function () {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        function proceedWithCancellation(bookingId) {
+            fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the row from My Bookings table
+                        const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+                        if (myBookingsRow) {
+                            myBookingsRow.remove();
+                        }
+
+                        // Remove the row from Today's Bookings list
+                        const todaysBookingsRow = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`).closest('tr');
+                        if (todaysBookingsRow) {
+                            todaysBookingsRow.remove();
+                        }
+
+                        alert('Booking cancelled successfully');
+                    } else {
+                        throw new Error('Failed to cancel booking');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cancelling booking:', error);
+                    alert('Failed to cancel booking. Please try again.');
+                });
         }
 
         function removeBookingFromTables(bookingId) {
             // Remove from My Bookings table
-            const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
-            if (myBookingsRow) {
-                myBookingsRow.remove();
+            const myBookingsButton = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`);
+            if (myBookingsButton) {
+                const myBookingsRow = myBookingsButton.closest('tr');
+                if (myBookingsRow) {
+                    myBookingsRow.remove();
+                }
             }
 
             // Remove from Today's Bookings table
-            const todaysBookingsRow = document.querySelector(`#todaysBookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
-            if (todaysBookingsRow) {
-                todaysBookingsRow.remove();
+            const todaysBookingsButton = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`);
+            if (todaysBookingsButton) {
+                const todaysBookingsRow = todaysBookingsButton.closest('tr');
+                if (todaysBookingsRow) {
+                    todaysBookingsRow.remove();
+                }
             }
 
-            // If the booking was the last one in Today's Bookings, update the display
-            const todaysBookingsTable = document.getElementById('todaysBookingsTableBody');
-            if (todaysBookingsTable && todaysBookingsTable.children.length === 0) {
-                document.getElementById('todaysBookingsSection').style.display = 'none';
-                document.getElementById('noBookingsMessage').style.display = 'block';
+            // Update display if Today's Bookings is empty
+            const bookingItems = document.getElementById('bookingItems');
+            if (bookingItems && bookingItems.children.length === 0) {
+                const todaysBookingsSection = document.getElementById('todaysBookingsSection');
+                const noBookingsMessage = document.getElementById('noBookingsMessage');
+                if (todaysBookingsSection) todaysBookingsSection.style.display = 'none';
+                if (noBookingsMessage) noBookingsMessage.style.display = 'block';
             }
         }
 
@@ -1005,7 +1151,7 @@
         function getCurrentUserId() {
             // should return the ID of the currently logged-in user
             // pwede from global var, local stor, or API call
-            return 1; // Placeholder value for now
+            return parseInt(@HttpContextAccessor.HttpContext.Session.GetString("UserId"));
         }
     });
 
@@ -1336,6 +1482,8 @@
                 color: #ecf0f1;
                 margin-bottom: 10px;
                 font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
 
             .modal-content form {
@@ -1345,7 +1493,6 @@
                 display: flex;
                 flex-wrap: wrap;
                 gap: 8px; 
-                margin-bottom: 20px; 
             }
 
             .modal-content label {
@@ -1386,17 +1533,41 @@
         .modal-content button {
             background-color: #5bc0de;
             color: white;
-            padding: 8px 12px; 
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 8px; 
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            margin-top: 15px;
         }
 
             .modal-content button:hover {
                 background-color: #31b0d5;
             }
+
+            .modal-content button[type="submit"] {
+                background-color: #1893a2;
+            }
+
+                .modal-content button[type="submit"]:hover {
+                    background-color: #0d353f;
+                }
+
+            .modal-content button[type="reset"] {
+                background-color: #35d3db;
+            }
+
+                .modal-content button[type="reset"]:hover {
+                    background-color: #19b6c1;
+                }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
         .close {
             color: #fff;
@@ -1468,6 +1639,8 @@
                     margin-bottom: 10px;
                     font-size: 2em;
                     font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
                 }
 
                 #bookingDetailsModal .modal-content .close {
@@ -1563,6 +1736,102 @@
             .day.selected {
                 background-color: #185D62;
                 border: 2px solid #000;
+            }
+
+        #cancelModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+            #cancelModal .modal-content {
+                background-color: #185D62;
+                margin: 15% auto;
+                padding: 30px;
+                border: none;
+                width: 90%;
+                max-width: 500px;
+                border-radius: 15px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+                font-family: 'Poppins', sans-serif;
+                color: white;
+                position: relative;
+                text-align: center;
+            }
+
+                #cancelModal .modal-content h1 {
+                    font-size: 2rem;
+                    color: #ecf0f1;
+                    margin-bottom: 20px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                #cancelModal .modal-content p {
+                    font-size: 1.1rem;
+                    margin-bottom: 25px;
+                    line-height: 1.5;
+                }
+
+            #cancelModal .close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                color: #ecf0f1;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: color 0.3s ease;
+            }
+
+                #cancelModal .close:hover {
+                    color: #bdc3c7;
+                }
+
+            #cancelModal .button-container {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            #cancelModal .btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+                font-weight: 600;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin: 0 10px;
+            }
+
+            #cancelModal .btn-danger {
+                background-color: #db3327;
+                color: white;
+            }
+
+            #cancelModal .btn-secondary {
+                background-color: #9a9999;
+                color: white;
+            }
+
+            #cancelModal .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            #cancelModal .btn-danger:hover {
+                background-color: #ff2348;
+            }
+
+            #cancelModal .btn-secondary:hover {
+                background-color: #6c7a7d;
             }
     </style>
 }

@@ -42,8 +42,17 @@ namespace ASI.Basecode.Data.Repositories
         /// Adds the user.
         /// </summary>
         /// <param name="user">The user.</param>
-        public void AddUser(User user)
+        public User AddUser(User user)
         {
+            /*Console.WriteLine(" > UserRepo: AddUser");
+            Console.WriteLine(user.UserName);
+            Console.WriteLine(user.FirstName);
+            Console.WriteLine(user.LastName);
+            Console.WriteLine(user.Password);
+            var maxId = GetDbSet<User>().Count() == 0 ? 1 : GetDbSet<User>().Max(x => x.Id) + 1;
+            user.Id = maxId;
+            this.GetDbSet<User>().Add(user);
+            UnitOfWork.SaveChanges();*/
             Console.WriteLine(" > UserRepo: AddUser");
             Console.WriteLine(user.UserName);
             Console.WriteLine(user.FirstName);
@@ -53,6 +62,7 @@ namespace ASI.Basecode.Data.Repositories
             user.Id = maxId;
             this.GetDbSet<User>().Add(user);
             UnitOfWork.SaveChanges();
+            return user; // Return the created user
         }
 
         /// <summary>

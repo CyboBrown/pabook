@@ -31,7 +31,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Addr=localhost;database=AsiBasecodeDb;Integrated Security=False;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Server=192.168.1.49;Database=AsiBasecodeDb;User Id=sa;Password=DB_Password;TrustServerCertificate=True;");
             }
         }
 
@@ -127,8 +127,38 @@ namespace ASI.Basecode.Data
                     .WithOne(p => p.Preference)
                     .HasForeignKey<Preference>(d => d.Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Preferences__Id__4BAC3F29");
+                    .HasConstraintName("FK__Preferences__Id__4E88ABD4");
             });
+
+            //modelBuilder.Entity<Recurrence>(entity =>
+            //{
+            //    entity.HasKey(e => e.BookingId)
+            //        .HasName("PK__Recurren__73951AEDB93D0132");
+
+            //    entity.ToTable("Recurrence");
+
+            //    entity.Property(e => e.BookingId).ValueGeneratedNever();
+
+            //    entity.Property(e => e.CreatedBy)
+            //        .HasMaxLength(256)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+            //    entity.Property(e => e.EndDate).HasColumnType("date");
+
+            //    entity.Property(e => e.UpdatedBy)
+            //        .HasMaxLength(256)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+            //    entity.HasOne(d => d.Booking)
+            //        .WithOne(p => p.Recurrence)
+            //        .HasForeignKey<Recurrence>(d => d.BookingId)
+            //        .OnDelete(DeleteBehavior.ClientSetNull)
+            //        .HasConstraintName("FK__Recurrenc__Booki__48CFD27E");
+            //});
 
             modelBuilder.Entity<RecurrenceType>(entity =>
             {

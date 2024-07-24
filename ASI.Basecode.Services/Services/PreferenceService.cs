@@ -32,6 +32,10 @@ namespace ASI.Basecode.Services.Services
             _userRepository = userRepository;
             _preferenceRepository = preferenceRepository ?? throw new ArgumentNullException(nameof(preferenceRepository));
         }
+        public void AddPreference(Preference preference)
+        {
+            _preferenceRepository.CreatePreference(preference);
+        }
         public IEnumerable<PreferenceViewModel> GetAllPreferences()
         {
             try
@@ -49,8 +53,6 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Error in GetAllPreferences: {ex.Message}");
-                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<PreferenceViewModel>();
             }
         }
@@ -66,8 +68,6 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
-                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Enumerable.Empty<PreferenceViewModel>();
             }
         }
@@ -91,8 +91,13 @@ namespace ASI.Basecode.Services.Services
         }
         public PreferenceViewModel GetPreferenceById(int id)
         {
-            var preference = _preferenceRepository.GetPreference(id);
-            if (preference == null) return null;
+            var preference = _preferenceRepository.GetPreferences()
+        .FirstOrDefault(p => p.Id == id);
+
+            if (preference == null)
+            {
+                return null; // Or handle as appropriate for your application
+            }
 
             return _mapper.Map<PreferenceViewModel>(preference);
         }       
@@ -182,8 +187,6 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Error in GetUserPreferences: {ex.Message}");
-                //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return null;
             }
         }

@@ -14,6 +14,7 @@ using System.IO;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Data;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.Design;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -23,13 +24,15 @@ namespace ASI.Basecode.Services.Services
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IPreferenceService _preferenceService;
 
-        public UserManagementService(IUserRepository userRepository, IMapper mapper, IMemoryCache cache, IHttpContextAccessor contextAccessor)
+        public UserManagementService(IPreferenceService preferenceService, IUserRepository userRepository, IMapper mapper, IMemoryCache cache, IHttpContextAccessor contextAccessor)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _cache = cache;
             _contextAccessor = contextAccessor;
+            _preferenceService = preferenceService;
         }
 
         public IEnumerable<UserManagementViewModel> GetAll(int? id = null, string name = null)
@@ -100,7 +103,23 @@ namespace ASI.Basecode.Services.Services
             user.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
             user.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
 
-            _userRepository.AddUser(user);
+            //_userRepository.AddUser(user);
+            // Assuming the repository's AddUser method returns the created entity
+            var createdUser = _userRepository.AddUser(user);
+
+            // Create a corresponding preference for the new user
+            var defaultPreference = new Preference
+            {
+                Id = createdUser.Id,
+                DarkMode = false,
+                EnableNotifications = true,
+                DefaultBookingDuration = 30,
+                TimeFormat = 24,
+                UpdatedDate = DateTime.UtcNow,
+                Deleted = false
+            };
+
+            _preferenceService.AddPreference(defaultPreference);
         }
 
         public void Update(UserManagementViewModel model)

@@ -75,6 +75,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+
+        public IActionResult AdminNotifications()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Returns Admin Settings View.
         /// </summary>
@@ -112,7 +118,11 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             */
             // Return an empty view or an error view if necessary
-            return View();
+            var model = new PreferenceViewModel
+            {
+                // Initialize properties as needed
+            };
+            return View(model);
         }
         /*
         [HttpPost]

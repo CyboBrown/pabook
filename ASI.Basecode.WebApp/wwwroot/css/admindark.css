@@ -33,15 +33,9 @@ body {
     color: #fff;
 }
 
-    .sidebar-menu li a:hover,
-    .sidebar-menu li.active a {
-        background-color: #333;
-    }
-
 .sidebar-menu li.active a {
-    background-color: #1BC7D2;
+    background-color: #fff;
     color: #000;
-    font-weight: bold;
 }
 
 .user-details .user-name {

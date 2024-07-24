@@ -131,7 +131,6 @@ h2 {
 
 .sidebar-menu li {
     width: 100%;
-
 }
 
 .sidebar-menu li a {
@@ -144,19 +143,21 @@ h2 {
     font-weight: 700;
 }
 
-.sidebar-menu li a:hover,
-.sidebar-menu li.active a {
-    background-color: #333;
+.sidebar-menu li a:hover {
+    background-color: #56565635;
 }
 
-.sidebar-menu li.active a {
-    background-color: #1BC7D2;
-    color: #000;
-    font-weight: bold;
-}
+    .sidebar-menu li.active a {
+        background-color: #fff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+
 
 
 .sidebar-menu li a i {
+
     margin-right: 10px;
 }
 
@@ -531,6 +532,31 @@ body.light .sidebar-menu li a {
     color: #000;
 }
 
+body.light .sidebar-menu li a {
+    color: #000;
+}
+
+body.light .sidebar-menu li a:hover,
+.sidebar-menu li.active a {
+    background-color: #5da8ae3e;
+}
+
+body.light .sidebar-menu li.active a {
+    background-color: var(--light-outer);
+    color: #000;
+    font-weight: bold;
+}
+
+
+body.light .header .tab {
+    background-color: var(--light-main);
+    color: #000;
+}
+
+body.light .header .tab.active {
+    background-color: var(--dark-main);
+    color: #fff;
+}
 body.light .logo-img {
     width: 200px;
     height: auto;

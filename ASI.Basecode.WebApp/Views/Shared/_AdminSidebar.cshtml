@@ -1,5 +1,4 @@
-﻿
-<link rel="stylesheet" href="~/css/admin.css" />
+﻿<link rel="stylesheet" href="~/css/admin.css" />
 <div class="sidebar">
     <div class="logo">
         <img id="logo-img" src="/img/logo-dark-horizontal.png" alt="Logo" />
@@ -30,17 +29,17 @@
             </a>
         </li>
     </ul>
-
     <div class="user-details">
         <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
         @*<span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>*@
     </div>
     <div class="notification-section">
-        <a href="#" id="notificationToggle">
+        <a asp-controller="Admin" asp-action="AdminNotifications" id="notificationToggle">
             <i class="fas fa-bell"></i>
             <span class="notification-text">Notification</span>
         </a>
     </div>
+
     <div class="signout">
         <a asp-action="SignOutAdmin" asp-controller="Account">
             <i class="fas fa-sign-out-alt"></i>

@@ -27,29 +27,27 @@ namespace ASI.Basecode.WebApp.Controllers
     public class PreferenceController : ControllerBase<PreferenceController>
     {
         private readonly IPreferenceService _preferenceService;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        //private readonly IMapper _mapper;
         private readonly ILogger<PreferenceController> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PreferenceController(
+        public PreferenceController(IUserService userService,
             IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
             IConfiguration configuration,
-            IMapper mapper,
+            /*IMapper mapper,*/
             IPreferenceService preferenceService,
             ILogger<PreferenceController> logger)
-            : base(httpContextAccessor, loggerFactory, configuration, mapper)
+            : base(httpContextAccessor, loggerFactory, configuration /*mapper*/)
         {
             _httpContextAccessor = httpContextAccessor;
             _preferenceService = preferenceService;
-            _mapper = mapper;
+            //_mapper = mapper;
             _logger = logger;
+            _userService = userService;
         }
 
-        public IActionResult Settings()
-        {
-            return View();
-        }
 
         [HttpGet("preferences")]
         public IActionResult GetPreferences()
@@ -57,20 +55,15 @@ namespace ASI.Basecode.WebApp.Controllers
             var preferences = _preferenceService.GetAllPreferences().ToList();
             return Ok(preferences);
         }
-        /*
-        [HttpGet("myPreferences")]
-        public IActionResult GetPreferencesByUser()
-        {/*
-            var preferences = _preferenceService.GetUserPreferences().ToList();
-            return Ok(preferences);
-            
-        }*/
+        
         [HttpGet("myPreferences")]
         public async Task<IActionResult> GetMyPreferences()
         {
             try
             {
+                
                 // Retrieve userId from session or context
+
                 var userId = GetCurrentUserId();
                 var preference = await _preferenceService.GetPreferenceAsync(userId);
 
@@ -117,36 +110,84 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             return Ok(preference);
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdatePreference(int id, [FromBody] PreferenceViewModel preference)
+        {
+            if (id != preference.Id)
+            {
+                return BadRequest(new { success = false, message = "Preference ID mismatch." });
+            }
+
+            try
+            {
+                _preferenceService.UpdatePreference(preference);
+                return Ok(new { success = true, message = "Settings updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error updating setting");
+                return BadRequest(new { success = false, message = "An error occurred while updating. Please try again.", error = ex.Message });
+            }
+        }
+        
+        [HttpPost("save")]
+        public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = model.Id;  // This should be retrieved from the session or context
+
+                var preference = await _preferenceService.GetPreferenceAsync(userId);
+                if (preference == null)
+                {
+                    preference = new Preference
+                    {
+                        Id = userId,
+                        DarkMode = model.DarkMode,
+                        TimeFormat = model.TimeFormat,
+                        EnableNotifications = model.EnableNotifications,
+                        DefaultBookingDuration = model.DefaultBookingDuration,
+                        // Set other properties
+                    };
+                    _preferenceService.CreatePreference(model);
+                }
+                else
+                {
+                    preference.DarkMode = model.DarkMode;
+                    preference.TimeFormat = model.TimeFormat;
+                    preference.EnableNotifications = model.EnableNotifications;
+                    preference.DefaultBookingDuration = model.DefaultBookingDuration;
+                    // Update other properties
+
+                    await _preferenceService.UpdatePreferenceAsync(preference);
+                }
+
+                return Ok(new { success = true, message = "Preferences saved successfully." });
+            }
+
+            _logger.LogWarning("SavePreferences called with invalid model state.");
+            return BadRequest(new { success = false, message = "Invalid preference data." });
+        }
+        
+        
         /*
-        [HttpPut("{id}")]
-        public IActionResult UpdatePreference(int id, [FromBody] PreferenceViewModel preference)
+        [HttpPost("update")]
+        public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
         {
-            if (id != preference.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(new { success = false, message = "Preference ID mismatch." });
+                _logger.LogWarning("SavePreferences called with invalid model state.");
+                return BadRequest(new { success = false, message = "Invalid preference data." });
             }
 
             try
             {
-                _preferenceService.UpdatePreference(preference);
-                return Ok(new { success = true, message = "Settings updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "Error updating setting");
-                return BadRequest(new { success = false, message = "An error occurred while updating. Please try again.", error = ex.Message });
-            }
-        }
-
-        [HttpPost("save")]
-        public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var userId = model.UserId;  // This should be retrieved from the session or context
+                var userId = GetCurrentUserId();  // Ensure you have a way to get the current user ID
 
                 var preference = await _preferenceService.GetPreferenceAsync(userId);
+
                 if (preference == null)
                 {
                     preference = new Preference
@@ -155,10 +196,10 @@ namespace ASI.Basecode.WebApp.Controllers
                         DarkMode = model.DarkMode,
                         TimeFormat = model.TimeFormat,
                         EnableNotifications = model.EnableNotifications,
-                        DefaultBookingDuration = model.DefaultBookingDuration,
+                        DefaultBookingDuration = model.DefaultBookingDuration
                         // Set other properties
                     };
-                    _preferenceService.CreatePreference(model);
+                    await _preferenceService.CreatePreferenceAsync(preference);
                 }
                 else
                 {
@@ -173,71 +214,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 return Ok(new { success = true, message = "Preferences saved successfully." });
             }
-
-            _logger.LogWarning("SavePreferences called with invalid model state.");
-            return BadRequest(new { success = false, message = "Invalid preference data." });
-        }*/
-
-        [HttpPut("{id}")]
-        public IActionResult UpdatePreference(int id, [FromBody] PreferenceViewModel preference)
-        {
-            if (id != preference.Id)
-            {
-                return BadRequest(new { success = false, message = "Preference ID mismatch." });
-            }
-
-            try
-            {
-                _preferenceService.UpdatePreference(preference);
-                return Ok(new { success = true, message = "Settings updated successfully" });
-            }
             catch (Exception ex)
             {
-                // Log the exception
-                _logger.LogError(ex, "Error updating setting");
-                return BadRequest(new { success = false, message = "An error occurred while updating. Please try again.", error = ex.Message });
+                _logger.LogError(ex, "Error saving preferences");
+                return StatusCode(500, new { success = false, message = "An error occurred while saving preferences." });
             }
         }
-
-        [HttpPost("save")]
-        public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var userId = model.UserId;  // This should be retrieved from the session or context
-
-                var preference = await _preferenceService.GetPreferenceAsync(userId);
-                if (preference == null)
-                {
-                    preference = new Preference
-                    {
-                        Id = userId,
-                        DarkMode = model.DarkMode,
-                        TimeFormat = model.TimeFormat,
-                        EnableNotifications = model.EnableNotifications,
-                        DefaultBookingDuration = model.DefaultBookingDuration,
-                        // Set other properties
-                    };
-                    _preferenceService.CreatePreference(model);
-                }
-                else
-                {
-                    preference.DarkMode = model.DarkMode;
-                    preference.TimeFormat = model.TimeFormat;
-                    preference.EnableNotifications = model.EnableNotifications;
-                    preference.DefaultBookingDuration = model.DefaultBookingDuration;
-                    // Update other properties
-
-                    await _preferenceService.UpdatePreferenceAsync(preference);
-                }
-
-                return Ok(new { success = true, message = "Preferences saved successfully." });
-            }
-
-            _logger.LogWarning("SavePreferences called with invalid model state.");
-            return BadRequest(new { success = false, message = "Invalid preference data." });
-        }
-
-
+        */
     }
 }

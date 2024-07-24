@@ -33,6 +33,8 @@ namespace ASI.Basecode.WebApp
                 CreateMap<BookingViewModel, Booking>();
                 CreateMap<BookingViewModel, Room>();
                 CreateMap<PreferenceViewModel, Preference>();
+                
+                CreateMap<NotificationViewModel, Notification>().ReverseMap();
             }
         }
     }

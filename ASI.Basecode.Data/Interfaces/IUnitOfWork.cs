@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ASI.Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Interfaces
@@ -15,6 +16,7 @@ namespace ASI.Basecode.Data.Interfaces
         /// The database.
         /// </value>
         DbContext Database { get; }
+        INotificationRepository NotificationRepository { get; }
         /// <summary>
         /// Saves the changes to database
         /// </summary>
