@@ -28,6 +28,11 @@ namespace ASI.Basecode.WebApp.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get user ID for notifs
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetNotifications(int userId)
         {
@@ -44,6 +49,11 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
+        /// <summary>
+        /// If user has seen notifs, and works on user's ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPut("{id}/seen")]
         public async Task<IActionResult> MarkAsSeen(int id)
         {
