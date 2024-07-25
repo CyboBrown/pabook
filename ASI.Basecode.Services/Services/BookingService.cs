@@ -143,9 +143,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.AddBooking(booking);
 
                 // Create creation notification
-                var creationTitle = "New Booking Created";
-                var creationDescription = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
-                _notificationService.CreateNotificationAsync(creationTitle, creationDescription, 0, NotificationType.Creation).Wait();
+                var title = "New Booking Created";
+                var description = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
+                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Creation).Wait();
                 // Create reminder notification
 
             }
@@ -207,12 +207,12 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.UpdateBooking(existingBooking);
 
                 // Create update notification
-                var updateTitle = "Booking Updated";
-                var updateDescription = $"Your booking for {existingBooking.Room.Name} has been changed to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d}";
-                _notificationService.CreateNotificationAsync(updateTitle, updateDescription, existingBooking.UserId, NotificationType.Update).Wait();
-
+                var title = "Booking Updated";
+                var description = $"Booking Updated to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d} at {existingBooking.Room.Name}";
+                _notificationService.CreateNotificationAsync(title, description, existingBooking.UserId, NotificationType.Update).Wait();
+            
                 // Update reminder notification
-               
+
             }
             catch (Exception ex)
             {
@@ -235,9 +235,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.CancelBooking(id);
 
                 // Create cancellation notification
-                var cancelTitle = "Booking Canceled";
-                var cancelDescription = $"Your booking for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name} has been cancelled";
-                _notificationService.CreateNotificationAsync(cancelTitle, cancelDescription, booking.UserId, NotificationType.Cancellation).Wait();
+                var title = "Booking Canceled";
+                var description = $"Booking cancelled for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
+                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Cancellation).Wait();
             }
             catch (Exception ex)
             {
