@@ -403,6 +403,12 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@@emailjs/browser@3/dist/email.min.js"></script>
+<<script type="text/javascript">
+     (function () {
+         emailjs.init("GnqbHE6aetOc_pD7x");
+     })();
+</script>
 <script>
     recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     //fetching karon nga bookings
@@ -859,23 +865,48 @@
                 .then(result => {
                     console.log('Booking ' + (isEdit ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
-                    loadBookings(); // This will refresh the entire table
+                    loadBookings();
                     fetchTodaysBookings();
-                    resetFormAndButton(); // Reset form after successful submission
+                    resetFormAndButton();
 
-                    // Reset form mode and submit button text
                     this.dataset.mode = 'create';
                     delete this.dataset.bookingId;
                     submitButton.textContent = 'Create Booking';
 
-                    // Check if the booking is for today
                     const today = new Date().toISOString().split('T')[0];
                     if (data.date === today) {
                         fetchTodaysBookings();
                     }
 
-                    // Add success alert with correct message
                     alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
+
+                    // Send confirmation email if booking was created (not edited)
+                    if (!isEdit) {
+                        // Fetch user details
+                        fetch(`/api/UserManagement/${data.userId}`)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('User not found');
+                                }
+                                return response.json();
+                            })
+                            .then(user => {
+                                // Fetch room details
+                                fetch(`/api/Room/${data.roomId}`)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Room not found');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(room => {
+                                        sendBookingConfirmationEmail(data, user.email, user.firstName, room.name);
+                                    });
+                            })
+                            .catch(error => {
+                                console.error('Error fetching user or room details:', error);
+                            });
+                    }
                 })
                 .catch(error => {
                     console.error('Error ' + (isEdit ? 'updating' : 'creating') + ' booking:', error);
@@ -890,6 +921,23 @@
                     submitButton.textContent = isEdit ? 'Update Booking' : 'Create Booking';
                 });
         });
+
+        function sendBookingConfirmationEmail(bookingData, userEmail, userName, roomName) {
+            const templateParams = {
+                to_name: userName,
+                room_name: roomName,
+                booking_date: bookingData.date,
+                start_time: bookingData.startTime,
+                end_time: bookingData.endTime
+            };
+
+            emailjs.send('service_ok8rjwn', 'template_hite8j1', templateParams)
+                .then((response) => {
+                    console.log('Email sent successfully:', response);
+                }, (error) => {
+                    console.error('Failed to send email:', error);
+                });
+        }
 
         function convertTimeToMinutes(time) {
             const [hours, minutes] = time.split(':').map(Number);
