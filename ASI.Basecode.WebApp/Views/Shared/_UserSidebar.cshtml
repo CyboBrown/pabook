@@ -31,10 +31,9 @@
             <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
         </div>
         <div class="notification-section">
-            <a href="#" id="notificationToggle">
+            <a asp-controller="Notification" asp-action="Index" id="notificationToggle">
                 <i class="fas fa-bell"></i>
-                <span class="notification-text">Notification</span>
-                @*<span class="notification-badge">3</span>*@
+                <span class="notification-text">Notifications</span>
             </a>
         </div>
         <div class="signout">
