@@ -78,6 +78,8 @@
                 </div>
             </div>
         </div>
+        @if (ViewBag.UserRole == 0)
+        {
         @*User View*@
         <div id="usersContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
