@@ -17,37 +17,36 @@
                 <div class="settings-section">
                     <div class="profile-section">
                         <div class="profile-pic">
-                            <img id="profilePicture" src="~/img/user.jpg" alt="Profile Picture" />
-
+                            <img id="profilePicture" src="~/img/admin.jpg" alt="Profile Picture" />
                         </div>
-                        
                         <div class="profile-info">
                             <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
                             <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
-                            @*<div class="user-details">
-                                <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
-                                <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
-                            </div>
-                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>*@
-                        </div>
-                    </div>
-                    <div class="setting">
-                        <span>Switch to Light Mode</span>
-                        <label id="dark-change" class="toggle-switch">
-                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false? "checked" : "")>
-                            <span class="slider"></span>
-                        </label>
+                            <button type="button" class="edit-button ml-2" onclick="editUser('@HttpContextAccessor.HttpContext.Session.GetString("UserId")')">Edit</button>
+                        </div>  
+                        
                     </div>
 
-                    <div class="setting-group">
-                        <h2>Booking Duration</h2>
+                    <div class="lightt">
+                        <div class="setting">
+                            <span>Switch to Light Mode</span>
+                            <label id="dark-change" class="toggle-switch">
+                                <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+
+                    <div class="lightt">
+                        @*<h2>Booking Duration</h2>
                         <div class="setting">
                             <span>Time Format</span>
                             <select class="time-select" name="TimeFormat">
                                 <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
                                 <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
                             </select>
-                        </div>
+                        </div>*@
                         <div class="setting">
                             <span>Default Booking Duration</span>
                             <select class="time-select" name="DefaultBookingDuration">
@@ -63,24 +62,58 @@
                 </div>
             </div>
         </div>
-    </form>
-    
-
+    </form> 
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1 style="font-size: 2rem;">Account Information</h1>
+            <form id="userForm">
+                <div class="form-group full-width">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="email">Contact Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <div class="form-group full-width">
+                    <div class="button-group">
+                        
+                        <button type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>       
+        
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
 
             var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
-            sessionStorage.setItem('UserId', userId);            
+            sessionStorage.setItem('UserId', userId);
+                    
         });
-
+        
+        //fetch the id using sessionstorage
         function fetchPreferences() {
             const userId = sessionStorage.getItem('UserId');
             if (!userId) {
                 console.error('User ID not found in session storage.');
                 return;
-
             }
 
             fetch(`/api/Preference/myPreferences?userId=${userId}`)
@@ -99,16 +132,11 @@
                     } else if (typeof data === 'object') {
                         // Update UI based on fetched preferences
                         document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
-                        document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString(); // Convert to string
-                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Convert to string
+                        //document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString(); // Ensure value is converted to string
+                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Ensure value is converted to string
 
-                        // Store preferences including TimeFormat and DefaultBookingDuration in session storage
-                        const preferences = {
-                            darkMode: data.darkMode,
-                            timeFormat: data.timeFormat,
-                            defaultBookingDuration: data.defaultBookingDuration
-                        };
-                        sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
+                        // Store preferences in session storage
+                        sessionStorage.setItem('userPreferences', JSON.stringify(data));
 
                         // Apply theme based on preferences
                         applyTheme(data.darkMode);
@@ -118,9 +146,7 @@
                 })
                 .catch(error => console.error('Error fetching preferences:', error));
         }
-
-
-
+        
         const darkModeToggle = document.querySelector('#dark-change input');
         darkModeToggle.addEventListener('change', function () {
             const theme = this.checked ? 'light' : 'dark';
@@ -130,17 +156,18 @@
             sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
             
         });
+        
         //DarkMode and LightMode
         function applyTheme(isDarkMode) {
             const body = document.body;
             if (isDarkMode) {
                 body.classList.add('light');
                 body.classList.remove('dark');
-                loadTheme('user.css'); //CSS file for light mode
+                loadTheme('admin.css'); //CSS file for light mode
             } else {
                 body.classList.add('dark');
                 body.classList.remove('light');
-                loadTheme('admindark.css'); //CSS file for light mode
+                loadTheme('admindark.css'); //CSS file for dark mode
             }
         }
 
@@ -151,38 +178,29 @@
             } else {
                 console.error('Theme style link element not found');
             }
-        }
-
-        function displaySuccessMessage() {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.textContent = 'Changes Saved!';
-            messageContainer.style.display = 'block';
-
-            setTimeout(() => {
-                messageContainer.style.display = 'none';
-            }, 3000);
-        }
-
+        }      
         function updateUIFromPreferences(preferences) {
             console.log('Updating UI with preferences:', preferences);
 
             // Assuming preferences is an array and we are interested in the first element
             const preference = preferences[0];
-
             const darkModeInput = document.querySelector('input[name="DarkMode"]');
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
+            if (darkModeToggle) {
+                darkModeToggle.checked = preferences.darkMode;
+            }     
+            /*
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
                 timeFormatSelect.checked = preferences.timeFormat;
-            }
+            }*/
 
             const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
             if (defaultBookingDurationSelect) {
                 defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
             }
-
             applyTheme(preferences.darkMode);
         }
 
@@ -191,16 +209,21 @@
             event.preventDefault(); // Prevent default form submission
             savePreferences();
         });
+
         //Save Changes Button nga function
         function savePreferences() {
             const preferences = {
                 Id: parseInt(sessionStorage.getItem('UserId')),
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
                 //enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
-                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
+                //timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
                 defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
-
+            // Basic client-side validation for passwords
+            if (preferences.newPassword !== preferences.confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
             fetch('/api/Preference/save', {
                 method: 'POST',
                 headers: {
@@ -211,7 +234,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log('Preferences saved successfully.');
+                        toastr.success('Changes Saved!');
+                        //console.log('Preferences saved successfully.');
                         applyTheme(preferences.darkMode);
                         displaySuccessMessage();
                     } else {
@@ -222,9 +246,7 @@
         }
 
         function updateUIAndSessionFromPreferences(preferences) {
-            // Update UI based on preferences
             updateUIFromPreferences([preferences]);
-
             // Store preferences in session storage
             sessionStorage.setItem('userPreferences', JSON.stringify([preferences]));
 
@@ -249,23 +271,248 @@
 
             window.addEventListener("resize", adjustFontSize);
             adjustFontSize(); // Initial call
-        });
-
-
+        });  
     </script>
 </body>
-@functions {
-    private string GetProfilePictureUrl(string role)
-    {
-        switch (role)
-        {
-            case "admin":
-                return "/img/admin.jpg";
-            case "manager":
-                return "/img/manager.jpg";
-            default:
-                return "/img/user.jpg";
+<script>  
+        document.addEventListener("DOMContentLoaded", function () {
+        const userForm = document.getElementById('userForm');
+        const submitButton = userForm.querySelector('button[type="submit"]');
+        const userModal = document.getElementById('addUserModal');
+        const closeModalButton = document.querySelector('.close');
+
+        // Validate form
+        function validateForm() {
+            const requiredFields = userForm.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('invalid');
+                } else {
+                    field.classList.remove('invalid');
+                }
+            });
+            return isValid;
         }
+
+        // Handle form submission
+        userForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const data = {
+                username: formData.get('username'),
+                lastName: formData.get('lastName'),
+                firstName: formData.get('firstName'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+            };
+
+            // If in edit mode, include userId
+            if (this.dataset.mode === 'edit') {
+                data.id = parseInt(this.dataset.userId, 10);
+            } else {
+                return; // Prevent submission if not in edit mode
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            fetch(`/api/UserManagement/${data.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    userModal.style.display = "none";
+                    //userForm.reset();
+                    submitButton.textContent = 'Save';
+                    toastr.success('User updated successfully!');
+                } else {
+                    toastr.error(result.message || 'Input password to modify.');
+                }
+            })
+            .catch(error => {
+                console.error('Error details:', error);
+                toastr.error('Error!');
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Save';
+            });
+        });
+
+        // Handle modal close
+        closeModalButton.addEventListener('click', function () {
+            userModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === userModal) {
+                userModal.style.display = 'none';
+            }
+        });
+
+        // Edit user function
+        window.editUser = function (userId) {
+            fetch(`/api/UserManagement/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('username').value = user.userName;
+                document.getElementById('lastName').value = user.lastName;
+                document.getElementById('firstName').value = user.firstName;
+                document.getElementById('email').value = user.email;
+                document.getElementById('password').value = '';
+
+
+                userForm.dataset.mode = 'edit';
+                userForm.dataset.userId = userId;
+                submitButton.textContent = 'Update User';
+                userModal.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error fetching user details:', error);
+                alert('An error occurred while fetching user details.');
+            });
+        };
+    });
+
+</script>
+
+<style>  
+    .modal {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        padding-top: 20px;
+        padding-bottom: 20px;
+        z-index: 50;
     }
-}
+
+    .modal-content {
+        background-color: #185D62;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #185D62;
+        width: 80%;
+        max-width: 700px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-family: 'Poppins', sans-serif;
+        color: white;
+        position: relative;
+    }
+
+    .modal-content h1 {
+        text-align: center;
+        color: #ecf0f1;
+        margin-bottom: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .modal-content form {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .modal-content label {
+        display: block;
+        margin-bottom: 2px;
+        font-weight: bold;
+        font-size: 0.9em;
+        color: #000;
+    }
+
+    .modal-content input,
+    .modal-content select {
+        width: 100%;
+        padding: 6px;
+        margin-bottom: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background-color: #ecf0f1;
+        color: #2c3e50;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 200px;
+    }
+
+    .full-width {
+        flex: 1 1 100%;
+    }
+
+    .form-group-half {
+        flex: 1 1 calc(50% - 8px);
+        min-width: calc(50% - 8px);
+        margin-right: 10px;
+    }
+
+    .modal-content button {
+        background-color: #5bc0de;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+        margin-right: 10px;
+        margin-top: 15px;
+    }
+
+    .modal-content button:hover {
+        background-color: #31b0d5;
+    }
+
+    .modal-content button[type="submit"] {
+        background-color: #1893a2;
+    }
+
+    .modal-content button[type="submit"]:hover {
+        background-color: #0d353f;
+    }
+    
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .password{
+        font-weight: 100;
+        color: red;
+    }
+
+</style>
+
+
 

@@ -82,6 +82,7 @@ namespace ASI.Basecode.Data.Repositories
         /// <param name="user">The user.</param>
         public void UpdateUser(User user)
         {
+            var existingUser = this.GetDbSet<User>().FirstOrDefault(x => x.Id == user.Id);
             Console.WriteLine(" > UserRepo: UpdateUser");
             this.GetDbSet<User>().Update(user);
             UnitOfWork.SaveChanges();

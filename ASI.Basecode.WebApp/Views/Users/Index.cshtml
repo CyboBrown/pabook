@@ -7,6 +7,7 @@
 }
 <link rel="stylesheet" href="~/css/admin.css" />
 <link rel="stylesheet" href="~/css/admindark.css" />
+
 <div class="outer-container">
     <div class="main-content">
         <div class="header">
@@ -833,7 +834,7 @@
                 startTime: formatTimeToTimeSpan(formData.get('startTime')),
                 endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
-                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : 0,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
                 recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
                 userId: getCurrentUserId()
@@ -1184,12 +1185,6 @@
             delete bookingForm.dataset.bookingId;
             submitButton.textContent = 'Create Booking';
             document.getElementById('recurrenceOptions').style.display = 'none';
-            document.getElementById('RecurrenceTypeId').value = '';
-            document.getElementById('recurrenceEndDate').value = '';
-            document.getElementById('weeklyOptions').style.display = 'none';
-            document.querySelectorAll('.day-selector .day').forEach(function (day) {
-                day.classList.remove('selected');
-            });
         }
 
         // pag open/close sa modal

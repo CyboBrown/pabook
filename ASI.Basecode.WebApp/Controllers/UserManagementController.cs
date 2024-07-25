@@ -4,6 +4,7 @@ using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -126,13 +127,16 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] UserManagementViewModel user)
         {
+            
             if (id != user.Id)
             {
                 return BadRequest(new { success = false, message = "User ID mismatch." });
             }
-
+            
             try
             {
+                // Log incoming data for debugging
+                _logger.LogInformation("Updating user with ID {Id}. User details: {@User}", id, user);
                 _userManagementService.Update(user);
                 return Ok(new { success = true, message = "User updated successfully" });
             }
