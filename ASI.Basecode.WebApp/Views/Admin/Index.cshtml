@@ -1256,24 +1256,6 @@
                             modal.style.display = 'none';
                         }
                     }
-
-            // if (confirm('Are you sure you want to cancel this booking?')) {
-            //     fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
-            //         .then(response => {
-            //             if (response.ok) {
-            //                 Remove the row from the table
-            //                 const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
-            //                 row.remove();
-            //                 alert('Booking cancelled successfully');
-            //             } else {
-            //                 throw new Error('Failed to cancel booking');
-            //             }
-            //         })
-            //         .catch(error => {
-            //             console.error('Error cancelling booking:', error);
-            //             alert('Failed to cancel booking. Please try again.');
-            //         });
-            // }
         }
 
                 function resetFormAndButton() {
@@ -1418,7 +1400,7 @@
         const tr = table.getElementsByTagName('tr');
         console.log(filter);
         for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName('td')[2];
+            const td = tr[i].getElementsByTagName('td')[3];
             if (td) {
                 const txtValue = (td.textContent || td.innerText).trim(); if (txtValue === filter) {
                     tr[i].style.display = '';
