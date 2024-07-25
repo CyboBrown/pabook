@@ -92,20 +92,26 @@ body {
     background: #fff;
 }
 
-.setting {
-    border-bottom: 1px solid #ccc;
-}
+
 
 .time-select {
     background-color: var(--dark-main);
     color: #fff;
     transition: background-color 0.4s ease;
 }
+.logo img {
+    width: 150px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%; /* Ensure it doesn't exceed the container */
+}
 
  /*Additional dark mode styles can be added here */
 
 
 /*Dark Mode
+    .setting {
+    border-bottom: 1px solid #ccc;
+}
 body.dark {
     background-color: var(--dark-bg);
     color: #fff;

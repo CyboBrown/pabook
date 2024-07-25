@@ -96,27 +96,6 @@
 </div>
 </form>
 
-<script>
-    //paras modal ni
-    var modal = document.getElementById("report-modal");
-    var btn = document.getElementById("generate-report-btn");
-    var span = document.getElementsByClassName("closeRA")[0];
-
-    btn.onclick = function (event) {
-        event.preventDefault(); 
-        modal.style.display = "block";
-    }
-
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
@@ -142,16 +121,8 @@
             generateBtn.disabled = reportTypeSelect.value === '';
         });
 
-        generateBtn.addEventListener('click', function (event) {
-            event.preventDefault(); 
-            generateReport();
-        });
-
-        downloadBtn.addEventListener('click', function (event) {
-            event.preventDefault(); 
-            downloadPDF();
-        });
-
+        generateBtn.addEventListener('click', generateReport);
+        downloadBtn.addEventListener('click', downloadPDF);
 
         async function generateReport() {
             const reportType = reportTypeSelect.value;
@@ -170,11 +141,12 @@
                 default:
                     reportContent = '<p>Error: Invalid report type selected.</p>';
             }
+
             reportPreview.style.backgroundColor = 'white';
             reportPreview.style.display = 'block';
             reportPreview.innerHTML = reportContent;
             reportPreview.disabled = false;
-            downloadBtn.disabled = false; 
+            downloadBtn.disabled = false; // Enable download button after generating the report
             downloadBtn.title = 'Download PDF';
             downloadBtn.classList.remove('disabled-with-message');
         }
@@ -588,7 +560,26 @@
     setInterval(updateChartData, 5 * 60 * 1000);
 </script>
 
+<script>
+    //paras modal ni
+    var modal = document.getElementById("report-modal");
+    var btn = document.getElementById("generate-report-btn");
+    var span = document.getElementsByClassName("closeRA")[0];
 
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');

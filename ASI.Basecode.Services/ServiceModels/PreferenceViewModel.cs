@@ -30,5 +30,6 @@ namespace ASI.Basecode.Services.ServiceModels
             DefaultBookingDuration = preference.DefaultBookingDuration;
             EnableNotifications = preference.EnableNotifications;
         }
+        public UserViewModel User { get; set; }
     }
 }
