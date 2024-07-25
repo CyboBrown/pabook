@@ -803,6 +803,7 @@
                 }
             });
 
+            console.log(dayOfPeriod);
             const data = {
                 id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
@@ -812,11 +813,13 @@
                 startTime: formatTimeToTimeSpan(formData.get('startTime')),
                 endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
-                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : 0,
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
-                recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
+                //recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
                 userId: getCurrentUserId()
             };
+
+            console.log(JSON.stringify(data));
 
             const isEdit = this.dataset.mode === 'edit';
             const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
@@ -1163,6 +1166,12 @@
             delete bookingForm.dataset.bookingId;
             submitButton.textContent = 'Create Booking';
             document.getElementById('recurrenceOptions').style.display = 'none';
+            document.getElementById('RecurrenceTypeId').value = '';
+            document.getElementById('recurrenceEndDate').value = '';
+            document.getElementById('weeklyOptions').style.display = 'none';
+            document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                day.classList.remove('selected');
+            });
         }
 
         // pag open/close sa modal

@@ -886,6 +886,37 @@
                 return;
             }
 
+                    // Get day of period for recurrence
+                    let dayOfPeriod = 0;
+                    document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                        let data = day.getAttribute('data-day');
+                        if (day.classList.contains('selected')) {
+                            switch (data) {
+                                case 'sunday':
+                                    dayOfPeriod += 64;
+                                    break;
+                                case 'monday':
+                                    dayOfPeriod += 32;
+                                    break;
+                                case 'tuesday':
+                                    dayOfPeriod += 16;
+                                    break;
+                                case 'wednesday':
+                                    dayOfPeriod += 8;
+                                    break;
+                                case 'thursday':
+                                    dayOfPeriod += 4;
+                                    break;
+                                case 'friday':
+                                    dayOfPeriod += 2;
+                                    break;
+                                case 'saturday':
+                                    dayOfPeriod += 1;
+                                    break;
+                            }
+                        }
+                    });
+
             const data = {
                 title: formData.get('title'),
                 description: formData.get('description'),
