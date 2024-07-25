@@ -97,34 +97,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(ModelState);
             }
             _userManagementService.Add(model);
-            return CreatedAtAction(nameof(GetUser), new { id = model.Id }, model);/*
+            return CreatedAtAction(nameof(GetUser), new { id = model.Id }, model);
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            
-            var newUser = _userManagementService.Add(model); // Assuming this returns a User object or Id
-
-            if (newUser == null)
-            {
-                return BadRequest("Failed to add user."); // Handle error if necessary
-            }
-
-            var defaultPreference = new Preference
-            {
-                Id = newUser.Id,  // Assuming newUser.Id is the UserId (primary key) in Preference table
-                DarkMode = false,  // Default value for dark mode
-                EnableNotifications = true,  // Default value for notifications
-                DefaultBookingDuration = 30,  // Default booking duration in minutes
-                TimeFormat = 24,  // Default time format (24-hour)
-                UpdatedDate = DateTime.UtcNow,
-                Deleted = false
-            };
-
-            _preferenceService.AddPreference(defaultPreference); // Assuming AddPreference method exists and adds to database
-
-            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);*/
         }
 
         /// <summary>

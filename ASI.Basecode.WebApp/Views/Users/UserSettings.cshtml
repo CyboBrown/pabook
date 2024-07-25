@@ -1,6 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
 @{
     ViewData["Title"] = "User Settings";
+    var userRole = Context.Session.GetString("Role");
 }
 
 <body class="@((Model != null && Model.DarkMode) ? "light" : "dark")">
@@ -11,21 +12,29 @@
         <div class="message-container" id="messageContainer"></div> <!-- Message container -->
         <div class="outer-container">
             <div class="main-content">
-                <h1>Account Settings</h1>
+                <h1 style="font-size: 1.5rem;text-align: center;">Account Settings</h1>
                 
-
                 <div class="settings-section">
                     <div class="profile-section">
-                        <div class="profile-pic"></div>
+                        <div class="profile-pic">
+                            <img id="profilePicture" src="~/img/user.jpg" alt="Profile Picture" />
+
+                        </div>
+                        
                         <div class="profile-info">
-                            <span class="profile-name">USER</span>
-                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                            <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+                            <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+                            @*<div class="user-details">
+                                <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+                                <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+                            </div>
+                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>*@
                         </div>
                     </div>
                     <div class="setting">
-                        <span>Switch to light mode</span>
+                        <span>Switch to Light Mode</span>
                         <label id="dark-change" class="toggle-switch">
-                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
+                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false? "checked" : "")>
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -33,7 +42,7 @@
                     <div class="setting-group">
                         <h2>Booking Duration</h2>
                         <div class="setting">
-                            <span>Default Time</span>
+                            <span>Time Format</span>
                             <select class="time-select" name="TimeFormat">
                                 <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
                                 <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
@@ -48,22 +57,22 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="action-buttons">
-                    <button type="submit" class="save-button">Save Changes</button>
+                    <div class="action-buttons">
+                        <button type="submit" class="save-button">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
     </form>
+    
 
-    <script>
+    <script>       
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
 
             var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
-            sessionStorage.setItem('UserId', userId);
-            
+            sessionStorage.setItem('UserId', userId);            
         });
 
         function fetchPreferences() {
@@ -71,6 +80,7 @@
             if (!userId) {
                 console.error('User ID not found in session storage.');
                 return;
+
             }
 
             fetch(`/api/Preference/myPreferences?userId=${userId}`)
@@ -163,12 +173,6 @@
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
-            /*
-            const enableNotificationsSelect = document.querySelector('select[name="EnableNotifications"]');
-            if (enableNotificationsSelect) {
-                enableNotificationsSelect.checked = preferences.enableNotifications;
-            }*/
-
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
                 timeFormatSelect.checked = preferences.timeFormat;
@@ -247,6 +251,21 @@
             adjustFontSize(); // Initial call
         });
 
+
     </script>
 </body>
+@functions {
+    private string GetProfilePictureUrl(string role)
+    {
+        switch (role)
+        {
+            case "admin":
+                return "/img/admin.jpg";
+            case "manager":
+                return "/img/manager.jpg";
+            default:
+                return "/img/user.jpg";
+        }
+    }
+}
 

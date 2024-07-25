@@ -48,7 +48,10 @@ namespace ASI.Basecode.WebApp.Controllers
             _userService = userService;
         }
 
-
+        /// <summary>
+        ///Get preferences, store to list
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("preferences")]
         public IActionResult GetPreferences()
         {
@@ -56,23 +59,23 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(preferences);
         }
         
+        /// <summary>
+        /// Get preference of user based on ID
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("myPreferences")]
         public async Task<IActionResult> GetMyPreferences()
         {
             try
             {
-                
                 // Retrieve userId from session or context
-
                 var userId = GetCurrentUserId();
                 var preference = await _preferenceService.GetPreferenceAsync(userId);
-
                 if (preference == null)
                 {
                     // No preferences found, return an empty object or handle as needed
                     return Ok(new PreferenceViewModel());
                 }
-
                 var preferenceViewModel = new PreferenceViewModel
                 {
                     DarkMode = preference.DarkMode,
@@ -81,7 +84,6 @@ namespace ASI.Basecode.WebApp.Controllers
                     DefaultBookingDuration = preference.DefaultBookingDuration
                     // Map other properties as needed
                 };
-
                 return Ok(preferenceViewModel);
             }
             catch (Exception ex)
@@ -92,14 +94,22 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the current user based on session, store ID on session storage
+        /// </summary>
+        /// <returns></returns>
         private int GetCurrentUserId()
         {
             // Implement logic to retrieve userId from session or context
-            // Example:
             var userId = Convert.ToInt32(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
             return userId;
         }
 
+        /// <summary>
+        /// Get preferences based on the current user ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetPreference(int id)
         {
@@ -111,6 +121,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return Ok(preference);
         }
 
+        /// <summary>
+        /// Update preferences only on current user ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="preference"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public IActionResult UpdatePreference(int id, [FromBody] PreferenceViewModel preference)
         {
@@ -132,6 +148,11 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
         
+        /// <summary>
+        /// Save Preferences only on current user ID
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("save")]
         public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
         {
@@ -160,66 +181,14 @@ namespace ASI.Basecode.WebApp.Controllers
                     preference.EnableNotifications = model.EnableNotifications;
                     preference.DefaultBookingDuration = model.DefaultBookingDuration;
                     // Update other properties
-
+                    
                     await _preferenceService.UpdatePreferenceAsync(preference);
                 }
 
                 return Ok(new { success = true, message = "Preferences saved successfully." });
             }
-
             _logger.LogWarning("SavePreferences called with invalid model state.");
             return BadRequest(new { success = false, message = "Invalid preference data." });
         }
-        
-        
-        /*
-        [HttpPost("update")]
-        public async Task<IActionResult> SavePreferences([FromBody] PreferenceViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("SavePreferences called with invalid model state.");
-                return BadRequest(new { success = false, message = "Invalid preference data." });
-            }
-
-            try
-            {
-                var userId = GetCurrentUserId();  // Ensure you have a way to get the current user ID
-
-                var preference = await _preferenceService.GetPreferenceAsync(userId);
-
-                if (preference == null)
-                {
-                    preference = new Preference
-                    {
-                        Id = userId,
-                        DarkMode = model.DarkMode,
-                        TimeFormat = model.TimeFormat,
-                        EnableNotifications = model.EnableNotifications,
-                        DefaultBookingDuration = model.DefaultBookingDuration
-                        // Set other properties
-                    };
-                    await _preferenceService.CreatePreferenceAsync(preference);
-                }
-                else
-                {
-                    preference.DarkMode = model.DarkMode;
-                    preference.TimeFormat = model.TimeFormat;
-                    preference.EnableNotifications = model.EnableNotifications;
-                    preference.DefaultBookingDuration = model.DefaultBookingDuration;
-                    // Update other properties
-
-                    await _preferenceService.UpdatePreferenceAsync(preference);
-                }
-
-                return Ok(new { success = true, message = "Preferences saved successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error saving preferences");
-                return StatusCode(500, new { success = false, message = "An error occurred while saving preferences." });
-            }
-        }
-        */
     }
 }
