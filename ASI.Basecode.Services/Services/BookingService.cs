@@ -144,8 +144,8 @@ namespace ASI.Basecode.Services.Services
 
                 // Create creation notification
                 var title = "New Booking Created";
-                var description = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Creation).Wait();
+                //var description = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
+                //_notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Creation).Wait();
                 // Create reminder notification
 
             }
@@ -207,9 +207,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.UpdateBooking(existingBooking);
 
                 // Create update notification
-                var title = "Booking Updated";
-                var description = $"Booking Updated to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d} at {existingBooking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, existingBooking.UserId, NotificationType.Update).Wait();
+                //var title = "Booking Updated";
+                //var description = $"Booking Updated to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d} at {existingBooking.Room.Name}";
+                //_notificationService.CreateNotificationAsync(title, description, existingBooking.UserId, NotificationType.Update).Wait();
             
                 // Update reminder notification
 
@@ -235,9 +235,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.CancelBooking(id);
 
                 // Create cancellation notification
-                var title = "Booking Canceled";
-                var description = $"Booking cancelled for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Cancellation).Wait();
+                //var title = "Booking Canceled";
+                //var description = $"Booking cancelled for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
+                //_notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Cancellation).Wait();
             }
             catch (Exception ex)
             {
