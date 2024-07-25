@@ -25,24 +25,27 @@
                         </div>  
                         
                     </div>
-                    
-                    <div class="setting">
-                        <span>Switch to Light Mode</span>
-                        <label id="dark-change" class="toggle-switch">
-                            <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
 
-                    <div class="setting-group">
-                        <h2>Booking Duration</h2>
+                    <div class="lightt">
+                        <div class="setting">
+                            <span>Switch to Light Mode</span>
+                            <label id="dark-change" class="toggle-switch">
+                                <input type="checkbox" name="DarkMode" value="true" @(Model?.DarkMode ?? false ? "checked" : "")>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+
+                    <div class="lightt">
+                        @*<h2>Booking Duration</h2>
                         <div class="setting">
                             <span>Time Format</span>
                             <select class="time-select" name="TimeFormat">
                                 <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
                                 <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
                             </select>
-                        </div>
+                        </div>*@
                         <div class="setting">
                             <span>Default Booking Duration</span>
                             <select class="time-select" name="DefaultBookingDuration">
@@ -65,6 +68,10 @@
             <h1 style="font-size: 2rem;">Account Information</h1>
             <form id="userForm">
                 <div class="form-group full-width">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group full-width">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
                 </div>
@@ -73,24 +80,16 @@
                     <input type="text" id="lastName" name="lastName" required>
                 </div>
                 <div class="form-group full-width">
-                    <label for="firstName">First Name:</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group full-width">
-                    <label for="email">Email:</label>
+                    <label for="email">Contact Email:</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group full-width">
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password">
                 </div>
-                <div class="form-group full-width" id="roleField">
-                    <label for="role">Role:</label>
-                    <input type="text" id="role" name="role" required>
-                </div>
                 <div class="form-group full-width">
                     <div class="button-group">
-                        <button type="reset" class="reset-button">Reset</button>
+                        
                         <button type="submit">Save</button>
                     </div>
                 </div>
@@ -134,7 +133,7 @@
                     } else if (typeof data === 'object') {
                         // Update UI based on fetched preferences
                         document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
-                        document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString(); // Ensure value is converted to string
+                        //document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString(); // Ensure value is converted to string
                         document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Ensure value is converted to string
 
                         // Store preferences in session storage
@@ -148,7 +147,6 @@
                 })
                 .catch(error => console.error('Error fetching preferences:', error));
         }
-
         
         const darkModeToggle = document.querySelector('#dark-change input');
         darkModeToggle.addEventListener('change', function () {
@@ -187,24 +185,23 @@
 
             // Assuming preferences is an array and we are interested in the first element
             const preference = preferences[0];
-
             const darkModeInput = document.querySelector('input[name="DarkMode"]');
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
             if (darkModeToggle) {
                 darkModeToggle.checked = preferences.darkMode;
-            }           
+            }     
+            /*
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
                 timeFormatSelect.checked = preferences.timeFormat;
-            }
+            }*/
 
             const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
             if (defaultBookingDurationSelect) {
                 defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
             }
-
             applyTheme(preferences.darkMode);
         }
 
@@ -220,7 +217,7 @@
                 Id: parseInt(sessionStorage.getItem('UserId')),
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
                 //enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
-                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
+                //timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
                 defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
             // Basic client-side validation for passwords
@@ -238,7 +235,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        toastr.success('Preferences saved successfully.');
+                        toastr.success('Changes Saved!');
                         //console.log('Preferences saved successfully.');
                         applyTheme(preferences.darkMode);
                         displaySuccessMessage();
@@ -250,9 +247,7 @@
         }
 
         function updateUIAndSessionFromPreferences(preferences) {
-            // Update UI based on preferences
             updateUIFromPreferences([preferences]);
-
             // Store preferences in session storage
             sessionStorage.setItem('userPreferences', JSON.stringify([preferences]));
 
@@ -277,8 +272,7 @@
 
             window.addEventListener("resize", adjustFontSize);
             adjustFontSize(); // Initial call
-        });
-        
+        });       
     </script>
 </body>
 <script>  
@@ -319,7 +313,6 @@
                 firstName: formData.get('firstName'),
                 email: formData.get('email'),
                 password: formData.get('password'),
-                //userRole: parseInt(formData.get('role'), 10)
             };
 
             // If in edit mode, include userId
@@ -343,11 +336,11 @@
             .then(result => {
                 if (result.success) {
                     userModal.style.display = "none";
-                    userForm.reset();
+                    //userForm.reset();
                     submitButton.textContent = 'Save';
                     toastr.success('User updated successfully!');
                 } else {
-                    displayErrorMessage(result.message || 'Failed to update user.');
+                    toastr.error(result.message || 'Input password to modify.');
                 }
             })
             .catch(error => {
@@ -359,16 +352,6 @@
                 submitButton.textContent = 'Save';
             });
         });
-
-        // Display error message
-        function displayErrorMessage(message) {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.textContent = message;
-            messageContainer.style.display = 'block';
-            setTimeout(() => {
-                messageContainer.style.display = 'none';
-            }, 5000);
-        }
 
         // Handle modal close
         closeModalButton.addEventListener('click', function () {
@@ -395,8 +378,8 @@
                 document.getElementById('lastName').value = user.lastName;
                 document.getElementById('firstName').value = user.firstName;
                 document.getElementById('email').value = user.email;
-                //document.getElementById('role').value = user.userRole;
-                document.getElementById('password').value = user.password; // Assumes password is fetched securely
+                document.getElementById('password').value = '';
+
 
                 userForm.dataset.mode = 'edit';
                 userForm.dataset.userId = userId;
@@ -410,10 +393,9 @@
         };
     });
 
-    
 </script>
 
-<style>
+<style>  
     .modal {
         display: none;
         position: fixed;
@@ -442,62 +424,94 @@
         position: relative;
     }
 
-        .modal-content h1 {
-            text-align: center;
-            color: #ecf0f1;
-            margin-bottom: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .modal-content form {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .modal-content label {
-            display: block;
-            margin-bottom: 2px;
-            font-weight: bold;
-            font-size: 0.9em;
-            color: #000;
-        }
-
-        .modal-content input,
-        .modal-content select {
-            width: 100%;
-            padding: 6px;
-            margin-bottom: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: #ecf0f1;
-            color: #2c3e50;
-        }
-
-    /* Add this CSS to your stylesheet or within a <style> block */
-    .button-group button[type="submit"] {
-        background-color: #4CAF50; /* Green background */
-        color: white; /* White text */
-        border: none; /* No border */
-        padding: 10px 20px; /* Padding */
-        text-align: center; /* Centered text */
-        text-decoration: none; /* No underline */
-        display: inline-block; /* Inline block */
-        font-size: 16px; /* Font size */
-        margin: 4px 2px; /* Some margin */
-        cursor: pointer; /* Pointer cursor */
-        border-radius: 4px; /* Rounded corners */
+    .modal-content h1 {
+        text-align: center;
+        color: #ecf0f1;
+        margin-bottom: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-        .button-group button[type="submit"]:hover {
-            background-color: #45a049; /* Darker green on hover */
-        }
+    .modal-content form {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .modal-content label {
+        display: block;
+        margin-bottom: 2px;
+        font-weight: bold;
+        font-size: 0.9em;
+        color: #000;
+    }
+
+    .modal-content input,
+    .modal-content select {
+        width: 100%;
+        padding: 6px;
+        margin-bottom: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background-color: #ecf0f1;
+        color: #2c3e50;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 200px;
+    }
+
+    .full-width {
+        flex: 1 1 100%;
+    }
+
+    .form-group-half {
+        flex: 1 1 calc(50% - 8px);
+        min-width: calc(50% - 8px);
+        margin-right: 10px;
+    }
+
+    .modal-content button {
+        background-color: #5bc0de;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+        margin-right: 10px;
+        margin-top: 15px;
+    }
+
+    .modal-content button:hover {
+        background-color: #31b0d5;
+    }
+
+    .modal-content button[type="submit"] {
+        background-color: #1893a2;
+    }
+
+    .modal-content button[type="submit"]:hover {
+        background-color: #0d353f;
+    }
+    
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .password{
+        font-weight: 100;
+        color: red;
+    }
 
 </style>
 

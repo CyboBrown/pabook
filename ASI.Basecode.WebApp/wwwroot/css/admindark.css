@@ -92,9 +92,7 @@ body {
     background: #fff;
 }
 
-.setting {
-    border-bottom: 1px solid #ccc;
-}
+
 
 .time-select {
     background-color: var(--dark-main);
@@ -106,6 +104,9 @@ body {
 
 
 /*Dark Mode
+    .setting {
+    border-bottom: 1px solid #ccc;
+}
 body.dark {
     background-color: var(--dark-bg);
     color: #fff;

@@ -304,9 +304,9 @@ h2 {
 
 .edit-button {
     position: absolute; /* Position the button absolutely within the profile-section */
-    top: 80px; /* Distance from the top */
+    top: 10px; /* Distance from the top */
     right: 10px; /* Distance from the right */
-    background-color: transparent; /* Customize as needed */
+    background-color: #a4c1cd65; /* Customize as needed */
     color: #fff;
     border: none;
     border-radius: 3px;
@@ -325,6 +325,14 @@ h2 {
     border: 1px solid #ccc; /* Optional, for visual debugging */
     border-radius: 5px;
     background-color: var(--background-color);
+}
+.lightt {
+    position: relative; 
+    padding: 1rem;
+    border: 1px solid #ccc; /* Optional, for visual debugging */
+    border-radius: 5px;
+    background-color: var(--background-color);
+    margin-bottom: 20px;
 }
 .profile-pic {
     width: 100px;
@@ -362,7 +370,6 @@ h2 {
 }
 
 .settings-section {
-    margin-top: 20px;
     margin-left: 30px; /* Margin from main container */
     margin-right: 30px;
     padding: 20px;
@@ -391,12 +398,11 @@ body.light .settings-section {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
 }
 
 .setting span {
-    font-size: 17px;
+    
 }
 
 .status {
@@ -479,13 +485,8 @@ input:checked + .slider:before {
 .action-buttons {
     display: flex;
     justify-content: flex-end;
-    margin-top: 30px;
-
-
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 30px;
-    border-radius: 25px;
+    margin-top: 20px;
+    border-radius: 15px;
     border: none;
     font-size: 0.9rem;
     font-weight: 600;
@@ -494,7 +495,6 @@ input:checked + .slider:before {
     text-transform: uppercase;
     letter-spacing: 0.7px;
     color: #fff;
-    margin-top: 100px;
 }
 
 .save-button {
