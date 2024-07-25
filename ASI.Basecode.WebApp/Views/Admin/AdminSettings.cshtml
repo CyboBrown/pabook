@@ -8,20 +8,21 @@
     <link rel="stylesheet" href="~/css/admindark.css" id="theme-style" />
 
     <form id="preferencesForm" method="post">
-        @*<input type="hidden" name="Id" value="@Model?.Id" />*@
         <div class="message-container" id="messageContainer"></div> <!-- Message container -->
         <div class="outer-container">
             <div class="main-content">
                 <h1 style="font-size: 1.5rem;text-align: center;">Account Settings</h1>
                 
-
                 <div class="settings-section">
                     <div class="profile-section">
-                        <div class="profile-pic"></div>
-                        <div class="profile-info">
-                            <span class="profile-name">ADMIN USER</span>
-                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                        <div class="profile-pic">
+                            <img id="profilePicture" src="~/img/admin.jpg" alt="Profile Picture" />
                         </div>
+                        <div class="profile-info">
+                            <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+                            <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+                            <button type="button" class="edit-button ml-2">Edit</button> <!-- Edit button -->
+                        </div>                       
                     </div>
                     <div class="setting">
                         <span>Switch to Light Mode</span>
@@ -49,9 +50,9 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="action-buttons">
-                    <button type="submit" class="save-button">Save Changes</button>
+                    <div class="action-buttons">
+                        <button type="submit" class="save-button">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,7 +67,9 @@
             var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
             sessionStorage.setItem('UserId', userId);
             
+            
         });
+        
         //fetch the id using sessionstorage
         function fetchPreferences() {
             const userId = sessionStorage.getItem('UserId');
@@ -116,31 +119,7 @@
             sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
             
         });
-        /*
-        // Event listener for dark mode toggle switch
-        const darkModeToggle = document.querySelector('#dark-change input[name="DarkMode"]');
-        darkModeToggle.addEventListener('change', function () {
-            const isLightMode = this.checked;
-
-            // Update body class based on dark mode state
-            const theme = isLightMode ? 'light' : 'dark';
-            document.body.className = theme;
-
-            // Update preferences in session storage
-            const preferences = JSON.parse(sessionStorage.getItem('userPreferences')) || {};
-            preferences.darkMode = isLightMode;
-            sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
-
-            // Apply theme based on toggle state
-            applyTheme(isLightMode);
-        });
-        function updateDarkModeSwitch(isLightMode) {
-            const darkModeToggle = document.querySelector('#dark-change input');
-            if (darkModeToggle) {
-                darkModeToggle.checked = isLightMode; // true for light mode, false for dark mode
-            }
-        }
-        */
+        
         //DarkMode and LightMode
         function applyTheme(isDarkMode) {
             const body = document.body;
@@ -205,6 +184,7 @@
             event.preventDefault(); // Prevent default form submission
             savePreferences();
         });
+
         //Save Changes Button nga function
         function savePreferences() {
             const preferences = {
@@ -214,7 +194,6 @@
                 timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
                 defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
-
             fetch('/api/Preference/save', {
                 method: 'POST',
                 headers: {

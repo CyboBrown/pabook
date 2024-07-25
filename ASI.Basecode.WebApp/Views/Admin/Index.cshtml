@@ -38,7 +38,7 @@
                         </button>
                         <div id="bookingsDropdown" class="dropdown-content"></div>
                         <div class="book-now flex-grow">
-                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #36C2CE;">
+                            <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                             </button>
@@ -88,7 +88,7 @@
                             <a onclick="filterByRole(2)">Users</a>
                             <a onclick="showAllRoles()">Show All</a>
                         </div>
-                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #36C2CE;">
+                        <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
@@ -133,7 +133,7 @@
                         </button>
                         <div id="roomDropdown" class="dropdown-content">
                         </div>
-                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #36C2CE;">
+                        <button id="addRoomButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
                         </button>
@@ -172,6 +172,7 @@
         <span class="close">&times;</span>
         <h1 style="font-size: 2rem;">Booking Form</h1>
         <form id="bookingForm">
+            <div class="message-container" id="bookingMessage"></div>
             <div class="form-group full-width">
                 <label for="title">Meeting Title:</label>
                 <input type="text" id="title" name="title" required>
@@ -1213,6 +1214,16 @@
             return 1; // Placeholder value for now
         }
     });
+    //newwwwwwwwwwwwwww
+    function displayMessage() {
+        const bookingContainer = document.getElementById('bookingContainer');
+        bookingContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
+        bookingContainer.textContent = 'Cancelled!';
+        messageContainer.style.display = 'block';
+        setTimeout(() => {
+                bookingContainer.style.display = 'none';
+            }, 3000);
+    }
 
     function searchFilterBookings() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1776,6 +1787,7 @@
         const itemsPerPage = 5;
 
         function loadRooms(page = 1) {
+            populateLocationsDropdown();
             fetch('/api/Room/rooms')
                 .then(response => {
                     if (!response.ok) {
@@ -2122,6 +2134,37 @@
 
 @section Styles {
     <style>
+                .message-container {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    background-color: #565656;
+                    color: white;
+                    text-align: center;
+                    padding: 10px 0;
+                    z-index: 1000;
+                    font-size: 16px;
+                }
+
+                .message {
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                }
+
+                    .message.success {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+
+                    .message.error {
+                        background-color: #f44336;
+                        color: white;
+                    }
+
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;

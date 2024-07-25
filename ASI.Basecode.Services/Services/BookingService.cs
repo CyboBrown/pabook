@@ -110,6 +110,7 @@ namespace ASI.Basecode.Services.Services
                         Recurring = booking.Recurring,
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
+                        RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                         RoomName = room?.Name ?? "Unknown Room",
                         Cancelled = booking.Cancelled
                     };
@@ -179,6 +180,7 @@ namespace ASI.Basecode.Services.Services
                 Recurring = booking.Recurring,
                 RecurrenceTypeId = booking.RecurrenceTypeId,
                 RecurrenceEndDate = booking.RecurrenceEndDate,
+                RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                 RoomName = room?.Name ?? "Unknown Room"
             };
         }
@@ -241,13 +243,63 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        private List<int> GetDayList(int? dayOfPeriod)
+        {
+            string[] week = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+            List<int> dayList = new List<int>();
+            int? temp = dayOfPeriod;
+
+            for (int i = 0; i < 7; i++)
+            {
+                dayList.Add((int)(temp / Math.Pow(2, 6 - i)));
+                temp %= (int)(Math.Pow(2, 6 - i));
+            }
+
+            int count = dayList.Sum();
+            return dayList;
+        }
+
         public bool CheckBookingAvailability(BookingViewModel booking)
         {
             var conflictingBookings = _bookingRepository.GetBookings()
+                                                        // Filters out cancelled bookings and checks if they have the same room
                                                         .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
-                                                        .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
-                                                                    (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
-                                                        .ToList();
+                                                        // Checks if booking is within the date range
+                                                        .Where(b =>
+                                                            booking.Recurring ?
+                                                                b.Recurring ?
+                                                                    (booking.Date >= b.Date && booking.Date <= b.RecurrenceEndDate) ||
+                                                                    (booking.RecurrenceEndDate >= b.Date && booking.RecurrenceEndDate <= b.RecurrenceEndDate)
+                                                                : (booking.Date <= b.Date && booking.RecurrenceEndDate >= b.Date)
+                                                            : (booking.Date) == b.Date
+                                                        )
+                                                        // Checks if the day is included when recurring
+                                                        .Where(b =>
+                                                            booking.RecurrenceTypeId == 1 ?
+                                                                b.RecurrenceTypeId == 1 ?
+                                                                    true :
+                                                                b.RecurrenceTypeId == 2 ?
+                                                                    true :
+                                                                    //GetDayList(b.RecurrenceDayOfPeriod). == booking. :
+                                                                b.RecurrenceTypeId == 3 ?
+                                                                    false :
+                                                                true :
+                                                            booking.RecurrenceTypeId == 2 ?
+                                                                (
+                                                                    true
+                                                                ) :
+                                                            booking.RecurrenceTypeId == 3 ?
+                                                                (
+                                                                    true
+                                                                ) :
+                                                            true
+                                                        )
+                                                        // Checks if there's conflict with time
+                                                        .Where(b => 
+                                                            (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                                                            (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime)
+                                                        ).ToList();
+#pragma warning restore IDE0075 // Simplify conditional expression
             return !conflictingBookings.Any();
         }
 

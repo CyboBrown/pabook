@@ -41,9 +41,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the analytics data.
+        /// Retrieves the analytics dashboard data.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing the analytics dashboard data if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("dashboard")]
         public IActionResult GetAnalyticsDashboard()
         {
@@ -60,9 +60,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the total number of bookings.
+        /// Retrieves the total number of bookings.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing the total number of bookings if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("total-bookings")]
         public IActionResult GetTotalBookings()
         {
@@ -79,9 +79,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the total number of cancelled bookings.
+        /// Retrieves the total number of cancelled bookings.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing the number of cancelled bookings if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("cancelled-bookings")]
         public IActionResult GetCancelledBookings()
         {
@@ -98,9 +98,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the total number of users.
+        /// Retrieves the total number of users.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing the total number of users if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("total-users")]
         public IActionResult GetTotalUsers()
         {
@@ -117,9 +117,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the total number of deleted users.
+        /// Retrieves the total number of deleted users.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing the number of deleted users if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("deleted-users")]
         public IActionResult GetDeletedUsers()
         {
@@ -136,9 +136,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the most booked room.
+        /// Retrieves information about the most booked room.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing data about the most booked room if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("most-booked-room")]
         public IActionResult GetMostBookedRoom()
         {
@@ -155,9 +155,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Gets the peak booking time.
+        /// Retrieves the peak booking time.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing the peak booking time if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("peak-time")]
         public IActionResult GetPeakTime()
         {
@@ -174,9 +174,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         /// <summary>
-        /// Returns monthly analytics data
+        /// Retrieves monthly analytics data. Used for generate report in room usage.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An IActionResult containing monthly analytics data if successful, or a 500 Internal Server Error if an exception occurs.</returns>
         [HttpGet("monthly-data")]
         public IActionResult GetMonthlyData()
         {
@@ -188,6 +188,47 @@ namespace ASI.Basecode.WebApp.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error fetching monthly data");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // <summary>
+        /// Retrieves monthly analytics data for a specific year and month.
+        /// </summary>
+        /// <param name="year">The year for which to retrieve data.</param>
+        /// <param name="month">The month for which to retrieve data.</param>
+        /// <returns>An IActionResult containing monthly analytics data for the specified period if successful, or a 500 Internal Server Error if an exception occurs.</returns>
+        [HttpGet("monthly-data/{year}/{month}")]
+        public IActionResult GetMonthlyData(int year, int month)
+        {
+            try
+            {
+                var monthlyData = _analyticsService.GetMonthlyData(year, month);
+                return Ok(monthlyData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching monthly data");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Retrieves yearly analytics data for a specific year.
+        /// </summary>
+        /// <param name="year">The year for which to retrieve data.</param>
+        /// <returns>An IActionResult containing yearly analytics data for the specified year if successful, or a 500 Internal Server Error if an exception occurs.</returns>
+        [HttpGet("yearly-data/{year}")]
+        public IActionResult GetYearlyData(int year)
+        {
+            try
+            {
+                var yearlyData = _analyticsService.GetYearlyData(year);
+                return Ok(yearlyData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching yearly data");
                 return StatusCode(500, "Internal server error");
             }
         }
