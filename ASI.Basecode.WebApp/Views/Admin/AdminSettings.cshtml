@@ -98,7 +98,18 @@
 
     
     <script>     
-        
+        function toggleLogos(isDarkMode) {
+            const logoDark = document.getElementById('logo-dark');
+            const logoLight = document.getElementById('logo-light');
+
+            if (isDarkMode) {
+                logoLight.style.display = 'block';
+                logoDark.style.display = 'none';
+            } else {
+                logoLight.style.display = 'none';
+                logoDark.style.display = 'block';
+            }
+        }
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
@@ -136,7 +147,7 @@
                         document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Ensure value is converted to string
 
                         // Store preferences in session storage
-                        sessionStorage.setItem('userPreferences', JSON.stringify(data));
+                        //sessionStorage.setItem('userPreferences', JSON.stringify(data));
 
                         // Apply theme based on preferences
                         applyTheme(data.darkMode);
@@ -153,7 +164,8 @@
             document.body.className = theme;
             const preferences = JSON.parse(sessionStorage.getItem('userPreferences')) || {};
             preferences.darkMode = this.checked;
-            sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
+            //sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
+            toggleLogos(preferences.darkMode);
             
         });
         
@@ -169,6 +181,7 @@
                 body.classList.remove('light');
                 loadTheme('admindark.css'); //CSS file for dark mode
             }
+            toggleLogos(preferences.darkMode);
         }
 
         function loadTheme(themeName) {
@@ -393,34 +406,7 @@
 </script>
 
 <style>  
-    body {
-        margin: 0;
-        font-family: 'Poppins', sans-serif;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        background-color: #000;
-    }
-
-    .outer-container {
-        box-sizing: border-box;
-        background-color: var(--light);
-        padding: 10px;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        width: calc(100% - 265px);
-        height: calc(100% - 40px);
-        top: 20px;
-        right: 20px;
-        bottom: 20px;
-        margin-left: 100px;
-        position: fixed;
-        z-index: 5;
-    }
+    
     .modal {
         display: none;
         position: fixed;
