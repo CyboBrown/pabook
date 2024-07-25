@@ -803,7 +803,6 @@
                 }
             });
 
-            console.log(dayOfPeriod);
             const data = {
                 id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
                 title: formData.get('title'),
@@ -815,11 +814,9 @@
                 recurring: formData.get('recurring') === 'true',
                 recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
-                //recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
+                recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
                 userId: getCurrentUserId()
             };
-
-            console.log(JSON.stringify(data));
 
             const isEdit = this.dataset.mode === 'edit';
             const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
@@ -996,7 +993,7 @@
                     }
 
                     // Populate day of week
-                        console.log("RID: " + booking.recurrenceTypeId);
+                    console.log("RID: " + booking.recurrenceTypeId);
                     if(booking.recurrenceTypeId == 2) {
                         document.getElementById('weeklyOptions').style.display = 'block';
                         let day_list = [];
