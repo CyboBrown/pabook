@@ -212,7 +212,7 @@ namespace ASI.Basecode.Services.Services
                 //_notificationService.CreateNotificationAsync(updateTitle, updateDescription, existingBooking.UserId, NotificationType.Update).Wait();
 
                 // Update reminder notification
-               
+
             }
             catch (Exception ex)
             {
