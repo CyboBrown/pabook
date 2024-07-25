@@ -19,7 +19,7 @@
     
 
 </head>
-<body class="@((Model != null && Model.DarkMode) ? "light" : "dark")">
+<body>
     @Html.Partial("_Header")
     @{
         var userRole = Context.Session.GetString("UserRole");

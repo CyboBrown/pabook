@@ -185,6 +185,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 }
                 catch (Exception ex)
                 {
+                    // Log the exception
+                    System.Diagnostics.Debug.WriteLine("THE ERROR: " + ex.StackTrace);
+                    Console.WriteLine("THE ERROR: " + ex.StackTrace);
                     _logger.LogError(ex, "Error updating booking");
                     return BadRequest(new { success = false, message = "An error occurred while updating the booking. Please try again.", error = ex.Message });
                 }

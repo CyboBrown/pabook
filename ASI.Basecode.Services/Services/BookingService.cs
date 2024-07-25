@@ -61,6 +61,7 @@ namespace ASI.Basecode.Services.Services
                         Recurring = booking.Recurring,
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
+                        RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                         RoomName = room?.Name ?? "Unknown Room",
                         Cancelled = booking.Cancelled
                     };
@@ -158,13 +159,11 @@ namespace ASI.Basecode.Services.Services
 
         public BookingViewModel GetBookingById(int id)
         {
-            try
+            var booking = _bookingRepository.GetBooking(id);
+            if (booking == null)
             {
-                var booking = _bookingRepository.GetBooking(id);
-                if (booking == null)
-                {
-                    return null;
-                }
+                return null;
+            }
 
             var room = _roomRepository.GetRoom(booking.RoomId);
             return new BookingViewModel
