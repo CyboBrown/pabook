@@ -318,38 +318,23 @@ body.dark .dark-mode {
 
 
 
-
-
-
-
-
-
-
-
-
-/*INDEX*/
-/*INDEX ENDREGION*/
-
-
-
-/*ANALYTICS*/
-/*ANALYTICS ENDREGION*/
-
-
-
-/*MANAGE ROLES*/
-/*MANAGE ROLES ENDREGION*/
-
-
-
-
 /*SETTINGS*/
 
 .edit-button {
-    position: absolute; /* Position the button absolutely within the profile-section */
-    margin-top: 100px; /* Distance from the top */
-    right: 10px; /* Distance from the right */
-    background-color: #a4c1cd65; /* Customize as needed */
+    position: absolute; 
+    margin-top: 40px; 
+    right: 10px; 
+    background-color: #a4c1cd65; 
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+body.light .edit-button {
+    position: absolute; 
+    margin-top: 40px; 
+    right: 10px; 
+    background-color: #185d6251; 
     color: #fff;
     border: none;
     border-radius: 3px;
@@ -363,7 +348,7 @@ body.dark .dark-mode {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    position: relative; /* Ensure the profile-section is positioned relative */
+    position: relative; 
     padding: 1rem;
     border: 1px solid #ccc; 
     border-radius: 5px;
@@ -372,7 +357,7 @@ body.dark .dark-mode {
 .lightt {
     position: relative; 
     padding: 1rem;
-    border: 1px solid #ccc; /* Optional, for visual debugging */
+    border: 1px solid #ccc; 
     border-radius: 5px;
     background-color: var(--background-color);
     margin-bottom: 20px;
@@ -394,8 +379,8 @@ body.dark .dark-mode {
 .profile-pic img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the container without stretching */
-    border-radius: 10px; /* Matches container rounded corners */
+    object-fit: cover; 
+    border-radius: 10px; 
 }
 .profile-info {
     display: flex;
@@ -415,8 +400,8 @@ body.dark .dark-mode {
 }
 
 .settings-section {
-    margin-left: 30px; /* Margin from main container */
-    margin-right: 30px;
+    margin-left: 65px; 
+    margin-right: 65px;
     padding: 20px;
     border-radius: 10px;
     background-color: #185D62;
@@ -427,10 +412,24 @@ body.light .settings-section {
     background-color: var(--light-main);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+/*
 .setting-group {
     
     margin-bottom: 0;
+}*/
+.settings-group {
+    display: flex;
+    align-items: center; /* Vertically center the items */
+    justify-content: space-between; /* Space between switch and button */
+    gap: 10px; /* Optional: space between items */
+    margin-bottom: 20px; /* Ensure spacing between settings */
+}
 
+/* Ensure vertical alignment of items */
+.setting,
+.action-buttons {
+    display: flex;
+    align-items: center;
 }
     .setting-group h2 {
         margin-top: 50px;
@@ -551,8 +550,6 @@ input:checked + .slider:before {
     background-color: #10515b;
     color: #fff;
     display: block;
-    z-index: 100;
-    margin-right: 20px;
 }
 .save-button:hover {
     background-color: #10515ba9;
