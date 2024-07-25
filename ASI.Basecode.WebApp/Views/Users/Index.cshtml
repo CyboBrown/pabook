@@ -418,70 +418,6 @@
     //});
     //fetchTodaysBookings();
 
-    function stringifyDayOfPeriod(dayOfPeriod) {
-        switch(dayOfPeriod) {
-            case 0:
-                return "Unassigned";
-                break;
-            case 62:
-                return "Weekdays";
-                break;
-            case 65:
-                return "Weekends";
-                break;
-            case 127:
-                return "Everyday";
-                break;
-            default:
-                let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                let day_list = [];
-                temp = dayOfPeriod;
-                for(let i = 0; i < 7; i++) {
-                    day_list.push(~~(temp / 2 ** [6 - i]));
-                    temp %= 2 ** [6 - i];
-                }
-                let count = day_list.reduce((sum, num) => sum + num, 0);
-                if(count == 6) {
-                    let i = 0;
-                    let list = [];
-                    day_list.forEach(day => {
-                        list[i] = day == 0   ? week[i] : "";
-                        i++;
-                    });
-                    return "Except " + list.join("");
-                } else {
-                    switch(count) {
-                        case 1:
-                            let i = 0;
-                            let list = [];
-                            day_list.forEach(day => {
-                                list[i] = day == 1 ? week[i] : "";
-                                i++;
-                            });
-                            return "Every " + list.join("");
-                            break;
-                        case 2:
-                            return "Twice A Week";
-                            break;
-                        case 3:
-                            return "3 Days A Week";
-                            break;
-                        case 4:
-                            return "4 Days A Week";
-                            break;
-                        case 5:
-                            return "5 Days A Week";
-                            break;
-                        default:
-                            return "Error";
-                            break;
-                    }
-                }
-                return "Error";
-                break;
-        }
-    }
-
     //this is the function for 'view'
     function showBookingDetails(bookingId) {
         fetch(`/api/Booking/${bookingId}`)
@@ -636,6 +572,60 @@
             const [hours, minutes] = timeString.split(':');
             return `${hours.padStart(2, '0')}:${minutes}:00`;
         }
+
+        // Converts DayOfPeriod number to text format
+        function stringifyDayOfPeriod(dayOfPeriod) {
+        switch(dayOfPeriod) {
+            case 0:
+                return "Unassigned";
+            case 62:
+                return "Weekdays";
+            case 65:
+                return "Weekends";
+            case 127:
+                return "Everyday";
+            default:
+                let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                let day_list = [];
+                temp = dayOfPeriod;
+                for(let i = 0; i < 7; i++) {
+                    day_list.push(~~(temp / 2 ** [6 - i]));
+                    temp %= 2 ** [6 - i];
+                }
+                let count = day_list.reduce((sum, num) => sum + num, 0);
+                if(count == 6) {
+                    let i = 0;
+                    let list = [];
+                    day_list.forEach(day => {
+                        list[i] = day == 0   ? week[i] : "";
+                        i++;
+                    });
+                    return "Except " + list.join("");
+                } else {
+                    switch(count) {
+                        case 1:
+                            let i = 0;
+                            let list = [];
+                            day_list.forEach(day => {
+                                list[i] = day == 1 ? week[i] : "";
+                                i++;
+                            });
+                            return "Every " + list.join("");
+                        case 2:
+                            return "Twice A Week";
+                        case 3:
+                            return "3 Days A Week";
+                        case 4:
+                            return "4 Days A Week";
+                        case 5:
+                            return "5 Days A Week";
+                        default:
+                            return "Error";
+                    }
+                }
+                return "Error";
+        }
+    }
 
         const bookingForm = document.getElementById('bookingForm');
         const submitButton = bookingForm.querySelector('button[type="submit"]');
@@ -822,7 +812,7 @@
                 startTime: formatTimeToTimeSpan(formData.get('startTime')),
                 endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
-                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : 0,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
                 recurrenceDayOfPeriod: dayOfPeriod,
                 userId: getCurrentUserId()
