@@ -209,9 +209,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.UpdateBooking(existingBooking);
 
                 // Create update notification
-                var title = "Booking Updated";
-                var description = $"Booking Updated to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d} at {existingBooking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, existingBooking.UserId, NotificationType.Update).Wait();
+                //var title = "Booking Updated";
+                //var description = $"Booking Updated to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d} at {existingBooking.Room.Name}";
+                //_notificationService.CreateNotificationAsync(title, description, existingBooking.UserId, NotificationType.Update).Wait();
             
                 // Update reminder notification
                
@@ -240,36 +240,11 @@ namespace ASI.Basecode.Services.Services
             _bookingRepository.CancelBooking(id);
         }
 
-        //private List<int> GetDayList(int? dayOfPeriod)
-        //{
-        //    string[] week = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-        //    List<int> dayList = new List<int>();
-        //    int? temp = dayOfPeriod;
-
-        //    for (int i = 0; i < 7; i++)
-        //    {
-        //        dayList.Add((int)(temp / Math.Pow(2, 6 - i)));
-        //        temp %= (int)(Math.Pow(2, 6 - i));
-        //    }
-
-        //    int count = dayList.Sum();
-        //    return dayList;
-        //}
-
         public bool CheckBookingAvailability(BookingViewModel booking)
         {
             var conflictingBookings = _bookingRepository.GetBookings() // Time & Room Conflicts
                                                         // Filters out cancelled bookings and checks if they have the same room
                                                         .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted && b.Id != booking.Id)
-                                                        //// Checks if booking is within the date range
-                                                        //.Where(b =>
-                                                        //    booking.Recurring ?
-                                                        //        b.Recurring ?
-                                                        //            (booking.Date >= b.Date && booking.Date <= b.RecurrenceEndDate) ||
-                                                        //            (booking.RecurrenceEndDate >= b.Date && booking.RecurrenceEndDate <= b.RecurrenceEndDate)
-                                                        //        : (booking.Date <= b.Date && booking.RecurrenceEndDate >= b.Date)
-                                                        //    : (booking.Date) == b.Date
-                                                        //)
                                                         // Checks if there's conflict with time
                                                         .Where(b =>
                                                             (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
@@ -310,7 +285,7 @@ namespace ASI.Basecode.Services.Services
                         }
                         for (var dt = booking.Date.Date; dt <= booking.RecurrenceEndDate.Value.Date; dt = dt.AddDays(1))
                         {
-                            if (permitted_days.Contains(dt.Day)) { booking_dates.Add(dt); }
+                            if (permitted_days.Contains((int)dt.DayOfWeek)) { booking_dates.Add(dt); }
                         }
                         break;
                     case 3:
@@ -357,7 +332,7 @@ namespace ASI.Basecode.Services.Services
                             }
                             for (var dt = b.Date.Date; dt <= b.RecurrenceEndDate.Value.Date; dt = dt.AddDays(1))
                             {
-                                if (permitted_days.Contains(dt.Day) && !taken_dates.Contains(dt)) { taken_dates.Add(dt); }
+                                if (permitted_days.Contains((int)dt.DayOfWeek) && !taken_dates.Contains(dt)) { taken_dates.Add(dt); }
                             }
                             break;
                         case 3:
