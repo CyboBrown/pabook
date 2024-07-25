@@ -26,9 +26,9 @@
                 </a>
             </li>
         </ul>
+        
         <div class="user-details">
-            <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
-            @*<span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>*@
+            <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("FirstName")</span>
         </div>
         <div class="notification-section">
             <a asp-controller="Notification" asp-action="Index" id="notificationToggle">
