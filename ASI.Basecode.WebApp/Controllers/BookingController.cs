@@ -90,7 +90,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(_bookingService.CheckBookingAvailability(booking))
+                if (_bookingService.CheckBookingAvailability(booking))
                 {
                     _bookingService.AddBooking(booking);
                     return Ok(new { success = true, message = "Booking created successfully" });
@@ -193,7 +193,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 }
             }
             return BadRequest(new { success = false, message = "Your booking conflicts with another booking" });
-            
         }
 
         /// <summary>

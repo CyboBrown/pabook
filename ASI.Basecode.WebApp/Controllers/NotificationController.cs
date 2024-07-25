@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using System.Security.Claims;
 using System;
 using ASI.Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -10,9 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace ASI.Basecode.WebApp.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class NotificationController : ControllerBase
+    public class NotificationController : Controller
     {
         private readonly INotificationService _notificationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -28,17 +25,19 @@ namespace ASI.Basecode.WebApp.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get user ID for notifs
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetNotifications(int userId)
+        [HttpGet]
+        public IActionResult Index()
+        {
+            ViewBag.UserId = GetCurrentUserId();
+            return View("~/Views/Notifications/Notifications.cshtml");
+        }
+
+        [HttpGet("api/[controller]/{userId}")]
+        public async Task<IActionResult> GetNotifications()
         {
             try
             {
-                //int userId = GetCurrentUserId();
+                int userId = GetCurrentUserId();
                 var notifications = await _notificationService.GetNotificationsForUserAsync(userId);
                 return Ok(notifications);
             }
@@ -49,12 +48,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
-        /// <summary>
-        /// If user has seen notifs, and works on user's ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPut("{id}/seen")]
+        [HttpPut("api/[controller]/{id}/seen")]
         public async Task<IActionResult> MarkAsSeen(int id)
         {
             try
@@ -69,16 +63,10 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
-        //private int GetCurrentUserId()
-        //{
-        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        //    if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
-        //    {
-        //        return userId;
-        //    }
-        //    throw new UnauthorizedAccessException("User is not authenticated or user ID is invalid.");
-        //}
-        // Fetch user preferences when page loads
-      
+        private int GetCurrentUserId()
+        {
+            var userId = Convert.ToInt32(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+            return userId;
+        }
     }
 }

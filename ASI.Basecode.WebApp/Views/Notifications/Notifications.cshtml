@@ -28,14 +28,25 @@
     let notifications = [];
 
     document.addEventListener('DOMContentLoaded', function () {
+        var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
+        sessionStorage.setItem('UserId', userId);
         loadNotifications();
         document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
         document.getElementById('nextPage').addEventListener('click', () => changePage(1));
     });
 
     function loadNotifications() {
-        const userId = document.getElementById('userId').value;
-        fetch(`/api/Notification/userId`)
+        const userIdElement = document.getElementById('userId');
+        let userId;
+
+        if (userIdElement && userIdElement.value) {
+            userId = userIdElement.value;
+        } else {
+            console.error('User ID not found. Using default value.');
+            userId = 0; 
+        }
+
+        fetch(`/api/Notification/${userId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
