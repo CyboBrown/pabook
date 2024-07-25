@@ -1232,6 +1232,7 @@
                                         const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
                                         row.remove();
                                         toastr.success('Booking cancelled successfully');
+                                    modal.style.display = 'none';
                                     } else {
                                         throw new toaster.error('Failed to cancel booking');
                                     }
@@ -1267,7 +1268,7 @@
                     document.getElementById('recurrenceEndDate').value = '';
                     document.getElementById('weeklyOptions').style.display = 'none';
                     document.querySelectorAll('.day-selector .day').forEach(function (day) {
-                        day.classList.remove('selected');
+                    day.classList.remove('selected');
                     });
                 }
 
