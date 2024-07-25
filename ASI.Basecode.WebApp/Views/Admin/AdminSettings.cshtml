@@ -38,14 +38,14 @@
                     
 
                     <div class="lightt">
-                        @*<h2>Booking Duration</h2>
+                        @*<h2>Booking Duration</h2>*@
                         <div class="setting">
                             <span>Time Format</span>
                             <select class="time-select" name="TimeFormat">
                                 <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
                                 <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
                             </select>
-                        </div>*@
+                        </div>
                         <div class="setting">
                             <span>Default Booking Duration</span>
                             <select class="time-select" name="DefaultBookingDuration">
@@ -97,9 +97,20 @@
         </div>
     </div>
 
+    
+    <script>     
+        function toggleLogos(isDarkMode) {
+            const logoDark = document.getElementById('logo-dark');
+            const logoLight = document.getElementById('logo-light');
 
-    <script>
-        
+            if (isDarkMode) {
+                logoDark.style.display = 'none';
+                logoLight.style.display = 'block';
+            } else {
+                logoDark.style.display = 'block';
+                logoLight.style.display = 'none';
+            }
+        }
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
@@ -170,6 +181,7 @@
                 body.classList.remove('light');
                 loadTheme('admindark.css'); //CSS file for dark mode
             }
+            toggleLogos(preferences.darkMode);
         }
 
         function loadTheme(themeName) {
@@ -192,16 +204,17 @@
             if (darkModeToggle) {
                 darkModeToggle.checked = preferences.darkMode;
             }     
-            /*
+            
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
                 timeFormatSelect.checked = preferences.timeFormat;
-            }*/
+            }
 
             const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
             if (defaultBookingDurationSelect) {
                 defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
             }
+            toggleLogos(preferences.darkMode);
             applyTheme(preferences.darkMode);
         }
 
@@ -217,7 +230,7 @@
                 Id: parseInt(sessionStorage.getItem('UserId')),
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
                 //enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
-                //timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
+                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
                 defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
             // Basic client-side validation for passwords
@@ -272,7 +285,7 @@
 
             window.addEventListener("resize", adjustFontSize);
             adjustFontSize(); // Initial call
-        });       
+        });   
     </script>
 </body>
 <script>  

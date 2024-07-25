@@ -116,11 +116,11 @@ h2 {
     transition: background-color 0.4s ease;
     transition: width 0.3s ease;
 }
-
+/*
 .logo img {
     width: 200px;
     height: auto;
-}
+}*/
 
 .sidebar-menu {
     list-style: none;
@@ -582,15 +582,16 @@ body.light .header .tab.active {
     background-color: var(--dark-main);
     color: #fff;
 }
+/*
 body.light .logo-img {
-    width: 200px;
-    height: auto;
+    width: 100px;
+    height: 100px;
 }
 
 .logo-img.light {
-    width: 200px;
-    height: auto;
-}
+    width: 100px;
+    height: 100px;
+}*/
 
 body.light .user-name {
     color: var(--light-text);

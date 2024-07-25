@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/css/style.css" />
     <link rel="stylesheet" href="~/css/admin.css" id="theme-style" />
     <link rel="stylesheet" href="~/css/admindark.css" id="theme-style" />
-
+    
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     @RenderSection("Styles", required: false)
@@ -20,6 +20,7 @@
 
 </head>
 <body>
+    
     @Html.Partial("_Header")
     @{
         var userRole = Context.Session.GetString("UserRole");
@@ -63,121 +64,18 @@
             closeButton: true,
             progressBar: true
         };
-        /*
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchPreferences();
-        });
-
-        function fetchPreferences() {
-            const userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
-            if (!userId) {
-                console.error('User ID not found in session storage.');
-                return;
-            }
-
-            fetch(`/api/Preference/myPreferences?userId=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
-                        document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString();
-                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString();
-
-                        const preferences = {
-                            darkMode: data.darkMode,
-                            timeFormat: data.timeFormat,
-                            defaultBookingDuration: data.defaultBookingDuration
-                        };
-                        sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
-
-                        applyTheme(data.darkMode);
-                    } else {
-                        console.log('No preferences found. Setting default values or handling empty state.');
-                    }
-                })
-                .catch(error => console.error('Error fetching preferences:', error));
-        }
-
-        const darkModeToggle = document.querySelector('#dark-change input');
-        darkModeToggle.addEventListener('change', function () {
-            const theme = this.checked ? 'dark' : 'light';
-            document.body.className = theme;
-            const preferences = JSON.parse(sessionStorage.getItem('userPreferences')) || {};
-            preferences.darkMode = this.checked;
-            sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
-            applyTheme(this.checked);
-        });
-
-        function applyTheme(isDarkMode) {
-            const body = document.body;
-            const darkStyle = document.getElementById('theme-style-dark');
-            const lightStyle = document.getElementById('theme-style-light');
+        function toggleLogos(isDarkMode) {
+            const logoDark = document.getElementById('logo-dark');
+            const logoLight = document.getElementById('logo-light');
 
             if (isDarkMode) {
-                body.classList.add('dark');
-                body.classList.remove('light');
-                darkStyle.disabled = false;
-                lightStyle.disabled = true;
+                logoLight.style.display = 'block';
+                logoDark.style.display = 'none';
             } else {
-                body.classList.add('light');
-                body.classList.remove('dark');
-                darkStyle.disabled = true;
-                lightStyle.disabled = false;
+                logoLight.style.display = 'none';
+                logoDark.style.display = 'block';
             }
         }
-
-        document.getElementById('preferencesForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            savePreferences();
-        });
-
-        function savePreferences() {
-            const preferences = {
-                Id: parseInt(sessionStorage.getItem('UserId')),
-                darkMode: document.querySelector('input[name="DarkMode"]').checked,
-                timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
-                defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
-            };
-
-            fetch('/api/Preference/save', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(preferences)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Preferences saved successfully.');
-                        applyTheme(preferences.darkMode);
-                        displaySuccessMessage();
-                    } else {
-                        console.error('Failed to save preferences:', data.message);
-                    }
-                })
-                .catch(error => console.error('Error saving preferences:', error));
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            function adjustFontSize() {
-                const zoomLevel = Math.round(window.devicePixelRatio * 100);
-                const rootFontSize = 16 * window.devicePixelRatio;
-                document.documentElement.style.fontSize = `${rootFontSize}px`;
-
-                const weight = zoomLevel > 100 ? "bold" : "normal";
-                document.body.style.fontWeight = weight;
-
-                const sidebar = document.querySelector(".sidebar");
-                if (sidebar) {
-                    sidebar.style.width = "265px";
-                    sidebar.style.fontSize = "initial";
-                }
-            }
-
-            window.addEventListener("resize", adjustFontSize);
-            adjustFontSize();
-        });*/
 
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
@@ -214,6 +112,7 @@
             preferences.darkMode = this.checked;
             sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
             applyTheme(this.checked);
+            toggleLogos(preferences.darkMode);
         });
 
         
@@ -261,6 +160,7 @@
                 body.classList.remove('light');
                 loadTheme('admin.css');
             }
+            toggleLogos(isDarkMode);
         }
 
         function loadTheme(themeName) {
@@ -275,3 +175,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
