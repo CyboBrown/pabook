@@ -1730,6 +1730,7 @@
         const itemsPerPage = 5;
 
         function loadRooms(page = 1) {
+            populateLocationsDropdown();
             fetch('/api/Room/rooms')
                 .then(response => {
                     if (!response.ok) {
