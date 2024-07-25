@@ -24,7 +24,7 @@
     @Html.Partial("_Header")
     @{
         var userRole = Context.Session.GetString("UserRole");
-        var isAdmin = userRole == "0"; // Assuming 0 is the role ID for Admin
+        var isAdminOrManager = userRole == "0" || userRole == "1"; // 0 for Admin, 1 for Manager
         var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
         (ViewContext.RouteData.Values["Action"].ToString() == "Login" ||
         ViewContext.RouteData.Values["Action"].ToString() == "Register");
@@ -32,7 +32,7 @@
 
     @if (!isLoginOrRegister)
     {
-        if (isAdmin)
+        if (isAdminOrManager)
         {
             @Html.Partial("_AdminSidebar")
         }

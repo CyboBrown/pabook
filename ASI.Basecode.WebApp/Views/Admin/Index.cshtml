@@ -15,6 +15,8 @@
                 <i class="fas fa-calendar-alt"></i>
                 <span>Bookings</span>
             </div>
+            @if (ViewBag.UserRole == 0)
+            {
             <div id="usersTab" class="tab" onclick="switchTab('users')">
                 <i class="fas fa-users"></i>
                 <span>Users</span>
@@ -23,6 +25,7 @@
                 <i class="fas fa-door-open"></i>
                 <span>Rooms</span>
             </div>
+            }
         </div>
         @*Bookings View*@
         <div id="bookingsContent" class="content flex">
@@ -75,6 +78,8 @@
                 </div>
             </div>
         </div>
+        @if (ViewBag.UserRole == 0)
+        {
         @*User View*@
         <div id="usersContent" class="content hidden">
             <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
@@ -93,38 +98,38 @@
                         <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
-                        </button>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="bg-white shadow-lg rounded-lg flex-grow overflow-hidden">
-                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
-                        <table id="userTable" class="min-w-full max-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- User data goes here -->
-                            </tbody>
-                        </table>
+                    <div class="bg-white shadow-lg rounded-lg flex-grow overflow-hidden">
+                        <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                            <table id="userTable" class="min-w-full max-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- User data goes here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div id="userPaginationContainer" class="flex justify-center items-center py-1" style="margin-top: 0.5rem;">
-                    <div id="userPagination" class="flex justify-center items-center">
-                        <!-- Pagination will be dynamically generated here -->
+                    <div id="userPaginationContainer" class="flex justify-center items-center py-1" style="margin-top: 0.5rem;">
+                        <div id="userPagination" class="flex justify-center items-center">
+                            <!-- Pagination will be dynamically generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        @*Room View*@
-        <div id="roomsContent" class="content hidden">
-            <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
+            @*Room View*@
+            <div id="roomsContent" class="content hidden">
+                <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                     <div class="search-container">
@@ -168,9 +173,10 @@
                         <!-- Pagination will be dynamically generated here -->
                     </div>
                 </div>
+                
             </div>
         </div>
-
+        }
 @*Add Booking Modal*@
 <div id="addBookingModal" class="modal">
     <div class="modal-content">
@@ -601,23 +607,27 @@
 
 
 @*Switch Tabs Script*@
-<script>
-    function switchTab(tabName) {
-        // Hide all content sections
-        document.getElementById('bookingsContent').style.display = 'none';
-        document.getElementById('usersContent').style.display = 'none';
-        document.getElementById('roomsContent').style.display = 'none';
+        <script>
+            function switchTab(tabName) {
+                // Hide all content sections
+                document.getElementById('bookingsContent').style.display = 'none';
+                if (@(ViewBag.UserRole) === 0) {
+                    document.getElementById('usersContent').style.display = 'none';
+                    document.getElementById('roomsContent').style.display = 'none';
+                }
 
-        // Remove the active class from all tabs
-        document.getElementById('bookingsTab').classList.remove('active');
-        document.getElementById('usersTab').classList.remove('active');
-        document.getElementById('roomsTab').classList.remove('active');
+                // Remove the active class from all tabs
+                document.getElementById('bookingsTab').classList.remove('active');
+                if (@(ViewBag.UserRole) === 0) {
+                    document.getElementById('usersTab').classList.remove('active');
+                    document.getElementById('roomsTab').classList.remove('active');
+                }
 
-        // Show the selected content and add the active class to the selected tab
-        document.getElementById(tabName + 'Content').style.display = 'flex';
-        document.getElementById(tabName + 'Tab').classList.add('active');
-    }
-</script>
+                // Show the selected content and add the active class to the selected tab
+                document.getElementById(tabName + 'Content').style.display = 'flex';
+                document.getElementById(tabName + 'Tab').classList.add('active');
+            }
+        </script>
 
 
 
@@ -1261,22 +1271,42 @@
                     modal.style.display = 'block';
 
                     confirmBtn.onclick = function () {
+                        modal.style.display = 'none';
                         fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
-                                .then(response => {
-                                    if (response.ok) {
-                                        //Remove the row from the table
-                                        const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
-                                        row.remove();
-                                        toastr.success('Booking cancelled successfully');
-                                    modal.style.display = 'none';
-                                    } else {
-                                        throw new toaster.error('Failed to cancel booking');
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                }
+                                return response.json().then(err => Promise.reject(err));
+                            })
+                            .then(data => {
+                                // Remove the row from My Bookings table
+                                const myBookingsButton = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`);
+                                if (myBookingsButton) {
+                                    const myBookingsRow = myBookingsButton.closest('tr');
+                                    if (myBookingsRow) {
+                                        myBookingsRow.remove();
                                     }
-                                })
-                                .catch(error => {
-                                    console.error('Error cancelling booking:', error);
-                                    alert('Failed to cancel booking. Please try again.');
-                                });
+                                }
+
+                                // Remove the row from Today's Bookings list
+                                const todaysBookingsButton = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`);
+                                if (todaysBookingsButton) {
+                                    const todaysBookingsRow = todaysBookingsButton.closest('tr');
+                                    if (todaysBookingsRow) {
+                                        todaysBookingsRow.remove();
+                                    }
+                                }
+
+                                toastr.success('Booking cancelled successfully');
+
+                                // Optionally, refresh the bookings list
+                                loadBookings(); // Assuming you have a function to reload the bookings
+                            })
+                            .catch(error => {
+                                console.error('Error cancelling booking:', error);
+                                toastr.error(error.message || 'Failed to cancel booking. Please try again.');
+                            });
                     }
 
                     exitBtn.onclick = function () {

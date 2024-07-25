@@ -84,7 +84,16 @@ namespace ASI.Basecode.WebApp.Controllers
 
             if (loginResult == LoginResult.Success)
             {
-                await _signInManager.SignInAsync(user);
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, user.UserRole == 0 ? "Admin" : (user.UserRole == 1 ? "Manager" : "User"))
+        };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
                 _session.SetString("UserId", user.Id.ToString());
                 _session.SetString("UserName", user.UserName);
                 _session.SetString("UserRole", user.UserRole.ToString()); // Store role as string
@@ -96,6 +105,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     return RedirectToAction("Index", "Admin");
                 }
+                else if(user.UserRole == 1)
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                
                 else // Regular user
                 {
                     return RedirectToAction("Index", "Users");

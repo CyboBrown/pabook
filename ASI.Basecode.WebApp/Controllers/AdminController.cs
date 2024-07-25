@@ -15,13 +15,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
 using Serilog.Core;
+using System.Security.Claims;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
     /// <summary>
     /// Admin Controller
     /// </summary>
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Manager")]
     public class AdminController : ControllerBase<AdminController>
     {
         private readonly IPreferenceService _preferenceService;
@@ -46,17 +47,20 @@ namespace ASI.Basecode.WebApp.Controllers
             _logger = logger;
         }
 
-        
+
 
         /// <summary>
         /// Returns Admin Home View.
         /// </summary>
         /// <returns>Admin Home Screen.</returns>
         public IActionResult Index()
-        {          
-            return View();           
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = _userService.GetUserById(userId);
+            ViewBag.UserRole = user.UserRole;
+            return View();
         }
-        
+
         /// <summary>
         /// Returns Admin Analytics View.
         /// </summary>
@@ -76,13 +80,25 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
 
-     
+
 
         /// <summary>
         /// Returns Admin Settings View.
         /// </summary>
         /// <returns> Admin Settings Screen </returns>
         public IActionResult AdminSettings()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult UserManagement()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult RoomManagement()
         {
             return View();
         }
