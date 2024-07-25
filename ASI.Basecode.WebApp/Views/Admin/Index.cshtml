@@ -840,50 +840,50 @@
         // Load initial bookings
         loadBookings();
 
-        // Form submission
-        bookingForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+                // Form submission
+                bookingForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
 
-            if (!validateForm()) {  
-                alert('Please fill in all required fields.');
-                return;
-            }
+                    if (!validateForm()) {
+                        alert('Please fill in all required fields.');
+                        return;
+                    }
 
-            const formData = new FormData(this);
-            const startTime = formData.get('startTime');
-            const endTime = formData.get('endTime');
-            const date = formData.get('date');
+                    const formData = new FormData(this);
+                    const startTime = formData.get('startTime');
+                    const endTime = formData.get('endTime');
+                    const date = formData.get('date');
 
-            // Validate date is not before the current date
-            const currentDate = new Date();
-            const selectedDate = new Date(date);
-            currentDate.setHours(0, 0, 0, 0);
-            selectedDate.setHours(0, 0, 0, 0);
+                    // Validate date is not before the current date
+                    const currentDate = new Date();
+                    const selectedDate = new Date(date);
+                    currentDate.setHours(0, 0, 0, 0);
+                    selectedDate.setHours(0, 0, 0, 0);
 
-            if (selectedDate < currentDate) {
-                document.getElementById('dateError').textContent = 'Selected date cannot be in the past.';
-                document.getElementById('dateError').style.display = 'block';
-                return;
-            }
+                    if (selectedDate < currentDate) {
+                        document.getElementById('dateError').textContent = 'Selected date cannot be in the past.';
+                        document.getElementById('dateError').style.display = 'block';
+                        return;
+                    }
 
-            // Validate start time is not before the current time if booking is for today
-            const currentDateTime = new Date();
-            const selectedDateTime = new Date(`${date}T${startTime}`);
-            if (selectedDate.getTime() === currentDate.getTime() && selectedDateTime < currentDateTime) {
-                document.getElementById('startTimeError').textContent = 'Start time cannot be in the past.';
-                document.getElementById('startTimeError').style.display = 'block';
-                return;
-            }
+                    // Validate start time is not before the current time if booking is for today
+                    const currentDateTime = new Date();
+                    const selectedDateTime = new Date(`${date}T${startTime}`);
+                    if (selectedDate.getTime() === currentDate.getTime() && selectedDateTime < currentDateTime) {
+                        document.getElementById('startTimeError').textContent = 'Start time cannot be in the past.';
+                        document.getElementById('startTimeError').style.display = 'block';
+                        return;
+                    }
 
-            // Validate end time is at least 15 minutes after start time
-            const startTimeDate = new Date(`2000-01-01T${startTime}`);
-            const endTimeDate = new Date(`2000-01-01T${endTime}`);
-            const timeDifference = (endTimeDate - startTimeDate) / (1000 * 60); // difference in minutes
-            if (timeDifference < 15) {
-                document.getElementById('endTimeError').textContent = 'End time must be at least 15 minutes after start time.';
-                document.getElementById('endTimeError').style.display = 'block';
-                return;
-            }
+                    // Validate end time is at least 15 minutes after start time
+                    const startTimeDate = new Date(`2000-01-01T${startTime}`);
+                    const endTimeDate = new Date(`2000-01-01T${endTime}`);
+                    const timeDifference = (endTimeDate - startTimeDate) / (1000 * 60); // difference in minutes
+                    if (timeDifference < 15) {
+                        document.getElementById('endTimeError').textContent = 'End time must be at least 15 minutes after start time.';
+                        document.getElementById('endTimeError').style.display = 'block';
+                        return;
+                    }
 
                     // Get day of period for recurrence
                     let dayOfPeriod = 0;
@@ -916,80 +916,79 @@
                         }
                     });
 
-            const data = {
-                title: formData.get('title'),
-                description: formData.get('description'),
-                date: formData.get('date'),
-                roomId: parseInt(formData.get('room')),
-                startTime: formatTimeToTimeSpan(startTime),
-                endTime: formatTimeToTimeSpan(endTime),
-                recurring: formData.get('recurring') === 'true',
-                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : 0,
-                recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
-                recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
-                userId: getCurrentUserId()
-            };
+                    const data = {
+                        title: formData.get('title'),
+                        description: formData.get('description'),
+                        date: formData.get('date'),
+                        roomId: parseInt(formData.get('room')),
+                        startTime: formatTimeToTimeSpan(startTime),
+                        endTime: formatTimeToTimeSpan(endTime),
+                        recurring: formData.get('recurring') === 'true',
+                        userId: getCurrentUserId()
+                    };
 
-            if (this.dataset.mode === 'edit') {
-                data.id = parseInt(this.dataset.bookingId);
-            }
-
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-
-            const url = this.dataset.mode === 'edit'
-                ? `/api/Booking/${this.dataset.bookingId}`
-                : '/api/Booking/create';
-            const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
-
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw err; });
-                    }
-                    return response.json();
-                })
-                .then(result => {
-                    console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
-                    modal.style.display = "none";
-                    loadBookings(); // This will refresh the entire table
-                    resetFormAndButton();
-
-                    // Reset form mode and submit button text
-                    this.dataset.mode = 'create';
-                    delete this.dataset.bookingId;
-                    submitButton.textContent = 'Create Booking';
-
-                    // Add success alert
-                    if (method === 'POST') {
-                        toastr.success('Booking created successfully!');
-                    } else {
-                        toastr.success('Booking updated successfully!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' booking:', error);
-                    let errorMessage = 'An error occurred while ' + (this.dataset.mode === 'edit' ? 'updating' : 'creating') + ' the booking. Please try again.';
-                    if (error.errors) {
-                        errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                    if (data.recurring) {
+                        data.recurrenceTypeId = parseInt(formData.get('RecurrenceTypeId')) || null;
+                        data.recurrenceEndDate = formData.get('recurrenceEndDate');
+                        data.recurrenceDayOfPeriod = dayOfPeriod;
                     }
 
-                    const conflictBooking = document.getElementById("conflictBooking");
-                    conflictBooking.textContent = "${error.message}"
-                    toastr.error(errorMessage);
-                })
-                .finally(() => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
+                    if (this.dataset.mode === 'edit') {
+                        data.id = parseInt(this.dataset.bookingId);
+                    }
+
+                    if (data.recurring && !data.recurrenceTypeId) {
+                        document.getElementById('recurrenceTypeError').textContent = 'Please select a recurrence type.';
+                        document.getElementById('recurrenceTypeError').style.display = 'block';
+                        submitButton.disabled = false;
+                        submitButton.textContent = this.dataset.mode === 'edit' ? 'Update Booking' : 'Create Booking';
+                        return;
+                    }
+
+                    const isEdit = this.dataset.mode === 'edit';
+                    const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
+                    const method = isEdit ? 'PUT' : 'POST';
+
+                    fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => { throw err; });
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            console.log('Booking ' + (isEdit ? 'updated' : 'created') + ':', result);
+                            modal.style.display = "none";
+                            loadBookings(); // This will refresh the entire table
+                            resetFormAndButton(); // Reset form after successful submission
+
+                            // Reset form mode and submit button text
+                            this.dataset.mode = 'create';
+                            delete this.dataset.bookingId;
+                            submitButton.textContent = 'Create Booking';
+
+                            // Add success alert with correct message
+                            alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
+                        })
+                        .catch(error => {
+                            console.error('Error ' + (isEdit ? 'updating' : 'creating') + ' booking:', error);
+                            let errorMessage = 'An error occurred while ' + (isEdit ? 'updating' : 'creating') + ' the booking. Please try again.';
+                            if (error.errors) {
+                                errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
+                            }
+                            alert(errorMessage);
+                        })
+                        .finally(() => {
+                            submitButton.disabled = false;
+                            submitButton.textContent = isEdit ? 'Update Booking' : 'Create Booking';
+                        });
                 });
-        });
 
         function convertTimeToMinutes(time) {
             const [hours, minutes] = time.split(':').map(Number);
