@@ -33,12 +33,6 @@
     <div class="user-details">
         <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
     </div>
-    <div class="notification-section">
-        <a asp-controller="Notification" asp-action="Index" id="notificationToggle">
-            <i class="fas fa-bell"></i>
-            <span class="notification-text">Notifications</span>
-        </a>
-    </div>
     <div class="signout">
         <a asp-action="SignOutAdmin" asp-controller="Account">
             <i class="fas fa-sign-out-alt"></i>
