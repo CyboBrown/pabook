@@ -1043,25 +1043,37 @@
         }
 
         function showBookingDetails(bookingId) {
+            
             fetch(`/api/Booking/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
-                    const modal = document.getElementById('bookingDetailsModal');
-                    const content = document.getElementById('bookingDetailsContent');
-                    content.innerHTML = `
-                        <p><strong>Meeting Title:</strong> ${booking.title}</p>
-                        <p><strong>Meeting Description:</strong> ${booking.description}</p>
-                        <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                        <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                        <p><strong>Room:</strong> ${booking.roomName}</p>
-                        <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                        ${booking.recurring ? `
-                            <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
-                            <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                        ` : ''}
-                        <p><strong>
-                    `;
-                    modal.style.display = 'block';
+                    fetch(`/api/Room/${booking.roomId}`)
+                    .then(roomResponse => roomResponse.json())
+                    .then(room => {
+                        fetch('/api/Room/locations')
+                        .then(locationResponse => locationResponse.json())
+                        .then(locations => {
+                            const location = locations.find(l => l.id === room.location);
+                            const modal = document.getElementById('bookingDetailsModal');
+                            const content = document.getElementById('bookingDetailsContent');
+                            content.innerHTML = `
+                                <p><strong>Meeting Title:</strong> ${booking.title}</p>
+                                <p><strong>Meeting Description:</strong> ${booking.description}</p>
+                                <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                                <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                                <p><strong>Room:</strong> ${booking.roomName}</p>
+                                <p><strong>Location:</strong> ${location}</p>
+                                <p><strong>Capacity:</strong> ${room.capacity}</p>
+                                <p><strong>Facilities:</strong> ${room.facilities}</p>
+                                <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                                ${booking.recurring ? `
+                                    <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
+                                    <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                                ` : ''}
+                            `;
+                            modal.style.display = 'block';
+                        })
+                    })
                 })
                 .catch(error => console.error('Error fetching booking details:', error));
         }

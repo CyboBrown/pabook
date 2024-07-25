@@ -61,17 +61,12 @@
             <div class="container mx-auto p-4 bg-gray-100 relative" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">My Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
-                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search...">
+                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdown()">
                         <i class="fas fa-filter mr-2"></i>
                         Filter
                     </button>
-                    <div id="roomDropdown" class="dropdown-content">
-                        <a onclick="filterByRoom(0)">Conference Room A</a>
-                        <a onclick="filterByRoom(1)">Meeting Room B</a>
-                        <a onclick="filterByRoom(2)">Training Room C</a>
-                        <a onclick="showAllRooms()">Show All</a>
-                    </div>
+                    <div id="roomDropdown" class="dropdown-content"></div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
@@ -423,21 +418,33 @@
         fetch(`/api/Booking/${bookingId}`)
             .then(response => response.json())
             .then(booking => {
-                const modal = document.getElementById('bookingDetailsModal');
-                const content = document.getElementById('bookingDetailsContent');
-                content.innerHTML = `
-                    <p><strong>Meeting Title:</strong> ${booking.title}</p>
-                    <p><strong>Meeting Description:</strong> ${booking.description}</p>
-                    <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
-                    <p><strong>Room:</strong> ${booking.roomName}</p>
-                    <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
-                    ${booking.recurring ? `
-                        <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
-                        <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
-                    ` : ''}
-                `;
-                modal.style.display = 'block';
+                fetch(`/api/Room/${booking.roomId}`)
+                    .then(roomResponse => roomResponse.json())
+                    .then(room => {
+                        fetch('/api/Room/locations')
+                            .then(locationResponse => locationResponse.json())
+                            .then(locations => {
+                                const location = locations.find(l => l.id === room.location);
+                                const modal = document.getElementById('bookingDetailsModal');
+                                const content = document.getElementById('bookingDetailsContent');
+                                content.innerHTML = `
+                        <p><strong>Meeting Title:</strong> ${booking.title}</p>
+                        <p><strong>Meeting Description:</strong> ${booking.description}</p>
+                        <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                        <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+                        <p><strong>Room:</strong> ${booking.roomName}</p>
+                        <p><strong>Location:</strong> ${location.name}</p>
+                        <p><strong>Capacity:</strong> ${room.capacity}</p>
+                        <p><strong>Facilities:</strong> ${room.facilities}</p>
+                        <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
+                        ${booking.recurring ? `
+                            <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
+                            <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
+                        ` : ''}
+                    `;
+                                modal.style.display = 'block';
+                            })
+                    })
             })
             .catch(error => console.error('Error fetching booking details:', error));
     }
@@ -513,18 +520,31 @@
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
+    rooms = [];
+
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
             .then(response => response.json())
             .then(data => {
                 const roomSelect = document.getElementById('room');
+                const roomDropdown = $('#roomDropdown');
+                roomDropdown.empty();
+
                 data.forEach(room => {
                     const option = document.createElement('option');
                     option.value = room.id;
                     option.text = room.name;
                     roomSelect.appendChild(option);
+                    rooms.push(room.name);
+                    roomDropdown.append(
+                        $('<a></a>')
+                        .attr('onclick', `filterByRoom('${room.name}')`)
+                        .text(room.name)
+                    );
                 });
+                console.log(rooms);
+                roomDropdown.append($('<a></a>').attr('onclick', 'showAllRooms()').text('Show All'));
             })
             .catch(error => console.error('Error fetching rooms:', error));
 
@@ -1244,9 +1264,7 @@
             // pwede from global var, local stor, or API call
             return parseInt(@HttpContextAccessor.HttpContext.Session.GetString("UserId"));
         }
-    });
-
-    roomList = ['Conference Room A', 'Meeting Room B', 'Training Room C'];
+    }); 
 
     function searchFilterBookings() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1280,11 +1298,11 @@
     }
 
     function filterByRoom(room) {
-        const filter = roomList[room];
+        const filter = room;
         const table = document.getElementById('bookingsTable');
         const tr = table.getElementsByTagName('tr');
         for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName('td')[2];
+            const td = tr[i].getElementsByTagName('td')[3];
             if (td) {
                 const txtValue = (td.textContent || td.innerText).trim();
                 console.log(filter);
