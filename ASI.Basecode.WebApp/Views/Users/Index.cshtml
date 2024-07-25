@@ -840,6 +840,8 @@
                 userId: getCurrentUserId()
             };
 
+            console.log(JSON.stringify(data));
+
             const isEdit = this.dataset.mode === 'edit';
             const url = isEdit ? `/api/Booking/${this.dataset.bookingId}` : '/api/Booking/create';
             const method = isEdit ? 'PUT' : 'POST';

@@ -2033,7 +2033,6 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
 
-
             const url = this.dataset.mode === 'edit' ? `/api/Room/${this.dataset.roomId}` : '/api/Room/add';
             const method = this.dataset.mode === 'edit' ? 'PUT' : 'POST';
             
