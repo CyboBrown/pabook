@@ -61,6 +61,7 @@ namespace ASI.Basecode.Services.Services
                         Recurring = booking.Recurring,
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
+                        RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                         RoomName = room?.Name ?? "Unknown Room",
                         Cancelled = booking.Cancelled
                     };
@@ -110,6 +111,7 @@ namespace ASI.Basecode.Services.Services
                         Recurring = booking.Recurring,
                         RecurrenceTypeId = booking.RecurrenceTypeId,
                         RecurrenceEndDate = booking.RecurrenceEndDate,
+                        RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                         RoomName = room?.Name ?? "Unknown Room",
                         Cancelled = booking.Cancelled
                     };
@@ -129,31 +131,29 @@ namespace ASI.Basecode.Services.Services
 
         public void AddBooking(BookingViewModel model)
         {
-            var booking = new Booking();
-            _mapper.Map(model, booking);
-            booking.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            booking.CreatedDate = DateTime.Now;
-            booking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            booking.UpdatedDate = DateTime.Now;
-            booking.Deleted = false;
-            _bookingRepository.AddBooking(booking);
-
             try
             {
+                var booking = new Booking();
+                _mapper.Map(model, booking);
+                booking.CreatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                booking.CreatedDate = DateTime.Now;
+                booking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                booking.UpdatedDate = DateTime.Now;
+                booking.Deleted = false;
+                _bookingRepository.AddBooking(booking);
+
                 // Create creation notification
                 var creationTitle = "New Booking Created";
-                var creationDescription = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} at {booking.Room.Name}";
-                _notificationService.CreateNotification(booking.UserId, creationTitle, creationDescription, DateTime.Now, NotificationType.Creation);
+                var creationDescription = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
+                _notificationService.CreateNotificationAsync(creationTitle, creationDescription, 0, NotificationType.Creation).Wait();
+                // Create reminder notification
 
-                // Create reminder notifications
-                var reminderTitle = "Meeting Reminder";
-                var reminderDescription = $"Your meeting {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} at {booking.Room.Name}";
-                _notificationService.CreateBookingNotifications(booking.UserId, reminderTitle, reminderDescription, booking.Date.Add(booking.StartTime));
             }
             catch (Exception ex)
             {
-                // Log the exception
-                Console.WriteLine($"Error creating notifications: {ex.Message}");
+                Console.WriteLine($"Error in AddBooking: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw;
             }
         }
 
@@ -179,75 +179,131 @@ namespace ASI.Basecode.Services.Services
                 Recurring = booking.Recurring,
                 RecurrenceTypeId = booking.RecurrenceTypeId,
                 RecurrenceEndDate = booking.RecurrenceEndDate,
+                RecurrenceDayOfPeriod = booking.RecurrenceDayOfPeriod,
                 RoomName = room?.Name ?? "Unknown Room"
             };
         }
 
         public void UpdateBooking(BookingViewModel model)
         {
-            var existingBooking = _bookingRepository.GetBooking(model.Id);
-            if (existingBooking == null)
-            {
-                throw new Exception("Booking not found");
-            }
-
-            var createdBy = existingBooking.CreatedBy;
-            var createdDate = existingBooking.CreatedDate;
-
-            _mapper.Map(model, existingBooking);
-
-            existingBooking.CreatedBy = createdBy;
-            existingBooking.CreatedDate = createdDate;
-            existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
-            existingBooking.UpdatedDate = DateTime.Now;
-
-            _bookingRepository.UpdateBooking(existingBooking);
-
             try
             {
+                var existingBooking = _bookingRepository.GetBooking(model.Id);
+                if (existingBooking == null)
+                {
+                    throw new Exception("Booking not found");
+                }
+
+                var createdBy = existingBooking.CreatedBy;
+                var createdDate = existingBooking.CreatedDate;
+
+                _mapper.Map(model, existingBooking);
+
+                existingBooking.CreatedBy = createdBy;
+                existingBooking.CreatedDate = createdDate;
+                existingBooking.UpdatedBy = _contextAccessor.HttpContext.User.Identity.Name;
+                existingBooking.UpdatedDate = DateTime.Now;
+
+                _bookingRepository.UpdateBooking(existingBooking);
+
                 // Create update notification
                 var updateTitle = "Booking Updated";
-                var updateDescription = $"Your booking for {existingBooking.Room.Name} has been changed to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm}";
-                _notificationService.CreateNotification(existingBooking.UserId, updateTitle, updateDescription, DateTime.Now, NotificationType.Update);
+                var updateDescription = $"Your booking for {existingBooking.Room.Name} has been changed to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d}";
+                _notificationService.CreateNotificationAsync(updateTitle, updateDescription, existingBooking.UserId, NotificationType.Update).Wait();
+
+                // Update reminder notification
+               
             }
             catch (Exception ex)
             {
-                // Log the exception
-                Console.WriteLine($"Error creating update notification: {ex.Message}");
+                Console.WriteLine($"Error in UpdateBooking: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw;
             }
         }
 
         public void CancelBooking(int id)
         {
-            var booking = _bookingRepository.GetBooking(id);
-            if (booking == null)
-            {
-                throw new Exception("Booking not found");
-            }
-
-            _bookingRepository.CancelBooking(id);
-
             try
             {
+                var booking = _bookingRepository.GetBooking(id);
+                if (booking == null)
+                {
+                    throw new Exception("Booking not found");
+                }
+
+                _bookingRepository.CancelBooking(id);
+
                 // Create cancellation notification
                 var cancelTitle = "Booking Canceled";
-                var cancelDescription = $"Meeting {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} at {booking.Room.Name} has been cancelled";
-                _notificationService.CreateNotification(booking.UserId, cancelTitle, cancelDescription, DateTime.Now, NotificationType.Cancellation);
+                var cancelDescription = $"Your booking for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name} has been cancelled";
+                _notificationService.CreateNotificationAsync(cancelTitle, cancelDescription, booking.UserId, NotificationType.Cancellation).Wait();
             }
             catch (Exception ex)
             {
-                // Log the exception
-                Console.WriteLine($"Error creating cancellation notification: {ex.Message}");
+                Console.WriteLine($"Error in CancelBooking: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw;
             }
+        }
+
+        private List<int> GetDayList(int? dayOfPeriod)
+        {
+            string[] week = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+            List<int> dayList = new List<int>();
+            int? temp = dayOfPeriod;
+
+            for (int i = 0; i < 7; i++)
+            {
+                dayList.Add((int)(temp / Math.Pow(2, 6 - i)));
+                temp %= (int)(Math.Pow(2, 6 - i));
+            }
+
+            int count = dayList.Sum();
+            return dayList;
         }
 
         public bool CheckBookingAvailability(BookingViewModel booking)
         {
             var conflictingBookings = _bookingRepository.GetBookings()
+                                                        // Filters out cancelled bookings and checks if they have the same room
                                                         .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
-                                                        .Where(b => (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
-                                                                    (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime))
-                                                        .ToList();
+                                                        // Checks if booking is within the date range
+                                                        .Where(b =>
+                                                            booking.Recurring ?
+                                                                b.Recurring ?
+                                                                    (booking.Date >= b.Date && booking.Date <= b.RecurrenceEndDate) ||
+                                                                    (booking.RecurrenceEndDate >= b.Date && booking.RecurrenceEndDate <= b.RecurrenceEndDate)
+                                                                : (booking.Date <= b.Date && booking.RecurrenceEndDate >= b.Date)
+                                                            : (booking.Date) == b.Date
+                                                        )
+                                                        // Checks if the day is included when recurring
+                                                        .Where(b =>
+                                                            booking.RecurrenceTypeId == 1 ?
+                                                                b.RecurrenceTypeId == 1 ?
+                                                                    true :
+                                                                b.RecurrenceTypeId == 2 ?
+                                                                    true :
+                                                                    //GetDayList(b.RecurrenceDayOfPeriod). == booking. :
+                                                                b.RecurrenceTypeId == 3 ?
+                                                                    false :
+                                                                true :
+                                                            booking.RecurrenceTypeId == 2 ?
+                                                                (
+                                                                    true
+                                                                ) :
+                                                            booking.RecurrenceTypeId == 3 ?
+                                                                (
+                                                                    true
+                                                                ) :
+                                                            true
+                                                        )
+                                                        // Checks if there's conflict with time
+                                                        .Where(b => 
+                                                            (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                                                            (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime)
+                                                        ).ToList();
+#pragma warning restore IDE0075 // Simplify conditional expression
             return !conflictingBookings.Any();
         }
 
@@ -282,5 +338,6 @@ namespace ASI.Basecode.Services.Services
             Console.WriteLine(" > BookingService: Delete");
             _bookingRepository.DeleteBooking(id);
         }
+       
     }
 }

@@ -1,10 +1,10 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.ServiceModels;
-using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
@@ -12,48 +12,37 @@ namespace ASI.Basecode.Services.Services
     public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
-        private readonly IMapper _mapper;
+        private readonly ILogger<NotificationService> _logger;
 
-        public NotificationService(INotificationRepository notificationRepository, IMapper mapper)
+        public NotificationService(INotificationRepository notificationRepository, ILogger<NotificationService> logger)
         {
             _notificationRepository = notificationRepository;
-            _mapper = mapper;
+            _logger = logger;
         }
 
-        public Task AddNotificationAsync(NotificationViewModel notification)
+        public async Task CreateNotificationAsync(string title, string description, int userId, NotificationType type, DateTime? notifyDate = null)
         {
-            throw new NotImplementedException();
+            var notification = new Notification
+            {
+                Title = title,
+                Description = description,
+                UserId = userId,
+                Type = type,
+                CreatedDate = DateTime.UtcNow,
+                NotifyDate = notifyDate ?? DateTime.UtcNow,
+                Seen = false,
+                Deleted = false
+            };
+
+            await _notificationRepository.AddNotificationAsync(notification);
         }
 
-        public void CreateBookingNotifications(int userId, string reminderTitle, string reminderDescription, DateTime dateTime)
+        public async Task<IEnumerable<Notification>> GetNotificationsForUserAsync(int userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public void CreateNotification(int userId, string creationTitle, string creationDescription, DateTime now, NotificationType creation)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteNotificationAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotificationViewModel> GetNotificationByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<NotificationViewModel>> GetNotificationsForUserAsync(int userId)
-        {
+            _logger.LogInformation($"Getting notifications for userId: {userId}");
             var notifications = await _notificationRepository.GetNotificationsForUserAsync(userId);
-            return _mapper.Map<IEnumerable<NotificationViewModel>>(notifications);
-        }
-
-        public Task MarkAllAsSeenAsync(int userId)
-        {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Retrieved {notifications.Count()} notifications for userId: {userId}");
+            return notifications;
         }
 
         public async Task MarkAsSeenAsync(int id)
@@ -61,9 +50,9 @@ namespace ASI.Basecode.Services.Services
             await _notificationRepository.MarkAsSeenAsync(id);
         }
 
-        public Task UpdateNotificationAsync(NotificationViewModel notification)
+        public async Task MarkAllAsSeenAsync(int userId)
         {
-            throw new NotImplementedException();
+            await _notificationRepository.MarkAllAsSeenAsync(userId);
         }
     }
 }

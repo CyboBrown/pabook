@@ -76,10 +76,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
 
-        public IActionResult AdminNotifications()
-        {
-            return View();
-        }
+     
 
         /// <summary>
         /// Returns Admin Settings View.

@@ -79,7 +79,8 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
                                     <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recurring</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -408,7 +409,7 @@
 </div>
 
 <script>
-       recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
+    recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
     //fetching karon nga bookings
     //document.addEventListener('DOMContentLoaded', function () {
     //    fetchTodaysBookings();
@@ -417,7 +418,7 @@
     //});
     //fetchTodaysBookings();
 
-        //this is the function for 'view'
+    //this is the function for 'view'
     function showBookingDetails(bookingId) {
         fetch(`/api/Booking/${bookingId}`)
             .then(response => response.json())
@@ -572,6 +573,60 @@
             return `${hours.padStart(2, '0')}:${minutes}:00`;
         }
 
+        // Converts DayOfPeriod number to text format
+        function stringifyDayOfPeriod(dayOfPeriod) {
+            switch(dayOfPeriod) {
+                case 0:
+                    return "Unassigned";
+                case 62:
+                    return "Weekdays";
+                case 65:
+                    return "Weekends";
+                case 127:
+                    return "Everyday";
+                default:
+                    let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    let day_list = [];
+                    temp = dayOfPeriod;
+                    for(let i = 0; i < 7; i++) {
+                        day_list.push(~~(temp / 2 ** [6 - i]));
+                        temp %= 2 ** [6 - i];
+                    }
+                    let count = day_list.reduce((sum, num) => sum + num, 0);
+                    if(count == 6) {
+                        let i = 0;
+                        let list = [];
+                        day_list.forEach(day => {
+                            list[i] = day == 0   ? week[i] : "";
+                            i++;
+                        });
+                        return "Except " + list.join("");
+                    } else {
+                        switch(count) {
+                            case 1:
+                                let i = 0;
+                                let list = [];
+                                day_list.forEach(day => {
+                                    list[i] = day == 1 ? week[i] : "";
+                                    i++;
+                                });
+                                return "Every " + list.join("");
+                            case 2:
+                                return "Twice A Week";
+                            case 3:
+                                return "3 Days A Week";
+                            case 4:
+                                return "4 Days A Week";
+                            case 5:
+                                return "5 Days A Week";
+                            default:
+                                return "Error";
+                        }
+                    }
+                    return "Error";
+            }
+        }
+
         const bookingForm = document.getElementById('bookingForm');
         const submitButton = bookingForm.querySelector('button[type="submit"]');
 
@@ -606,11 +661,12 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.title}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString()} ${booking.startTime} - ${booking.endTime}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(booking.date).toLocaleDateString() + (booking.recurring ? " - " + new Date(booking.recurrenceEndDate).toLocaleDateString() : "")}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.startTime} - ${booking.endTime}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.roomName}</td>
                 <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${booking.recurring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                        ${booking.recurring ? recurrenceTypes[booking.recurrenceTypeId] : 'No'}
+                        ${booking.recurring ? booking.recurrenceTypeId == 2 ? stringifyDayOfPeriod(booking.recurrenceDayOfPeriod) : recurrenceTypes[booking.recurrenceTypeId] : 'No'}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -719,7 +775,6 @@
             // Get day of period for recurrence
             let dayOfPeriod = 0;
             document.querySelectorAll('.day-selector .day').forEach(function (day) {
-                console.log(day.getAttribute('data-day'));
                 let data = day.getAttribute('data-day');
                 if(day.classList.contains('selected')) {
                     switch (data) {
@@ -747,7 +802,6 @@
                     }
                 }
             });
-            console.log("Day Of Period: " + dayOfPeriod);
 
             const data = {
                 id: this.dataset.mode === 'edit' ? parseInt(this.dataset.bookingId) : 0,
@@ -758,9 +812,9 @@
                 startTime: formatTimeToTimeSpan(formData.get('startTime')),
                 endTime: formatTimeToTimeSpan(formData.get('endTime')),
                 recurring: formData.get('recurring') === 'true',
-                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : null,
+                recurrenceTypeId: formData.get('recurring') === 'true' ? parseInt(formData.get('RecurrenceTypeId')) || null : 0,
                 recurrenceEndDate: formData.get('recurring') === 'true' ? formData.get('recurrenceEndDate') : null,
-                recurrenceDayOfPeriod: dayOfPeriod,
+                recurrenceDayOfPeriod: formData.get('recurring') === 'true' ? dayOfPeriod : null,
                 userId: getCurrentUserId()
             };
 
@@ -938,6 +992,44 @@
                         document.getElementById('recurrenceEndDate').value = booking.recurrenceEndDate.split('T')[0];
                     }
 
+                    // Populate day of week
+                        console.log("RID: " + booking.recurrenceTypeId);
+                    if(booking.recurrenceTypeId == 2) {
+                        document.getElementById('weeklyOptions').style.display = 'block';
+                        let day_list = [];
+                        let temp = booking.recurrenceDayOfPeriod;
+                        for (let i = 0; i < 7; i++) {
+                            day_list.push(~~(temp / 2 ** [6 - i]));
+                            temp %= 2 ** [6 - i];
+                        }
+                        document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                            let data = day.getAttribute('data-day');
+                            switch (data) {
+                                case 'sunday':
+                                    (day_list[0] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                                case 'monday':
+                                    (day_list[1] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                                case 'tuesday':
+                                    (day_list[2] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                                case 'wednesday':
+                                    (day_list[3] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                                case 'thursday':
+                                    (day_list[4] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                                case 'friday':
+                                    (day_list[5] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                                case 'saturday':
+                                    (day_list[6] == 1) ? day.classList.add('selected') : day.classList.remove('selected');
+                                    break;
+                            }
+                        });
+                    }
+                    
                     // Set initial values for start and end time
                     const startTime = new Date(`2000-01-01T${booking.startTime}`);
                     const endTime = new Date(startTime.getTime() + 15 * 60000);
@@ -1119,7 +1211,7 @@
                 document.getElementById('RecurrenceTypeId').value = '';
                 document.getElementById('recurrenceEndDate').value = '';
                 document.getElementById('weeklyOptions').style.display = 'none';
-                document.getElementById('day - selector').value = '';
+                //document.getElementById('day-selector').value = '';
             }
         });
 

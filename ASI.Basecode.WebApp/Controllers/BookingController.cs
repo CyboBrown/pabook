@@ -90,7 +90,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(_bookingService.CheckBookingAvailability(booking))
+                if (_bookingService.CheckBookingAvailability(booking))
                 {
                     _bookingService.AddBooking(booking);
                     return Ok(new { success = true, message = "Booking created successfully" });
@@ -186,12 +186,13 @@ namespace ASI.Basecode.WebApp.Controllers
                 catch (Exception ex)
                 {
                     // Log the exception
+                    System.Diagnostics.Debug.WriteLine("THE ERROR: " + ex.StackTrace);
+                    Console.WriteLine("THE ERROR: " + ex.StackTrace);
                     _logger.LogError(ex, "Error updating booking");
                     return BadRequest(new { success = false, message = "An error occurred while updating the booking. Please try again.", error = ex.Message });
                 }
             }
             return BadRequest(new { success = false, message = "Your booking conflicts with another booking" });
-            
         }
 
         /// <summary>
