@@ -30,20 +30,20 @@
         </li>
     </ul>
     <div class="user-details">
-        <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+        <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
         @*<span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>*@
     </div>
     <div class="notification-section">
-        <a asp-controller="Admin" asp-action="AdminNotifications" id="notificationToggle">
+        <a href="#" id="notificationToggle">
             <i class="fas fa-bell"></i>
             <span class="notification-text">Notification</span>
+            @*<span class="notification-badge">3</span>*@
         </a>
     </div>
-
     <div class="signout">
         <a asp-action="SignOutAdmin" asp-controller="Account">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Logout, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            <span>Logout</span>
         </a>
     </div>
 </div>

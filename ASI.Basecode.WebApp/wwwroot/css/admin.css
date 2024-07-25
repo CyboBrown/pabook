@@ -175,13 +175,20 @@ h2 {
     font-weight: bold;
     margin-bottom: 5px;
     color: #fff;
+    font-size: 30px;
 }
 
 .user-email {
     font-size: 0.9em;
     color: #fff;
 }
-
+.side-user-name {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #fff;
+    font-size: 25px;
+}
 .notification-section {
     width: 100%;
     padding: 0px 0px;
@@ -294,21 +301,44 @@ h2 {
 
 
 /*SETTINGS*/
-    
+
+.edit-button {
+    background-color: #007bff; /* Blue color for the button */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+    .edit-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
 .profile-section {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 .profile-pic {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: #fff;
     border-radius: 10px;
     margin-right: 20px;
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
-
-
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the container without stretching */
+    border-radius: 10px; /* Matches container rounded corners */
+}
 .profile-info {
     display: flex;
     flex-direction: column;
@@ -328,8 +358,8 @@ h2 {
 
 .settings-section {
     margin-top: 20px;
-    margin-left: 50px; /* Margin from main container */
-    margin-right: 50px;
+    margin-left: 30px; /* Margin from main container */
+    margin-right: 30px;
     padding: 20px;
     border-radius: 10px;
     background-color: #185D62;
@@ -341,17 +371,16 @@ body.light .settings-section {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .setting-group {
-    margin-top: 50px;
+    
     margin-bottom: 0;
 
 }
-.setting-group h2 {
-    font-weight: 200;
-    font-size: 20px;
-    margin-bottom: 2px;
-    color: #9f9f9f;
-    /*font-size: 1rem;*/
-}
+    .setting-group h2 {
+        margin-top: 50px;
+        font-size: 25px;
+        margin-bottom: 2px;
+        color: #1ab498;
+    }
 .setting {
     display: flex;
     justify-content: space-between;
@@ -359,8 +388,6 @@ body.light .settings-section {
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
-    margin-top: 20px;
-    /*font-size: 1rem;*/
 }
 
 .setting span {
@@ -599,7 +626,9 @@ body.light .signout a:hover {
     color: red;
 }
 
-
+body.light .side-user-name {
+    color: #000;
+}
 body.light .user-details.light .user-name,
 .user-details.light .user-email,
 .notification-section.light a,
@@ -614,22 +643,22 @@ body.light .user-details.light .user-name,
 }
 
 body.light .profile-pic {
-    width: 80px;
-    height: 80px;
     background: #5da8ae;
+    width: 100px;
+    height: 100px;
+    background: #fff;
     border-radius: 10px;
     margin-right: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .profile-pic.light {
-    width: 80px;
-    height: 80px;
     background: #5da8ae;
-    border-radius: 10px;
-    margin-right: 20px;
 }
 body.light .setting-group h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: var(--light-text);
+    color: #1ab498;
+    font-size: 25px;
 }
 

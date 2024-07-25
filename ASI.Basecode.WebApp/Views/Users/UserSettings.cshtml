@@ -1,6 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.PreferenceViewModel
 @{
     ViewData["Title"] = "User Settings";
+    var userRole = Context.Session.GetString("Role");
 }
 
 <body class="@((Model != null && Model.DarkMode) ? "light" : "dark")">
@@ -15,10 +16,19 @@
                 
                 <div class="settings-section">
                     <div class="profile-section">
-                        <div class="profile-pic"></div>
+                        <div class="profile-pic">
+                            <img id="profilePicture" src="~/img/user.jpg" alt="Profile Picture" />
+
+                        </div>
+                        
                         <div class="profile-info">
-                            <span class="profile-name">USER</span>
-                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                            <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+                            <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+                            @*<div class="user-details">
+                                <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+                                <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+                            </div>
+                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>*@
                         </div>
                     </div>
                     <div class="setting">
@@ -54,15 +64,15 @@
             </div>
         </div>
     </form>
+    
 
-    <script>
+    <script>       
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
 
             var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
-            sessionStorage.setItem('UserId', userId);
-            
+            sessionStorage.setItem('UserId', userId);            
         });
 
         function fetchPreferences() {
@@ -70,6 +80,7 @@
             if (!userId) {
                 console.error('User ID not found in session storage.');
                 return;
+
             }
 
             fetch(`/api/Preference/myPreferences?userId=${userId}`)
@@ -162,12 +173,6 @@
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
-            /*
-            const enableNotificationsSelect = document.querySelector('select[name="EnableNotifications"]');
-            if (enableNotificationsSelect) {
-                enableNotificationsSelect.checked = preferences.enableNotifications;
-            }*/
-
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
                 timeFormatSelect.checked = preferences.timeFormat;
@@ -249,4 +254,18 @@
 
     </script>
 </body>
+@functions {
+    private string GetProfilePictureUrl(string role)
+    {
+        switch (role)
+        {
+            case "admin":
+                return "/img/admin.jpg";
+            case "manager":
+                return "/img/manager.jpg";
+            default:
+                return "/img/user.jpg";
+        }
+    }
+}
 
