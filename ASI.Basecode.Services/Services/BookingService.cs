@@ -143,9 +143,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.AddBooking(booking);
 
                 // Create creation notification
-                var title = "New Booking Created";
-                var description = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Creation).Wait();
+                //var creationTitle = "New Booking Created";
+                //var creationDescription = $"Booking Created for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
+                //_notificationService.CreateNotificationAsync(creationTitle, creationDescription, 0, NotificationType.Creation).Wait();
                 // Create reminder notification
 
             }
@@ -207,10 +207,10 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.UpdateBooking(existingBooking);
 
                 // Create update notification
-                var title = "Booking Updated";
-                var description = $"Booking Updated to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d} at {existingBooking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, existingBooking.UserId, NotificationType.Update).Wait();
-            
+                //var updateTitle = "Booking Updated";
+                //var updateDescription = $"Your booking for {existingBooking.Room.Name} has been changed to {existingBooking.StartTime:HH:mm} - {existingBooking.EndTime:HH:mm} on {existingBooking.Date:d}";
+                //_notificationService.CreateNotificationAsync(updateTitle, updateDescription, existingBooking.UserId, NotificationType.Update).Wait();
+
                 // Update reminder notification
 
             }
@@ -235,9 +235,9 @@ namespace ASI.Basecode.Services.Services
                 _bookingRepository.CancelBooking(id);
 
                 // Create cancellation notification
-                var title = "Booking Canceled";
-                var description = $"Booking cancelled for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Cancellation).Wait();
+                //var cancelTitle = "Booking Canceled";
+                //var cancelDescription = $"Your booking for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name} has been cancelled";
+                //_notificationService.CreateNotificationAsync(cancelTitle, cancelDescription, booking.UserId, NotificationType.Cancellation).Wait();
             }
             catch (Exception ex)
             {
@@ -268,36 +268,36 @@ namespace ASI.Basecode.Services.Services
             var conflictingBookings = _bookingRepository.GetBookings()
                                                         // Filters out cancelled bookings and checks if they have the same room
                                                         .Where(b => b.RoomId == booking.RoomId && !b.Cancelled && !b.Deleted)
-                                                        // Checks if booking is within the date range
-                                                        .Where(b =>
-                                                            booking.Recurring ?
-                                                                b.Recurring ?
-                                                                    (booking.Date >= b.Date && booking.Date <= b.RecurrenceEndDate) ||
-                                                                    (booking.RecurrenceEndDate >= b.Date && booking.RecurrenceEndDate <= b.RecurrenceEndDate)
-                                                                : (booking.Date <= b.Date && booking.RecurrenceEndDate >= b.Date)
-                                                            : (booking.Date) == b.Date
-                                                        )
-                                                        // Checks if the day is included when recurring
-                                                        .Where(b =>
-                                                            booking.RecurrenceTypeId == 1 ?
-                                                                b.RecurrenceTypeId == 1 ?
-                                                                    true :
-                                                                b.RecurrenceTypeId == 2 ?
-                                                                    true :
-                                                                    //GetDayList(b.RecurrenceDayOfPeriod). == booking. :
-                                                                b.RecurrenceTypeId == 3 ?
-                                                                    false :
-                                                                true :
-                                                            booking.RecurrenceTypeId == 2 ?
-                                                                (
-                                                                    true
-                                                                ) :
-                                                            booking.RecurrenceTypeId == 3 ?
-                                                                (
-                                                                    true
-                                                                ) :
-                                                            true
-                                                        )
+                                                        //// Checks if booking is within the date range
+                                                        //.Where(b =>
+                                                        //    booking.Recurring ?
+                                                        //        b.Recurring ?
+                                                        //            (booking.Date >= b.Date && booking.Date <= b.RecurrenceEndDate) ||
+                                                        //            (booking.RecurrenceEndDate >= b.Date && booking.RecurrenceEndDate <= b.RecurrenceEndDate)
+                                                        //        : (booking.Date <= b.Date && booking.RecurrenceEndDate >= b.Date)
+                                                        //    : (booking.Date) == b.Date
+                                                        //)
+                                                        //// Checks if the day is included when recurring
+                                                        //.Where(b =>
+                                                        //    booking.RecurrenceTypeId == 1 ?
+                                                        //        b.RecurrenceTypeId == 1 ?
+                                                        //            true :
+                                                        //        b.RecurrenceTypeId == 2 ?
+                                                        //            true :
+                                                        //            //GetDayList(b.RecurrenceDayOfPeriod). == booking. :
+                                                        //        b.RecurrenceTypeId == 3 ?
+                                                        //            false :
+                                                        //        true :
+                                                        //    booking.RecurrenceTypeId == 2 ?
+                                                        //        (
+                                                        //            true
+                                                        //        ) :
+                                                        //    booking.RecurrenceTypeId == 3 ?
+                                                        //        (
+                                                        //            true
+                                                        //        ) :
+                                                        //    true
+                                                        //)
                                                         // Checks if there's conflict with time
                                                         .Where(b => 
                                                             (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||

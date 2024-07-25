@@ -428,14 +428,13 @@
             <div id="weeklyOptions" class="full-width" style="display: none;">
                 <label>Select Days:</label>
                 <div class="day-selector">
-                    <div class="day" data-day="SU">SU</div>
-                    <div class="day" data-day="M">M</div>
-                    <div class="day" data-day="TU">TU</div>
-                    <div class="day" data-day="W">W</div>
-                    <div class="day" data-day="TH">TH</div>
-                    <div class="day" data-day="F">F</div>
-                    <div class="day" data-day="SA">SA</div>
-
+                    <div class="day" data-day="sunday">S</div>
+                    <div class="day" data-day="monday">M</div>
+                    <div class="day" data-day="tuesday">TU</div>
+                    <div class="day" data-day="wednesday">W</div>
+                    <div class="day" data-day="thursday">TH</div>
+                    <div class="day" data-day="friday">F</div>
+                    <div class="day" data-day="saturday">SA</div>
                 </div>
             </div>
 
@@ -961,7 +960,7 @@
                     console.log('Booking ' + (this.dataset.mode === 'edit' ? 'updated' : 'created') + ':', result);
                     modal.style.display = "none";
                     loadBookings(); // This will refresh the entire table
-                    bookingForm.reset();
+                    resetFormAndButton();
 
                     // Reset form mode and submit button text
                     this.dataset.mode = 'create';
@@ -1117,6 +1116,8 @@
                     }
 
                     // Populate day of week
+                    console.log("RID: " + booking.recurrenceTypeId);
+                    console.log("Day of Period 2: " + booking.recurrenceDayOfPeriod);
                     if (booking.recurrenceTypeId == 2) {
                         document.getElementById('weeklyOptions').style.display = 'block';
                         let day_list = [];
@@ -1275,6 +1276,20 @@
             // }
         }
 
+                function resetFormAndButton() {
+                    bookingForm.reset();
+                    bookingForm.dataset.mode = 'create';
+                    delete bookingForm.dataset.bookingId;
+                    submitButton.textContent = 'Create Booking';
+                    document.getElementById('recurrenceOptions').style.display = 'none';
+                    document.getElementById('RecurrenceTypeId').value = '';
+                    document.getElementById('recurrenceEndDate').value = '';
+                    document.getElementById('weeklyOptions').style.display = 'none';
+                    document.querySelectorAll('.day-selector .day').forEach(function (day) {
+                        day.classList.remove('selected');
+                    });
+                }
+
         // pag open/close sa modal
         var modal = document.getElementById("addBookingModal");
         var btn = document.querySelector(".book-now button");
@@ -1282,7 +1297,7 @@
 
         btn.onclick = function () {
             modal.style.display = "block";
-            bookingForm.reset(); // reset form
+            resetFormAndButton(); // reset form
 
             // Get the nearest future 15-minute interval
             const now = new Date();
@@ -1303,11 +1318,13 @@
 
         span.onclick = function () {
             modal.style.display = "none";
+            resetFormAndButton();
         }
 
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+                        resetFormAndButton();
             }
         }
 
