@@ -62,13 +62,21 @@
             <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh; display: flex; flex-direction: column; justify-content: space-between;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">My Bookings</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search...">
+                    <div class="search-container">
+                        <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
+                        <button id="clearSearchButton" class="clear-button" style="display: none;">✖</button>
+                    </div>
                     <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdown()">
                         <i class="fas fa-filter mr-2"></i>
                         Filter
                     </button>
                     <div id="roomDropdown" class="dropdown-content"></div>
-
+                    <div class="book-now flex-grow">
+                        <button class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;" onclick="switchTab('addBooking')">
+                            <i class="fas fa-plus mr-2"></i>
+                            Add
+                        </button>
+                    </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-lg flex-grow" style="overflow-y: auto;">
                     <div class="table-container" style="overflow-x: auto;">
@@ -655,7 +663,7 @@
         const itemsPerPage = 5;
         let bookingsData = [];
 
-        function loadBookings(page = 1) {
+        function loadBookings(page = 1, searchQuery='') {
             fetch('/api/Booking/myBookings')
                 .then(response => {
                     if (!response.ok) {
@@ -665,6 +673,10 @@
                 })
                 .then(data => {
                     bookingsData = data;
+                    if (searchQuery) {
+                        bookingsData = data.filter(booking => booking.title.toLowerCase().includes(searchQuery.toLowerCase()));
+                    }
+
                     const totalItems = bookingsData.length;
                     const totalPages = Math.ceil(totalItems / itemsPerPage);
                     currentPage = page;
@@ -733,6 +745,33 @@
             nextButton.onclick = () => loadBookings(currentPage + 1);
             pagination.appendChild(nextButton);
         }
+
+        // Event listener for search button
+        document.getElementById('searchBar').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const searchQuery = event.target.value;
+                loadBookings(1, searchQuery); // Load the first page with the search query
+                event.preventDefault(); // Prevent form submission or other default behavior
+            }
+        });
+
+        // Event listener for clear search button
+        const searchInput = document.getElementById('searchBar');
+        const clearButton = document.getElementById('clearSearchButton');
+
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value) {
+                clearButton.style.display = 'block'; // Show the clear button
+            } else {
+                clearButton.style.display = 'none'; // Hide the clear button
+            }
+        });
+
+        clearButton.addEventListener('click', () => {
+            searchInput.value = ''; // Clear the search input
+            clearButton.style.display = 'none'; // Hide the clear button
+            loadBookings(1); // Reload rooms without search query
+        });
 
         function addEventListeners() {
             document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -1946,6 +1985,44 @@
 
             #cancelModal .btn-secondary:hover {
                 background-color: #6c7a7d;
+            }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center; /* Align items vertically in the center */
+            width: 100%; /* Make the container take full width of its parent */
+        }
+
+        .search-input {
+            flex: 1; /* Allow the input to grow and fill available space */
+            padding-right: 2.5rem; /* Make room for the clear button */
+            border: 1px solid #d1d5db; /* Border color */
+            border-radius: 0.375rem; /* Rounded corners */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Shadow effect */
+            outline: none; /* Remove default focus outline */
+            transition: border-color 0.2s, box-shadow 0.2s; /* Smooth transition on focus */
+        }
+
+            .search-input:focus {
+                border-color: #3b82f6; /* Focus border color */
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* Focus shadow */
+            }
+
+        .clear-button {
+            position: absolute;
+            right: 0.99rem; /* Position the button inside the input */
+            top: 50%;
+            transform: translateY(-50%); /* Center the button vertically */
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: darkred; /* Button color */
+            font-size: 1rem;
+        }
+
+            .clear-button:hover {
+                color: red; /* Darker color on hover */
             }
     </style>
 }

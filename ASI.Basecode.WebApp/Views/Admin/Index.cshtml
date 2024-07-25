@@ -29,7 +29,10 @@
            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh; display: flex; flex-direction: column; justify-content: space-between;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                        <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
+                    <div class="search-container">
+                        <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search bookings...">
+                        <button id="clearSearchButton" class="clear-button" style="display: none;">✖</button>
+                    </div>
                     <div class="flex space-x-2">
                         <input type="date" id="filterDate" name="date" class="w-50 px-4 py-2 text-sm text-black">
                         <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownBookings()">
@@ -77,7 +80,10 @@
             <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">U S E R S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterUser()" placeholder="Search users...">
+                    <div class="search-container">
+                        <input type="text" id="searchUserBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search users...">
+                        <button id="clearSearchButton" class="clear-button" style="display: none;">✖</button>
+                    </div>
                     <div id="dropdown" class="flex space-x-2">
                         <button id="filterUsersButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownUsers()">
                             <i class="fas fa-filter mr-2"></i>
@@ -121,7 +127,10 @@
             <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="checkEnter(event)" placeholder="Search rooms...">
+                    <div class="search-container">
+                        <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search rooms...">
+                        <button id="clearSearchButton" class="clear-button" style="display: none;">✖</button>
+                    </div>
                     <div class="flex space-x-2">                    
                         <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
@@ -750,7 +759,7 @@
         let currentPage = 1;
         const itemsPerPage = 5;
 
-        function loadBookings(page = 1) {
+        function loadBookings(page = 1, searchQuery = '') {
             fetch('/api/Booking/bookings')
                 .then(response => {
                     if (!response.ok) {
@@ -759,6 +768,10 @@
                     return response.json();
                 })
                 .then(data => {
+                    if (searchQuery) {
+                        data = data.filter(booking => booking.title.toLowerCase().includes(searchQuery.toLowerCase()));
+                    }
+
                     const totalItems = data.length;
                     const totalPages = Math.ceil(totalItems / itemsPerPage);
                     currentPage = page;
@@ -831,6 +844,34 @@
             nextButton.onclick = () => loadBookings(currentPage + 1);
             pagination.appendChild(nextButton);
         }
+
+        // Event listener for search button
+        document.getElementById('searchBookingsBar').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const searchQuery = event.target.value;
+                loadBookings(1, searchQuery); // Load the first page with the search query
+                event.preventDefault(); // Prevent form submission or other default behavior
+            }
+        });
+
+        // Event listener for clear search button
+        const searchInput = document.getElementById('searchBookingsBar');
+        const clearButton = document.getElementById('clearSearchButton');
+
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value) {
+                clearButton.style.display = 'block'; // Show the clear button
+            } else {
+                clearButton.style.display = 'none'; // Hide the clear button
+            }
+        });
+
+        clearButton.addEventListener('click', () => {
+            searchInput.value = ''; // Clear the search input
+            clearButton.style.display = 'none'; // Hide the clear button
+            loadBookings(1); // Reload rooms without search query
+        });
+
 
         // Load initial bookings
         loadBookings();
@@ -1455,9 +1496,10 @@
          const submitButton = userForm.querySelector('button[type="submit"]');
 
         let currentPage = 1;
-        const itemsPerPage = 5;
+        let itemsPerPage = 5;
 
-        function loadUsers(page = 1) {
+        function loadUsers(page = 1, searchQuery = '') {
+            console.log("User is loaded.");
             fetch('/api/UserManagement/users')
                 .then(response => {
                     if (!response.ok) {
@@ -1466,6 +1508,10 @@
                     return response.json();
                 })
                 .then(data => {
+                    if (searchQuery) {
+                        data = data.filter(user => user.userName.toLowerCase().includes(searchQuery.toLowerCase()));
+                    }
+
                     const totalItems = data.length;
                     const totalPages = Math.ceil(totalItems / itemsPerPage);
                     currentPage = page;
@@ -1538,6 +1584,33 @@
             nextButton.onclick = () => loadUsers(currentPage + 1);
             pagination.appendChild(nextButton);
         }
+
+        //Event listener for search button
+         document.getElementById('searchUserBar').addEventListener('keydown', (event) => {
+             if (event.key === 'Enter') {
+                 const searchQuery = event.target.value;
+                 loadUsers(1, searchQuery);
+                 event.preventDefault();
+             }
+         });
+
+         //Event listener for clear search button
+         const searchInput = document.getElementById('searchUserBar');
+         const clearButton = document.getElementById('clearSearchButton');
+
+         searchInput.addEventListener('input', () => {
+             if (searchInput.value) {
+                 clearButton.style.display = 'block';
+             } else {
+                 clearButton.style.display = 'none';
+             }
+         });
+
+         clearButton.addEventListener('click', () => {
+             searchInput.value = '';
+             clearButton.style.display = 'none';
+             loadUsers(1);
+         });
 
         // Load initial users
         loadUsers();
@@ -1915,96 +1988,128 @@
         const roomForm = document.getElementById('roomForm');
         const submitButton = roomForm.querySelector('button[type="submit"]');
 
-        let currentPage = 1;
-        const itemsPerPage = 5;
+                let itemsPerPage = 5; // Define items per page
+                let currentPage = 1;   // Define current page
 
-        function loadRooms(page = 1) {
-            console.log("Room is loaded.");
-            console.log(location);
-            fetch('/api/Room/rooms')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                function loadRooms(page = 1, searchQuery = '') {
+                    console.log("Room is loaded.");
+                    console.log(location);
+                    fetch('/api/Room/rooms')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (searchQuery) {
+                                data = data.filter(room => room.name.toLowerCase().includes(searchQuery.toLowerCase()));
+                            }
+
+                            const totalItems = data.length;
+                            const totalPages = Math.ceil(totalItems / itemsPerPage);
+                            currentPage = page;
+
+                            const startIndex = (currentPage - 1) * itemsPerPage;
+                            const endIndex = startIndex + itemsPerPage;
+                            const currentItems = data.slice(startIndex, endIndex);
+
+                            const tableBody = document.getElementById('roomsTableBody');
+                            tableBody.innerHTML = '';
+                            currentItems.forEach(room => {
+                                const row = document.createElement('tr');
+                                row.className = 'search';
+                                row.innerHTML = `
+                                                    <td class="truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                            ${roomTypes[room.type]}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.location != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                            ${locations[room.location]}
+                                                        </span>
+                                                    </td>
+                                                    <td class="truncate px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                        <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
+                                                        <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
+                                                        <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
+                                                    </td>
+                                                `;
+                                tableBody.appendChild(row);
+                            });
+
+                            document.querySelectorAll('.edit-room-btn').forEach(btn => {
+                                btn.addEventListener('click', () => editRoom(btn.dataset.id));
+                            });
+                            document.querySelectorAll('.details-room-btn').forEach(btn => {
+                                btn.addEventListener('click', () => showRoomDetails(btn.dataset.id));
+                            });
+                            document.querySelectorAll('.delete-room-btn').forEach(btn => {
+                                btn.addEventListener('click', () => deleteRoom(btn.dataset.id));
+                            });
+
+                            generatePagination(totalPages);
+                        })
+                        .catch(error => console.error('Error fetching rooms:', error));
+                }
+
+                function generatePagination(totalPages) {
+                    const pagination = document.getElementById('roomPagination');
+                    pagination.innerHTML = '';
+
+                    const prevButton = document.createElement('button');
+                    prevButton.innerHTML = '← Previous';
+                    prevButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+                    prevButton.disabled = currentPage === 1;
+                    prevButton.onclick = () => loadRooms(currentPage - 1);
+                    pagination.appendChild(prevButton);
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        const pageButton = document.createElement('button');
+                        pageButton.innerHTML = i;
+                        pageButton.className = `px-3 py-1 mx-1 rounded text-sm ${i === currentPage ? 'bg-green-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`;
+                        pageButton.onclick = () => loadRooms(i);
+                        pagination.appendChild(pageButton);
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    const totalItems = data.length;
-                    const totalPages = Math.ceil(totalItems / itemsPerPage);
-                    currentPage = page;
 
-                    const startIndex = (currentPage - 1) * itemsPerPage;
-                    const endIndex = startIndex + itemsPerPage;
-                    const currentItems = data.slice(startIndex, endIndex);
+                    const nextButton = document.createElement('button');
+                    nextButton.innerHTML = 'Next →';
+                    nextButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
+                    nextButton.disabled = currentPage === totalPages;
+                    nextButton.onclick = () => loadRooms(currentPage + 1);
+                    pagination.appendChild(nextButton);
+                }
 
-                    const tableBody = document.getElementById('roomsTableBody');
-                    tableBody.innerHTML = '';
-                    currentItems.forEach(room => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                        <td class="truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${roomTypes[room.type]}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.capacity}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.location != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${locations[room.location]}
-                            </span>
-                        </td>
-                        <td class="truncate px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
-                            <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
-                            <button class="delete-room-btn text-red-600 hover:text-red-900" data-id="${room.id}">Delete</button>
-                        </td>
-                    `;
-                        tableBody.appendChild(row);
-                    });
+                // Add event listener for search button
+                document.getElementById('searchRoomsBar').addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        const searchQuery = event.target.value;
+                        loadRooms(1, searchQuery); // Load the first page with the search query
+                        event.preventDefault(); // Prevent form submission or other default behavior
+                    }
+                });
 
-                    document.querySelectorAll('.edit-room-btn').forEach(btn => {
-                        btn.addEventListener('click', () => editRoom(btn.dataset.id));
-                    });
-                    document.querySelectorAll('.details-room-btn').forEach(btn => {
-                        btn.addEventListener('click', () => showRoomDetails(btn.dataset.id));
-                    });
-                    document.querySelectorAll('.delete-room-btn').forEach(btn => {
-                        btn.addEventListener('click', () => deleteRoom(btn.dataset.id));
-                    });
+                // Add event listener for clear search button
+                const searchInput = document.getElementById('searchRoomsBar');
+                const clearButton = document.getElementById('clearSearchButton');
 
-                    generatePagination(totalPages);
-                })
-                .catch(error => console.error('Error fetching rooms:', error));
-        }
+                searchInput.addEventListener('input', () => {
+                    if (searchInput.value) {
+                        clearButton.style.display = 'block'; // Show the clear button
+                    } else {
+                        clearButton.style.display = 'none'; // Hide the clear button
+                    }
+                });
 
-        function generatePagination(totalPages) {
-            const pagination = document.getElementById('roomPagination');
-            pagination.innerHTML = '';
-
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '← Previous';
-            prevButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
-            prevButton.disabled = currentPage === 1;
-            prevButton.onclick = () => loadRooms(currentPage - 1);
-            pagination.appendChild(prevButton);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.innerHTML = i;
-                pageButton.className = `px-3 py-1 mx-1 rounded text-sm ${i === currentPage ? 'bg-green-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`;
-                pageButton.onclick = () => loadRooms(i);
-                pagination.appendChild(pageButton);
-            }
-
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = 'Next →';
-            nextButton.className = `px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-900'}`;
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.onclick = () => loadRooms(currentPage + 1);
-            pagination.appendChild(nextButton);
-        }
+                clearButton.addEventListener('click', () => {
+                    searchInput.value = ''; // Clear the search input
+                    clearButton.style.display = 'none'; // Hide the clear button
+                    loadRooms(1); // Reload rooms without search query
+                });
 
         // Load initial rooms
         //loadRooms();
@@ -2831,6 +2936,44 @@
                     background-color: #ecf0f1;
                     color: rgb(107 114 128);
                 }
+
+                .search-container {
+                    position: relative;
+                    display: flex;
+                    align-items: center; /* Align items vertically in the center */
+                    width: 100%; /* Make the container take full width of its parent */
+                }
+
+                .search-input {
+                    flex: 1; /* Allow the input to grow and fill available space */
+                    padding-right: 2.5rem; /* Make room for the clear button */
+                    border: 1px solid #d1d5db; /* Border color */
+                    border-radius: 0.375rem; /* Rounded corners */
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Shadow effect */
+                    outline: none; /* Remove default focus outline */
+                    transition: border-color 0.2s, box-shadow 0.2s; /* Smooth transition on focus */
+                }
+
+                    .search-input:focus {
+                        border-color: #3b82f6; /* Focus border color */
+                        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* Focus shadow */
+                    }
+
+                .clear-button {
+                    position: absolute;
+                    right: 0.99rem; /* Position the button inside the input */
+                    top: 50%;
+                    transform: translateY(-50%); /* Center the button vertically */
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    color: darkred; /* Button color */
+                    font-size: 1rem;
+                }
+
+                    .clear-button:hover {
+                        color: red; /* Darker color on hover */
+                    }
     </style>
 }
 
