@@ -15,11 +15,14 @@
                 
                 <div class="settings-section">
                     <div class="profile-section">
-                        <div class="profile-pic"></div>
-                        <div class="profile-info">
-                            <span class="profile-name">ADMIN USER</span>
-                            <span class="profile-status">@((HttpContextAccessor.HttpContext.Session.GetString("Email") ?? ""))</span>
+                        <div class="profile-pic">
+                            <img id="profilePicture" src="~/img/admin.jpg" alt="Profile Picture" />
                         </div>
+                        <div class="profile-info">
+                            <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
+                            <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+                            <button type="button" class="edit-button ml-2">Edit</button> <!-- Edit button -->
+                        </div>                       
                     </div>
                     <div class="setting">
                         <span>Switch to Light Mode</span>
@@ -64,7 +67,9 @@
             var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
             sessionStorage.setItem('UserId', userId);
             
+            
         });
+        
         //fetch the id using sessionstorage
         function fetchPreferences() {
             const userId = sessionStorage.getItem('UserId');

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     <link rel="stylesheet" href="~/css/admin.css" />
     <div class="sidebar">
         <div class="logo">
@@ -25,10 +24,9 @@
                 </a>
             </li>
         </ul>
-
         <div class="user-details">
-            <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
-            <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
+            <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            @*<span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>*@
         </div>
         <div class="notification-section">
             <a href="#" id="notificationToggle">
@@ -40,133 +38,8 @@
         <div class="signout">
             <a asp-action="SignOutAdmin" asp-controller="Account">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>Logout, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+                <span>Logout</span>
             </a>
         </div>
     </div>
 }
-
-<style>
-    .sidebar {
-        width: 265px;
-        height: 100vh;
-        background-color: #000;
-        color: #fff;
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-top: 20px;
-    }
-
-    .logo img {
-        width: 200px;
-        height: auto;
-    }
-
-    .sidebar-menu {
-        list-style: none;
-        padding: 0;
-        margin: 20px 0;
-        width: 100%;
-    }
-
-        .sidebar-menu li {
-            width: 100%;
-        }
-
-            .sidebar-menu li a {
-                display: flex;
-                align-items: center;
-                padding: 10px 20px;
-                color: #fff;
-                text-decoration: none;
-                width: 100%;
-            }
-
-    .sidebar-menu li a:hover,
-    .sidebar-menu li.active a {
-        background-color: #333;
-    }
-
-    .sidebar-menu li a i {
-        margin-right: 10px;
-    }
-
-    .user-details {
-        width: 100%;
-        padding: 10px;
-        text-align: start;
-        border-bottom: 1px solid #444;
-        margin-top: auto;
-    }
-
-    .user-name {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #fff;
-    }
-
-    .user-email {
-        font-size: 0.9em;
-        color: #bbb;
-    }
-    
-
-    .notification-section {
-        width: 100%;
-        padding: 0px 0px;
-    }
-
-    .notification-section a {
-        display: flex;
-        align-items: center;
-        color: #fff;
-        text-decoration: none;
-        width: 100%;
-        padding: 10px 20px;
-        transition: background-color 0.3s ease;
-    }
-
-    .notification-section a:hover {
-        color: blue;
-    }
-
-    .notification-section i {
-        margin-right: 10px;
-    }
-
-    .notification-text {
-        flex-grow: 1;
-    }
-
-    .signout {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .signout a {
-        display: flex;
-        align-items: center;
-        color: #fff;
-        text-decoration: none;
-        width: 100%;
-        padding: 10px 20px;
-        transition: background-color 0.3s ease;
-    }
-
-    .signout a:hover {
-        color: red;
-    }
-
-    .signout i {
-        margin-right: 10px;
-    }
-
-    .fas {
-        width: 25px;
-    }
-</style> 
