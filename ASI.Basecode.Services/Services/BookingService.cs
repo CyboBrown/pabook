@@ -224,27 +224,18 @@ namespace ASI.Basecode.Services.Services
 
         public void CancelBooking(int id)
         {
-            try
+            var booking = _bookingRepository.GetBooking(id);
+            if (booking == null)
             {
-                var booking = _bookingRepository.GetBooking(id);
-                if (booking == null)
-                {
-                    throw new Exception("Booking not found");
-                }
-
-                _bookingRepository.CancelBooking(id);
-
-                // Create cancellation notification
-                var title = "Booking Canceled";
-                var description = $"Booking cancelled for {booking.StartTime:HH:mm} - {booking.EndTime:HH:mm} on {booking.Date:d} at {booking.Room.Name}";
-                _notificationService.CreateNotificationAsync(title, description, booking.UserId, NotificationType.Cancellation).Wait();
+                throw new Exception("Booking not found");
             }
-            catch (Exception ex)
+
+            if (booking.Date < DateTime.Today)
             {
-                Console.WriteLine($"Error in CancelBooking: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                throw;
+                throw new Exception("Cannot cancel a booking in the past");
             }
+
+            _bookingRepository.CancelBooking(id);
         }
 
         private List<int> GetDayList(int? dayOfPeriod)

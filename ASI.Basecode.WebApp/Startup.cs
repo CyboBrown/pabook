@@ -137,6 +137,7 @@ namespace ASI.Basecode.WebApp
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("AdminOrManager", policy => policy.RequireRole("Admin", "Manager"));
                 options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
             });
 

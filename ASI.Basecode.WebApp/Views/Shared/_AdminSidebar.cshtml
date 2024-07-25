@@ -1,7 +1,11 @@
-﻿<link rel="stylesheet" href="~/css/admin.css" />
+﻿@{
+    var userRole = Context.Session.GetString("UserRole");
+    var isAdmin = userRole == "0";
+}
+
+<link rel="stylesheet" href="~/css/admin.css" />
 <div class="sidebar">
     <div class="logo">
-        @*<img id="logo-img" src="/img/logo-dark-horizontal.png" alt="Logo" />*@
         <img id="logo-dark" src="~/img/logo-dark-horizontal.png" alt="Dark Mode Logo" style="display: block;">
         <img id="logo-light" src="~/img/logo-light-horizontal.png" alt="Light Mode Logo" style="display: none;">
     </div>
@@ -18,12 +22,7 @@
                 <span>Analytics</span>
             </a>
         </li>
-        @*<li class="@(ViewContext.RouteData.Values["Action"].ToString() == "ManageRoles" ? "active" : "")">
-            <a asp-controller="Admin" asp-action="ManageRoles">
-                <i class="fas fa-users-cog"></i>
-                <span>Manage Roles</span>
-            </a>
-        </li>*@
+        
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "AdminSettings" ? "active" : "")">
             <a asp-controller="Admin" asp-action="AdminSettings">
                 <i class="fas fa-cog"></i>
@@ -33,7 +32,6 @@
     </ul>
     <div class="user-details">
         <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
-        @*<span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>*@
     </div>
     <div class="notification-section">
         <a asp-controller="Notification" asp-action="Index" id="notificationToggle">

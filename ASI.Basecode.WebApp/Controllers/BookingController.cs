@@ -210,6 +210,8 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
+                // Log the exception
+                _logger.LogError(ex, $"Error cancelling booking {id}");
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
