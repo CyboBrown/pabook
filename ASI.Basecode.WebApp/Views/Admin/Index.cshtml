@@ -29,7 +29,7 @@
            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh; display: flex; flex-direction: column; justify-content: space-between;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">B O O K I N G S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
+                        <input type="text" id="searchBookingsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterBookings()" placeholder="Search bookings...">
                     <div class="flex space-x-2">
                         <input type="date" id="filterDate" name="date" class="w-50 px-4 py-2 text-sm text-black">
                         <button id="filterBookingsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownBookings()">
@@ -83,12 +83,7 @@
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
-                        <div id="roleDropdown" class="dropdown-content">
-                            <a onclick="filterByRole(0)">Admins</a>
-                            <a onclick="filterByRole(1)">Managers</a>
-                            <a onclick="filterByRole(2)">Users</a>
-                            <a onclick="showAllRoles()">Show All</a>
-                        </div>
+                        <div id="roleDropdown" class="dropdown-content"></div>
                         <button id="addUserButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add
@@ -126,7 +121,7 @@
             <div class="container mx-auto p-4 bg-gray-100 flex flex-col" style="height: 79vh;">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">R O O M S</h2>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterRooms()" placeholder="Search rooms...">
+                    <input type="text" id="searchRoomsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="checkEnter(event)" placeholder="Search rooms...">
                     <div class="flex space-x-2">                    
                         <button id="filterRoomsButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" style="background-color: #4D869C;" onclick="toggleDropdownRoom()">
                             <i class="fas fa-filter mr-2"></i>
@@ -1626,7 +1621,7 @@
                         }
                     }
 
-                    alert(errorMessage);
+                    toastr.error(errorMessage);
                 })
                 .finally(() => {
                     submitButton.disabled = false;
@@ -1643,7 +1638,7 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
+                        throw new toastr.error('Network response was not ok ' + response.statusText);
                     }
                     return response.json();
                 })
@@ -1947,7 +1942,7 @@
                     currentItems.forEach(room => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
+                        <td class="truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${room.name}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.type != 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                                 ${roomTypes[room.type]}
@@ -1959,7 +1954,7 @@
                                 ${locations[room.location]}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
+                        <td class="truncate px-6 py-4 whitespace-nowrap text-sm text-gray-500">${room.facilities}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button class="details-room-btn text-green-600 hover:text-green-900 mr-2" data-id="${room.id}">Details</button>
                             <button class="edit-room-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${room.id}">Edit</button>
@@ -2069,9 +2064,9 @@
                     
                     // Add success alert only for new bookings
                     if (method === 'POST') {
-                        alert('Room created successfully!');
+                        toastr.success('Room created successfully!');
                     } else {
-                        alert('Room updated successfully!');
+                        toastr.success('Room updated successfully!');
                     }
                 })
             
@@ -2092,7 +2087,7 @@
                         }
                     }
 
-                    alert(errorMessage);
+                    toastr.error(errorMessage);
                 })
 
                 .finally(() => {
@@ -2169,16 +2164,30 @@
                                     if (response.ok) {
                                         const row = document.querySelector(`button[data-id="${roomId}"]`).closest('tr');
                                         row.remove();
-                                        toastr.success('Room cancelled successfully');
+                                        toastr.success('Room delete successfully');
                                     } else {
-                                        throw new toastr.error('Failed to cancel room');
+                                    throw new toastr.error('Failed to delete room');
                                     }
                                 })
                                 .catch(error => {
-                                    console.error('Error cancelling room:', error);
-                                    toastr.error('Failed to cancel room. Please try again.');
+                                    console.error('Error delete room:', error);
+                                    toastr.error('Failed to delete room. Please try again.');
                                 });
                         modal.style.display = 'none';
+                    }
+
+                    exitBtn.onclick = function () {
+                        modal.style.display = 'none';
+                    }
+
+                    cancelBtn.onclick = function () {
+                        modal.style.display = 'none';
+                    }
+
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = 'none';
+                        }
                     }
         }
 
@@ -2207,8 +2216,6 @@
             document.getElementById('recurrenceOptions').style.display = 'none';
         });
     });
-
-
 
     function searchFilterRooms() {
         var input, filter, table, tr, td, i, j, txtValue;
@@ -2302,91 +2309,6 @@
                         color: white;
                     }
 
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            background-color: #000;
-        }
-
-        .outer-container {
-            box-sizing: border-box;
-            background-color: var(--light);
-            padding: 10px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column-reverse;
-            flex-direction: column;
-            width: calc(100% - 265px);
-            height: calc(100%-40px);
-            top: 20px;
-            right: 20px;
-            bottom: 20px;
-            margin-left: 100px;
-            position: fixed;
-            z-index: 0;
-        }
-
-        .notification-profile {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-
-        .notification {
-            position: relative;
-            margin-right: 20px;
-            color: #185D62;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: red;
-            color: white;
-            font-size: 12px;
-            padding: 4px 6px;
-            border-radius: 50%;
-        }
-
-        .profile-picture {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid #1BC7D2;
-        }
-
-            .profile-picture img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 50%;
-            }
-
-        .main-content {
-            height: 85vh;
-            background-color: #185D62;
-            padding: 20px;
-            color: #fff;
-            border-radius: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            flex-grow: 1;
-        }
 
         .header {
             display: flex;
@@ -2896,6 +2818,20 @@
                 #confirmDeleteModal .btn-secondary:hover {
                         background-color: #6c7a7d;
                     }
+
+                .truncate {
+                    max-width: 200px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                #filterDate {
+                    border: 0.5px solid #ccc;
+                    border-radius: 4px;
+                    background-color: #ecf0f1;
+                    color: rgb(107 114 128);
+                }
     </style>
 }
 

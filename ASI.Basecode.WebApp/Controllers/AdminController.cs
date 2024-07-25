@@ -83,86 +83,8 @@ namespace ASI.Basecode.WebApp.Controllers
         /// </summary>
         /// <returns> Admin Settings Screen </returns>
         public IActionResult AdminSettings()
-        {/*
-            if (User.Identity.IsAuthenticated)
-            {
-                var userIdClaim = User.FindFirst("UserId")?.Value;
-                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
-                {
-                    var preference = _preferenceService.GetPreference(userId);
-
-                    if (preference != null)
-                    {
-                        var model = new PreferenceViewModel(preference);
-                        return View(model);
-                    }
-                    else
-                    {
-                        // Handle the case when the preference is not found
-                        ModelState.AddModelError(string.Empty, "Preferences not found for the user.");
-                    }
-                }
-                else
-                {
-                    // Handle the case when the userId is not a valid integer or claim is missing
-                    ModelState.AddModelError(string.Empty, "Invalid or missing user ID.");
-                }
-            }
-            else
-            {
-                // Handle the case when the user is not authenticated
-                ModelState.AddModelError(string.Empty, "User is not authenticated.");
-            }
-            */
-            // Return an empty view or an error view if necessary
-            var model = new PreferenceViewModel
-            {
-                // Initialize properties as needed
-            };
-            return View(model);
-        }
-        /*
-        [HttpPost]
-        public async Task<IActionResult> SavePreferences(PreferenceViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var userId = model.UserId;  // This should be retrieved from the session or context
-
-                var preference = await _preferenceService.GetPreferenceAsync(userId);
-                if (preference == null)
-                {
-                    preference = new Preference
-                    {
-                        Id = userId,
-                        DarkMode = model.DarkMode,
-                        TimeFormat = model.TimeFormat,
-                        EnableNotifications = model.EnableNotifications,
-                        DefaultBookingDuration = model.DefaultBookingDuration,
-                        // Set other properties
-                    };
-                    _preferenceService.CreatePreference(model);
-                }
-                else
-                {
-                    preference.DarkMode = model.DarkMode;
-                    preference.TimeFormat = model.TimeFormat;
-                    preference.EnableNotifications = model.EnableNotifications;
-                    preference.DefaultBookingDuration = model.DefaultBookingDuration;
-                    // Update other properties
-
-                    await _preferenceService.UpdatePreferenceAsync(preference);
-                }
-
-                return RedirectToAction("AdminSettings"); // Redirect to settings page
-            }
-            return View("AdminSettings", model); // Return to the view with validation errors
+            return View();
         }
-
-        private string GetCurrentUserName()
-        {
-            
-            return HttpContext.User.Identity.Name;
-        }*/
     }
 }
