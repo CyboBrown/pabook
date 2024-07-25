@@ -36,12 +36,7 @@
                             <i class="fas fa-filter mr-2"></i>
                             Filter
                         </button>
-                        <div id="bookingsDropdown" class="dropdown-content">
-                            <a onclick="filterByRoom(0)">Conference Room A</a>
-                            <a onclick="filterByRoom(1)">Meeting Room B</a>
-                            <a onclick="filterByRoom(2)">Training Room C</a>
-                            <a onclick="showAllRooms()">Show All</a>
-                        </div>
+                        <div id="bookingsDropdown" class="dropdown-content"></div>
                         <div class="book-now flex-grow">
                             <button id="addBookingButton" class="w-20 px-4 py-2 text-sm text-white font-bold rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;">
                                 <i class="fas fa-plus mr-2"></i>
@@ -439,6 +434,7 @@
                     <div class="day" data-day="TH">TH</div>
                     <div class="day" data-day="F">F</div>
                     <div class="day" data-day="SA">SA</div>
+
                 </div>
             </div>
 
@@ -624,19 +620,31 @@
 @*Booking Script*@
 <script>
     recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
-    room = ['Conference Room A', 'Meeting Room B', 'Training Room C'];
+    rooms = [];
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch rooms and populate the select element
         fetch('/api/Booking/rooms')
             .then(response => response.json())
             .then(data => {
                 const roomSelect = document.getElementById('room');
+                const bookingsDropdown = $('#bookingsDropdown');
+                bookingsDropdown.empty();
+
                 data.forEach(room => {
                     const option = document.createElement('option');
+                    id = room.id;
                     option.value = room.id;
                     option.text = room.name;
                     roomSelect.appendChild(option);
+                    rooms.push(room.name);
+                    bookingsDropdown.append(
+                        $('<a></a>')
+                            .attr('onclick', `filterByRoom('${room.name}')`)
+                            .text(room.name)
+                    );
                 });
+                console.log(rooms);
+                bookingsDropdown.append($('<a></a>').attr('onclick', 'showAllRooms()').text('Show All'));
             })
             .catch(error => console.error('Error fetching rooms:', error));
 
@@ -873,9 +881,9 @@
 
                     // Add success alert
                     if (method === 'POST') {
-                        alert('Booking created successfully!');
+                        toastr.success('Booking created successfully!');
                     } else {
-                        alert('Booking updated successfully!');
+                        toastr.success('Booking updated successfully!');
                     }
                 })
                 .catch(error => {
@@ -884,7 +892,10 @@
                     if (error.errors) {
                         errorMessage += '\n\nDetails:\n' + JSON.stringify(error.errors, null, 2);
                     }
-                    alert(errorMessage);
+
+                    const conflictBooking = document.getElementById("conflictBooking");
+                    conflictBooking.textContent = "${error.message}"
+                    toastr.error(errorMessage);
                 })
                 .finally(() => {
                     submitButton.disabled = false;
@@ -1048,6 +1059,7 @@
                             <p><strong>Recurrence Type:</strong> ${recurrenceTypes[booking.recurrenceTypeId]}</p>
                             <p><strong>Recurrence End Date:</strong> ${new Date(booking.recurrenceEndDate).toLocaleDateString()}</p>
                         ` : ''}
+                        <p><strong>
                     `;
                     modal.style.display = 'block';
                 })
@@ -1059,25 +1071,70 @@
         }
 
         function cancelBooking(bookingId) {
-            if (confirm('Are you sure you want to cancel this booking?')) {
-                fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            // Remove the row from the table
-                            const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
-                            row.remove();
-                            displayMessage('Booking cancelled successfully', 'success');
-                            //alert('Booking cancelled successfully');
-                        } else {
-                            throw new Error('Failed to cancel booking');
+
+                    const modal = document.getElementById('confirmDeleteModal');
+                    const confirmBtn = document.getElementById('confirmDelete');
+                    const cancelBtn = document.getElementById('cancelDelete');
+                    const exitBtn = document.getElementById('closeButt');
+                    const modalTitle = modal.querySelector('#modalTitle');
+                    const modalContent = modal.querySelector('#modalContent');
+
+                    modalTitle.textContent = "Cancel Booking";
+                    modalContent.textContent = "Are you sure you want to delete this user?";
+                    confirmBtn.textContent = "Yes, Cancel Booking";
+                    cancelBtn.textContent = "No, Keep Booking";
+
+                    modal.style.display = 'block';
+
+                    confirmBtn.onclick = function () {
+                        fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
+                                .then(response => {
+                                    if (response.ok) {
+                                        //Remove the row from the table
+                                        const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
+                                        row.remove();
+                                        toastr.success('Booking cancelled successfully');
+                                    } else {
+                                        throw new toaster.error('Failed to cancel booking');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error cancelling booking:', error);
+                                    alert('Failed to cancel booking. Please try again.');
+                                });
+                    }
+
+                    exitBtn.onclick = function () {
+                        modal.style.display = 'none';
+                    }
+
+                    cancelBtn.onclick = function () {
+                        modal.style.display = 'none';
+                    }
+
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = 'none';
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error cancelling booking:', error);
-                        //alert('Failed to cancel booking. Please try again.');
-                        displayMessage('Failed to cancel booking. Please try again.');
-                    });
-            }
+                    }
+
+            // if (confirm('Are you sure you want to cancel this booking?')) {
+            //     fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
+            //         .then(response => {
+            //             if (response.ok) {
+            //                 Remove the row from the table
+            //                 const row = document.querySelector(`button[data-id="${bookingId}"]`).closest('tr');
+            //                 row.remove();
+            //                 alert('Booking cancelled successfully');
+            //             } else {
+            //                 throw new Error('Failed to cancel booking');
+            //             }
+            //         })
+            //         .catch(error => {
+            //             console.error('Error cancelling booking:', error);
+            //             alert('Failed to cancel booking. Please try again.');
+            //         });
+            // }
         }
 
         // pag open/close sa modal
@@ -1201,7 +1258,7 @@
     }
 
     function filterByRoom(bookingsRoom) {
-        const filter = room[bookingsRoom];
+        const filter = bookingsRoom;
         const table = document.getElementById('bookingsTable');
         const tr = table.getElementsByTagName('tr');
         console.log(filter);
@@ -1302,7 +1359,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button class="details-user-btn text-green-600 hover:text-green-900 mr-2" data-id="${user.id}">Details</button>
                             <button class="edit-user-btn text-blue-600 hover:text-blue-900 mr-2" data-id="${user.id}">Edit</button>
-                                        <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}" data-title="Delete User" data-content="Are you sure you want to remove this user?">Delete</button>
+                                        <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">Delete</button>
                         </td>
                     `;
                         tableBody.appendChild(row);
@@ -2075,26 +2132,6 @@
     } 
 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @section Styles {
     <style>
                 .message-container {
@@ -2691,7 +2728,7 @@
 
                 #confirmDeleteModal .btn {
                         padding: 12px 24px;
-                        font-size: 1rem;
+                        font-size: 0.95rem;
                         font-weight: 600;
                         border: none;
                         border-radius: 5px;
