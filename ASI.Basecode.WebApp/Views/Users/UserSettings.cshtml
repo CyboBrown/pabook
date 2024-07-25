@@ -12,12 +12,12 @@
         <div class="message-container" id="messageContainer"></div> <!-- Message container -->
         <div class="outer-container">
             <div class="main-content">
-                <h1 style="font-size: 1.5rem;text-align: center;">Account Settings</h1>
+                <h1 style="font-size: 2rem;text-align: center;">Account Settings</h1>
                 
                 <div class="settings-section">
                     <div class="profile-section">
                         <div class="profile-pic">
-                            <img id="profilePicture" src="~/img/admin.jpg" alt="Profile Picture" />
+                            <img id="profilePicture" src="~/img/user.jpg" alt="Profile Picture" />
                         </div>
                         <div class="profile-info">
                             <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
@@ -37,16 +37,16 @@
                         </div>
                     </div>
                     
-
+                    @*
                     <div class="lightt">
-                        @*<h2>Booking Duration</h2>
+                        <h2>Booking Duration</h2>
                         <div class="setting">
                             <span>Time Format</span>
                             <select class="time-select" name="TimeFormat">
                                 <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
                                 <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
                             </select>
-                        </div>*@
+                        </div>
                         <div class="setting">
                             <span>Default Booking Duration</span>
                             <select class="time-select" name="DefaultBookingDuration">
@@ -55,7 +55,7 @@
                                 <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
                             </select>
                         </div>
-                    </div>
+                    </div>*@
                     <div class="action-buttons">
                         <button type="submit" class="save-button">Save Changes</button>
                     </div>
@@ -133,7 +133,7 @@
                         // Update UI based on fetched preferences
                         document.querySelector('input[name="DarkMode"]').checked = data.darkMode;
                         //document.querySelector('select[name="TimeFormat"]').value = data.timeFormat.toString(); // Ensure value is converted to string
-                        document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Ensure value is converted to string
+                        //document.querySelector('select[name="DefaultBookingDuration"]').value = data.defaultBookingDuration.toString(); // Ensure value is converted to string
 
                         // Store preferences in session storage
                         sessionStorage.setItem('userPreferences', JSON.stringify(data));
@@ -195,12 +195,12 @@
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
                 timeFormatSelect.checked = preferences.timeFormat;
-            }*/
+            }
 
             const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
             if (defaultBookingDurationSelect) {
                 defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
-            }
+            }*/
             applyTheme(preferences.darkMode);
         }
 
@@ -217,7 +217,7 @@
                 darkMode: document.querySelector('input[name="DarkMode"]').checked,
                 //enableNotifications: document.querySelector('select[name="EnableNotifications"]').value === "true",
                 //timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
-                defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
+                //defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
             // Basic client-side validation for passwords
             if (preferences.newPassword !== preferences.confirmPassword) {
@@ -391,7 +391,6 @@
             });
         };
     });
-
 </script>
 
 <style>  
