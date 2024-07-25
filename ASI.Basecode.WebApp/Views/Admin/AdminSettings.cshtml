@@ -6,7 +6,6 @@
 <body class="@((Model != null && Model.DarkMode) ? "light" : "dark")">
     <link rel="stylesheet" href="~/css/admin.css" />
     <link rel="stylesheet" href="~/css/admindark.css" id="theme-style" />
-
     <form id="preferencesForm" method="post">
         <div class="message-container" id="messageContainer"></div> <!-- Message container -->
         <div class="outer-container">
@@ -99,18 +98,7 @@
 
     
     <script>     
-        function toggleLogos(isDarkMode) {
-            const logoDark = document.getElementById('logo-dark');
-            const logoLight = document.getElementById('logo-light');
-
-            if (isDarkMode) {
-                logoDark.style.display = 'none';
-                logoLight.style.display = 'block';
-            } else {
-                logoDark.style.display = 'block';
-                logoLight.style.display = 'none';
-            }
-        }
+        
         //Fetch and preference sa user from the db
         document.addEventListener('DOMContentLoaded', function () {
             fetchPreferences();
@@ -181,7 +169,6 @@
                 body.classList.remove('light');
                 loadTheme('admindark.css'); //CSS file for dark mode
             }
-            toggleLogos(preferences.darkMode);
         }
 
         function loadTheme(themeName) {
@@ -201,9 +188,7 @@
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
-            if (darkModeToggle) {
-                darkModeToggle.checked = preferences.darkMode;
-            }     
+               
             
             const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
             if (timeFormatSelect) {
@@ -214,7 +199,6 @@
             if (defaultBookingDurationSelect) {
                 defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
             }
-            toggleLogos(preferences.darkMode);
             applyTheme(preferences.darkMode);
         }
 
@@ -409,6 +393,34 @@
 </script>
 
 <style>  
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .outer-container {
+        box-sizing: border-box;
+        background-color: var(--light);
+        padding: 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 265px);
+        height: calc(100% - 40px);
+        top: 20px;
+        right: 20px;
+        bottom: 20px;
+        margin-left: 100px;
+        position: fixed;
+        z-index: 5;
+    }
     .modal {
         display: none;
         position: fixed;

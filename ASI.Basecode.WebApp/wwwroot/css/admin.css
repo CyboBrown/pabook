@@ -85,19 +85,34 @@ h2 {
     font-size: 1.5rem; /* This will be 24px 
 }*/
 .message-container {
-    display: none; 
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #565656; 
+    background-color: #565656;
     color: white;
     text-align: center;
     padding: 10px 0;
-    z-index: 1000; 
+    z-index: 1000;
     font-size: 16px;
-
 }
+
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+    .message.success {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .message.error {
+        background-color: #f44336;
+        color: white;
+    }
 
 
 /*SIDEBAR*/
@@ -121,6 +136,26 @@ h2 {
     width: 200px;
     height: auto;
 }*/
+.logo img {
+    width: 150px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%; /* Ensure it doesn't exceed the container */
+    display: none
+}
+.light-mode {
+    display: none; /* Initially hidden */
+}
+
+.dark-mode {
+    display: none; /* Initially hidden */
+}
+body.light .light-mode {
+    display: block;
+}
+
+body.dark .dark-mode {
+    display: block;
+}
 
 .sidebar-menu {
     list-style: none;
@@ -582,16 +617,18 @@ body.light .header .tab.active {
     background-color: var(--dark-main);
     color: #fff;
 }
-/*
+
 body.light .logo-img {
-    width: 100px;
-    height: 100px;
+    width: 150px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%;
 }
 
 .logo-img.light {
-    width: 100px;
-    height: 100px;
-}*/
+    width: 150px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%;
+}
 
 body.light .user-name {
     color: var(--light-text);

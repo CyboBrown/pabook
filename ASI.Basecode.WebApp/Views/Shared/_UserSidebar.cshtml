@@ -2,7 +2,9 @@
     <link rel="stylesheet" href="~/css/admin.css" />
     <div class="sidebar">
         <div class="logo">
-            <img src="/img/logo-dark-horizontal.png" alt="Logo" />
+            @*<img id="logo-img" src="/img/logo-dark-horizontal.png" alt="Logo" />*@
+            <img id="logo-dark" src="~/img/logo-dark-horizontal.png" alt="Dark Mode Logo" style="display: none;">
+            <img id="logo-light" src="~/img/logo-light-horizontal.png" alt="Light Mode Logo" style="display: none;">
         </div>
         <ul class="sidebar-menu">
             <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
