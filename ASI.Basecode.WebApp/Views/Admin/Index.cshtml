@@ -1864,33 +1864,32 @@
 @*Room Script*@
 <script>
     var roomTypes = ["Unassigned", "Board Room", "Conference Room", "Meeting Room", "Multipurpose Room", "Recruitment Room", "Training Room"];
-    var locations = [];
+    
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        let locations = [];
         function populateLocationsDropdown() {
+            console.log("Location is populated.")
             $.ajax({
                 url: '/api/Room/locations',
                 type: 'GET',
                 success: function (data) {
-                    console.log('Fetched locations data:', data); // Debugging statement
                     var dropdown = $('#location');
                     var roomDropdown = $('#roomDropdown');
                     dropdown.empty();
                     roomDropdown.empty();
-
-                    dropdown.append($('<option></option>').val('').text('Select location'));
+                    dropdown.append($('<option></option>').val('').text('Select Location'));
                     data.forEach((location, index) => {
-                        console.log('Processing location:', location); // Debugging statement
                         if (location && typeof location.name === 'string' && location.name.trim() !== '' && typeof location.id === 'number' && location.id >= 0) {
-                            locations.push(location.name);
+                            locations[index] = location.name;
                             dropdown.append($('<option></option>').val(location.id).text(location.name));
                             roomDropdown.append($('<a></a>').attr('onclick', `filterByLocation('${location.name}')`).text(location.name));
                         } else {
-                            console.warn('Invalid location data:', location); // Warning for invalid data
+                            console.warn('Invalid location data:', location);
                         }
                     });
-
                     roomDropdown.append($('<a></a>').attr('onclick', 'showAllLocations()').text('Show All'));
+                    loadRooms();
                 },
                 error: function (error) {
                     console.log('Error fetching locations:', error);
@@ -1900,6 +1899,7 @@
 
         $(document).ready(function () {
             populateLocationsDropdown();
+            console.log(location);
         });
 
         function validateForm() {
@@ -1923,7 +1923,8 @@
         const itemsPerPage = 5;
 
         function loadRooms(page = 1) {
-            populateLocationsDropdown();
+            console.log("Room is loaded.");
+            console.log(location);
             fetch('/api/Room/rooms')
                 .then(response => {
                     if (!response.ok) {
@@ -2010,7 +2011,7 @@
         }
 
         // Load initial rooms
-        loadRooms();
+        //loadRooms();
 
         roomForm.addEventListener('submit', function (e) {
             e.preventDefault();
