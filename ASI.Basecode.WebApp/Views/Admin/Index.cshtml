@@ -1020,7 +1020,11 @@
                             submitButton.textContent = 'Create Booking';
 
                             // Add success alert with correct message
-                            alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
+                            if (isEdit) {
+                                toastr.success('Booking updated successfully!');
+                            } else {
+                                toastr.success('Booking created successfully!');
+                            }
                         })
                         .catch(error => {
                             console.error('Error ' + (isEdit ? 'updating' : 'creating') + ' booking:', error);
@@ -1225,6 +1229,7 @@
                         fetch('/api/Room/locations')
                         .then(locationResponse => locationResponse.json())
                         .then(locations => {
+                            locations = ['10th Floor', '11th Floor', '12th Floor', '14th Floor']
                             const location = locations.find(l => l.id === room.location);
                             const modal = document.getElementById('bookingDetailsModal');
                             const content = document.getElementById('bookingDetailsContent');
@@ -1234,7 +1239,7 @@
                                 <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
                                 <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
                                 <p><strong>Room:</strong> ${booking.roomName}</p>
-                                <p><strong>Location:</strong> ${location}</p>
+                                <p><strong>Location:</strong> ${locations[room.location]}</p>
                                 <p><strong>Capacity:</strong> ${room.capacity}</p>
                                 <p><strong>Facilities:</strong> ${room.facilities}</p>
                                 <p><strong>Recurring:</strong> ${booking.recurring ? 'Yes' : 'No'}</p>
@@ -2932,7 +2937,7 @@
                     }
 
                     #confirmDeleteModal .btn-danger {
-                        background-color: #db3327;
+                    background-color: #813d33;
                         color: white;
                     }
 

@@ -28,7 +28,7 @@
         </ul>
         
         <div class="user-details">
-            <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("FirstName")</span>
+            <span class="side-user-name ml-2 overflow-hidden">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
         </div>
         <div class="signout">
             <a asp-action="SignOutAdmin" asp-controller="Account">

@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Admin Settings";
 }
-
 <body class="@((Model != null && Model.DarkMode) ? "light" : "dark")">
     <link rel="stylesheet" href="~/css/admin.css" />
     <link rel="stylesheet" href="~/css/admindark.css" id="theme-style" />
@@ -11,7 +10,7 @@
         <div class="outer-container">
             <div class="main-content">
                 <h1 style="font-size: 2rem;text-align: center;">Account Settings</h1>
-                
+
                 <div class="settings-section">
                     <div class="profile-section">
                         <div class="profile-pic">
@@ -21,7 +20,7 @@
                             <span class="user-name ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("FullName")</span>
                             <span class="user-email ml-2 overflow-hidden">@HttpContextAccessor.HttpContext.Session.GetString("Email")</span>
                             <button type="button" class="edit-button ml-2" onclick="editUser('@HttpContextAccessor.HttpContext.Session.GetString("UserId")')">Edit</button>
-                        </div>                        
+                        </div>
                     </div>
 
                     <div class="lightt">
@@ -33,34 +32,13 @@
                             </label>
                         </div>
                     </div>
-                    
-                    @*
-                    <div class="lightt">
-                        <h2>Booking Duration</h2>
-                        <div class="setting">
-                            <span>Time Format</span>
-                            <select class="time-select" name="TimeFormat">
-                                <option value="24" selected="@(Model?.TimeFormat == 24 ? "selected" : null)">24 - hour</option>
-                                <option value="12" selected="@(Model?.TimeFormat == 12 ? "selected" : null)">12 - hour</option>
-                            </select>
-                        </div>
-                        <div class="setting">
-                            <span>Default Booking Duration</span>
-                            <select class="time-select" name="DefaultBookingDuration">
-                                <option value="30" selected="@(Model?.DefaultBookingDuration == 30 ? "selected" : null)">30 - minutes</option>
-                                <option value="60" selected="@(Model?.DefaultBookingDuration == 60 ? "selected" : null)">60 - minutes</option>
-                                <option value="90" selected="@(Model?.DefaultBookingDuration == 90 ? "selected" : null)">90 - minutes</option>
-                            </select>
-                        </div>
-                    </div>*@
-                    
                 </div>
                 <div class="action-buttons">
                     <button type="submit" class="save-button">Save Changes</button>
                 </div>
             </div>
         </div>
-    </form>   
+    </form>
     <div id="addUserModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -78,6 +56,7 @@
                     <label for="lastName">Last Name:</label>
                     <input type="text" id="lastName" name="lastName" required>
                 </div>
+
                 <div class="form-group full-width">
                     <label for="email">Contact Email:</label>
                     <input type="email" id="email" name="email" required>
@@ -86,9 +65,14 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password">
                 </div>
+                <div class="form-group full-width" id="roleField">
+                    <label for="role">Role:</label>
+                    <input type="text" id="role" name="role" required>
+                </div>
                 <div class="form-group full-width">
                     <div class="button-group">
-                        
+                        <button type="reset" class="reset-button">Reset</button>
+
                         <button type="submit">Save</button>
                     </div>
                 </div>
@@ -96,8 +80,8 @@
         </div>
     </div>
 
-    
-    <script>     
+
+    <script>
         function toggleLogos(isDarkMode) {
             const logoDark = document.getElementById('logo-dark');
             const logoLight = document.getElementById('logo-light');
@@ -116,9 +100,9 @@
 
             var userId = '@HttpContextAccessor.HttpContext.Session.GetString("UserId")';
             sessionStorage.setItem('UserId', userId);
-                    
+
         });
-        
+
         //fetch the id using sessionstorage
         function fetchPreferences() {
             const userId = sessionStorage.getItem('UserId');
@@ -157,7 +141,7 @@
                 })
                 .catch(error => console.error('Error fetching preferences:', error));
         }
-        
+
         const darkModeToggle = document.querySelector('#dark-change input');
         darkModeToggle.addEventListener('change', function () {
             const theme = this.checked ? 'light' : 'dark';
@@ -166,9 +150,9 @@
             preferences.darkMode = this.checked;
             //sessionStorage.setItem('userPreferences', JSON.stringify(preferences));
             toggleLogos(preferences.darkMode);
-            
+
         });
-        
+
         //DarkMode and LightMode
         function applyTheme(isDarkMode) {
             const body = document.body;
@@ -191,7 +175,7 @@
             } else {
                 console.error('Theme style link element not found');
             }
-        }      
+        }
         function updateUIFromPreferences(preferences) {
             console.log('Updating UI with preferences:', preferences);
 
@@ -201,17 +185,6 @@
             if (darkModeInput) {
                 darkModeInput.checked = preferences.darkMode;
             }
-               
-            /*
-            const timeFormatSelect = document.querySelector('select[name="TimeFormat"]');
-            if (timeFormatSelect) {
-                timeFormatSelect.checked = preferences.timeFormat;
-            }
-
-            const defaultBookingDurationSelect = document.querySelector('select[name="DefaultBookingDuration"]');
-            if (defaultBookingDurationSelect) {
-                defaultBookingDurationSelect.checked = preferences.defaultBookingDuration;
-            }*/
             applyTheme(preferences.darkMode);
         }
 
@@ -230,7 +203,6 @@
                 //timeFormat: parseInt(document.querySelector('select[name="TimeFormat"]').value),
                 //defaultBookingDuration: parseInt(document.querySelector('select[name="DefaultBookingDuration"]').value)
             };
-            // Basic client-side validation for passwords
             if (preferences.newPassword !== preferences.confirmPassword) {
                 alert('Passwords do not match.');
                 return;
@@ -246,7 +218,6 @@
                 .then(data => {
                     if (data.success) {
                         toastr.success('Changes Saved!');
-                        //console.log('Preferences saved successfully.');
                         applyTheme(preferences.darkMode);
                         displaySuccessMessage();
                     } else {
@@ -282,16 +253,15 @@
 
             window.addEventListener("resize", adjustFontSize);
             adjustFontSize(); // Initial call
-        });   
+        });
     </script>
 </body>
-<script>  
-        document.addEventListener("DOMContentLoaded", function () {
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
         const userForm = document.getElementById('userForm');
         const submitButton = userForm.querySelector('button[type="submit"]');
         const userModal = document.getElementById('addUserModal');
         const closeModalButton = document.querySelector('.close');
-
         // Validate form
         function validateForm() {
             const requiredFields = userForm.querySelectorAll('[required]');
@@ -306,16 +276,13 @@
             });
             return isValid;
         }
-
         // Handle form submission
         userForm.addEventListener('submit', function (e) {
             e.preventDefault();
-
             if (!validateForm()) {
                 alert('Please fill in all required fields.');
                 return;
             }
-
             const formData = new FormData(this);
             const data = {
                 username: formData.get('username'),
@@ -323,18 +290,16 @@
                 firstName: formData.get('firstName'),
                 email: formData.get('email'),
                 password: formData.get('password'),
+                userRole: parseInt(formData.get('role'))
             };
-
             // If in edit mode, include userId
             if (this.dataset.mode === 'edit') {
                 data.id = parseInt(this.dataset.userId, 10);
             } else {
                 return; // Prevent submission if not in edit mode
             }
-
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
-
             fetch(`/api/UserManagement/${data.id}`, {
                 method: 'PUT',
                 headers: {
@@ -342,38 +307,46 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    userModal.style.display = "none";
-                    //userForm.reset();
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        userModal.style.display = "none";
+                        userForm.reset();
+                        //userForm.reset();
+                        submitButton.textContent = 'Save';
+                        toastr.success('User updated successfully!');
+                    } else {
+                        displayErrorMessage(result.message || 'Failed to update user.');
+                        toastr.error(result.message || 'Input password to modify.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error details:', error);
+                    toastr.error('Error!');
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
                     submitButton.textContent = 'Save';
-                    toastr.success('User updated successfully!');
-                } else {
-                    toastr.error(result.message || 'Input password to modify.');
-                }
-            })
-            .catch(error => {
-                console.error('Error details:', error);
-                toastr.error('Error!');
-            })
-            .finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Save';
-            });
+                });
         });
-
+        // Display error message
+        function displayErrorMessage(message) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.textContent = message;
+            messageContainer.style.display = 'block';
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 5000);
+        }
         // Handle modal close
         closeModalButton.addEventListener('click', function () {
             userModal.style.display = 'none';
         });
-
         window.addEventListener('click', function (event) {
             if (event.target === userModal) {
                 userModal.style.display = 'none';
             }
         });
-
         // Edit user function
         window.editUser = function (userId) {
             fetch(`/api/UserManagement/${userId}`, {
@@ -382,31 +355,32 @@
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(user => {
-                document.getElementById('username').value = user.userName;
-                document.getElementById('lastName').value = user.lastName;
-                document.getElementById('firstName').value = user.firstName;
-                document.getElementById('email').value = user.email;
-                document.getElementById('password').value = '';
-
-
-                userForm.dataset.mode = 'edit';
-                userForm.dataset.userId = userId;
-                submitButton.textContent = 'Update User';
-                userModal.style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Error fetching user details:', error);
-                alert('An error occurred while fetching user details.');
-            });
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('username').value = user.userName;
+                    document.getElementById('lastName').value = user.lastName;
+                    document.getElementById('firstName').value = user.firstName;
+                    document.getElementById('email').value = user.email;
+                    document.getElementById('role').value = user.userRole;
+                    document.getElementById('password').value = user.password; // Assumes password is fetched securely
+                    document.getElementById('password').value = '';
+                    userForm.dataset.mode = 'edit';
+                    userForm.dataset.userId = userId;
+                    submitButton.textContent = 'Update User';
+                    userModal.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error fetching user details:', error);
+                    alert('An error occurred while fetching user details.');
+                });
         };
     });
 
 </script>
 
-<style>  
-    
+
+<style>
+
     .modal {
         display: none;
         position: fixed;
@@ -435,43 +409,43 @@
         position: relative;
     }
 
-    .modal-content h1 {
-        text-align: center;
-        color: #ecf0f1;
-        margin-bottom: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
+        .modal-content h1 {
+            text-align: center;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .modal-content form {
-        background: #fff;
-        padding: 15px;
-        border-radius: 8px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
+        .modal-content form {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-    .modal-content label {
-        display: block;
-        margin-bottom: 2px;
-        font-weight: bold;
-        font-size: 0.9em;
-        color: #000;
-    }
+        .modal-content label {
+            display: block;
+            margin-bottom: 2px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #000;
+        }
 
-    .modal-content input,
-    .modal-content select {
-        width: 100%;
-        padding: 6px;
-        margin-bottom: 6px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        background-color: #ecf0f1;
-        color: #2c3e50;
-    }
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
 
     .form-group {
         flex: 1 1 calc(50% - 8px);
@@ -501,30 +475,28 @@
         margin-top: 15px;
     }
 
-    .modal-content button:hover {
-        background-color: #31b0d5;
-    }
+        .modal-content button:hover {
+            background-color: #31b0d5;
+        }
 
-    .modal-content button[type="submit"] {
-        background-color: #1893a2;
-    }
+        .modal-content button[type="submit"] {
+            background-color: #1893a2;
+        }
 
-    .modal-content button[type="submit"]:hover {
-        background-color: #0d353f;
-    }
-    
+            .modal-content button[type="submit"]:hover {
+                background-color: #0d353f;
+            }
+
 
     .button-group {
         display: flex;
         justify-content: center;
         align-items: center;
     }
-    .password{
+
+    .password {
         font-weight: 100;
         color: red;
     }
 
 </style>
-
-
-

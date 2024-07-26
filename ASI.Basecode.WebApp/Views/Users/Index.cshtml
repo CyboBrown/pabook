@@ -933,7 +933,11 @@
                         fetchTodaysBookings();
                     }
 
-                    alert(isEdit ? 'Booking updated successfully!' : 'Booking created successfully!');
+                    if (isEdit) {
+                        toastr.success('Booking updated successfully!');
+                    } else {
+                        toastr.success('Booking created successfully!');
+                    }
 
                     // Send confirmation email if booking was created (not edited)
                     if (!isEdit) {
@@ -1229,26 +1233,37 @@
             fetch(`/api/Booking/${bookingId}`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        // Remove the row from My Bookings table
-                        const myBookingsRow = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`).closest('tr');
+                        return response.json();
+                    }
+                    return response.json().then(err => Promise.reject(err));
+                })
+                .then(data => {
+                    // Remove the row from My Bookings table
+                    const myBookingsButton = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`);
+                    if (myBookingsButton) {
+                        const myBookingsRow = myBookingsButton.closest('tr');
                         if (myBookingsRow) {
                             myBookingsRow.remove();
                         }
+                    }
 
-                        // Remove the row from Today's Bookings list
-                        const todaysBookingsRow = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`).closest('tr');
+                    // Remove the row from Today's Bookings list
+                    const todaysBookingsButton = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`);
+                    if (todaysBookingsButton) {
+                        const todaysBookingsRow = todaysBookingsButton.closest('tr');
                         if (todaysBookingsRow) {
                             todaysBookingsRow.remove();
                         }
-
-                        alert('Booking cancelled successfully');
-                    } else {
-                        throw new Error('Failed to cancel booking');
                     }
+
+                    toastr.success('Booking cancelled successfully');
+
+                    // Optionally, refresh the bookings list
+                    loadBookings(); // Assuming you have a function to reload the bookings
                 })
                 .catch(error => {
                     console.error('Error cancelling booking:', error);
-                    alert('Failed to cancel booking. Please try again.');
+                    toastr.error(error.message || 'Failed to cancel booking. Please try again.');
                 });
         }
 
@@ -2028,7 +2043,7 @@
             }
 
             #cancelModal .btn-danger {
-                background-color: #db3327;
+                background-color: #813d33;
                 color: white;
             }
 
