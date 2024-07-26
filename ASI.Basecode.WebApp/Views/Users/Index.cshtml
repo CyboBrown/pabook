@@ -66,11 +66,13 @@
                         <input type="text" id="searchBar" class="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Search...">
                         <button id="clearSearchButton" class="clear-button" style="display: none;">✖</button>
                     </div>
-                    <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdown()">
-                        <i class="fas fa-filter mr-2"></i>
-                        Filter
-                    </button>
-                    <div id="roomDropdown" class="dropdown-content"></div>
+                    <div class="dropdown-container">
+                        <button id="filterButton" class="w-full sm:w-auto sm:ml-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" onclick="toggleDropdown()">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filter
+                        </button>
+                        <div id="roomDropdown" class="dropdown-content"></div>
+                    </div>
                     <div class="book-now flex-grow">
                         <button class="w-20 px-4 py-2.5 text-sm text-white  rounded-md flex items-center justify-center hover:bg-red-700 transition duration-300 ease-in-out" style="background-color: #329a8f;font-size: large;margin-left: 0.5rem;left: auto;py: 3;" onclick="switchTab('addBooking')">
                             <i class="fas fa-plus mr-2"></i>
@@ -1908,9 +1910,16 @@
                 font-weight: 600;
             }
 
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
         .dropdown-content {
             display: none;
             position: absolute;
+            top: 100%;
+            left: 0;
             background-color: #f9f9f9;
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -1928,6 +1937,10 @@
                 .dropdown-content a:hover {
                     background-color: #f1f1f1;
                 }
+
+        .show {
+            display: block;
+        }
 
         .show {
             display: block;
