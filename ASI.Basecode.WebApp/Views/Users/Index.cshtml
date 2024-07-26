@@ -423,15 +423,6 @@
 </script>
 <script>
     recurrenceTypes = ['Unassigned', 'Daily', 'Weekly', 'Monthly'];
-    //fetching karon nga bookings
-    //document.addEventListener('DOMContentLoaded', function () {
-    //    fetchTodaysBookings();
-    //    // Refreshes kada 1 sec
-    //    setInterval(fetchTodaysBookings, 100000);
-    //});
-    //fetchTodaysBookings();
-
-    //this is the function for 'view'
     function showBookingDetails(bookingId) {
         fetch(`/api/Booking/${bookingId}`)
             .then(response => response.json())
@@ -1240,32 +1231,57 @@
                     return response.json().then(err => Promise.reject(err));
                 })
                 .then(data => {
-                    // Remove the row from My Bookings table
-                    const myBookingsButton = document.querySelector(`#bookingsTableBody button[data-id="${bookingId}"]`);
-                    if (myBookingsButton) {
-                        const myBookingsRow = myBookingsButton.closest('tr');
-                        if (myBookingsRow) {
-                            myBookingsRow.remove();
-                        }
-                    }
-
-                    // Remove the row from Today's Bookings list
-                    const todaysBookingsButton = document.querySelector(`#bookingItems button[data-id="${bookingId}"]`);
-                    if (todaysBookingsButton) {
-                        const todaysBookingsRow = todaysBookingsButton.closest('tr');
-                        if (todaysBookingsRow) {
-                            todaysBookingsRow.remove();
-                        }
-                    }
+                    // Remove the booking from tables
+                    removeBookingFromTables(bookingId);
 
                     toastr.success('Booking cancelled successfully');
 
-                    // Optionally, refresh the bookings list
-                    loadBookings(); // Assuming you have a function to reload the bookings
+                    // Fetch booking details
+                    return fetch(`/api/Booking/${bookingId}`);
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Booking not found');
+                    }
+                    return response.json();
+                })
+                .then(booking => {
+                    // Fetch user details
+                    return Promise.all([
+                        fetch(`/api/UserManagement/${booking.userId}`),
+                        fetch(`/api/Room/${booking.roomId}`),
+                        Promise.resolve(booking)
+                    ]);
+                })
+                .then(([userResponse, roomResponse, booking]) => {
+                    if (!userResponse.ok || !roomResponse.ok) {
+                        throw new Error('User or Room not found');
+                    }
+                    return Promise.all([userResponse.json(), roomResponse.json(), Promise.resolve(booking)]);
+                })
+                .then(([user, room, booking]) => {
+                    sendCancelNotificationEmail(booking, user.email, user.firstName, room.name);
                 })
                 .catch(error => {
                     console.error('Error cancelling booking:', error);
                     toastr.error(error.message || 'Failed to cancel booking. Please try again.');
+                });
+        }
+
+        function sendCancelNotificationEmail(bookingData, userEmail, userName, roomName) {
+            const templateParams = {
+                to_name: userName,
+                room_name: roomName,
+                booking_date: bookingData.date,
+                start_time: bookingData.startTime,
+                end_time: bookingData.endTime
+            };
+
+            emailjs.send('service_ok8rjwn', 'template_wn0xrna', templateParams)
+                .then((response) => {
+                    console.log('Cancellation email sent successfully:', response);
+                }, (error) => {
+                    console.error('Failed to send cancellation email:', error);
                 });
         }
 
